@@ -26,9 +26,10 @@ Every tunable setting is in `CONFIG` at the top of the script, and each one has 
 - word-box reps (`WORD`)
 - `CLEAN_TARGET`
 - `SCHEDULE_DAYS`
+- word audio (`SPEAK_WORD`, `SPEAK_RATE`)
 - timings (`FLASH_MS`, `SLIDE_*`, `WORD_BREAK_MS`, `COMBINE`)
 
-To check your changes, run `tools/test_regression.py` and `tools/test_accuracy.py`.
+To check your changes, run `tools/test_regression.py`, `tools/test_accuracy.py`, `tools/test_label_placement.py` and `tools/test_tts.py`.
 
 ## How data.js is generated
 No reading or meaning is typed by hand. Everything comes from the sources below.

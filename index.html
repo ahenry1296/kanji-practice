@@ -60,11 +60,11 @@ body{display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-
 .track.past{opacity:.38;filter:saturate(.7);pointer-events:none}.track.future{opacity:0;pointer-events:none}
 .track.leaving{opacity:.38}
 .reading{transition:opacity .35s ease}.reading.fade{opacity:0}
-.plab{position:absolute;z-index:4;pointer-events:none;display:flex;align-items:center;gap:6px;padding:4px 10px 4px 6px;border-radius:14px;background:rgba(253,250,245,.92);box-shadow:0 2px 10px rgba(79,97,64,.14),inset 0 0 0 1px rgba(236,200,207,.8);white-space:nowrap;animation:plin .25s ease}
+.plab{position:absolute;z-index:6;transition:opacity .26s ease,transform .26s ease;pointer-events:none;display:flex;align-items:center;gap:6px;padding:4px 10px 4px 6px;border-radius:14px;background:#fdfaf5;box-shadow:0 2px 8px rgba(79,97,64,.18),inset 0 0 0 1px rgba(236,200,207,.8);white-space:nowrap;animation:plin .25s ease}
 @keyframes plin{from{opacity:0;transform:translateY(4px)}}
 .plab .pg svg{width:26px;height:26px;display:block}.plab .pt{display:flex;flex-direction:column;line-height:1.1}
 .plab b{font:600 15px var(--ui);color:var(--indigo)}.plab small{font-size:11px;color:var(--muted)}
-.plab.done{padding:2px 8px;font-size:11px;color:var(--indigo);opacity:.5;box-shadow:none;background:rgba(253,250,245,.7)}
+.plab.out{opacity:0;transform:translateY(-4px)}
 .combo{position:absolute;inset:0;z-index:6;background:#fffefb;border-radius:4px;cursor:pointer}
 .box.combining~*{}.box.combining{z-index:5}
 .combo svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
@@ -134,6 +134,7 @@ body{display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-
 .panel{position:relative}
 .ib.info{position:absolute;right:14px;top:14px;width:34px;height:34px;box-shadow:none;background:transparent;color:#b5ad9c}
 .ib.info svg{width:20px;height:20px}
+.ib.spk{position:absolute;left:14px;top:14px;width:38px;height:38px;box-shadow:none;background:transparent;color:var(--matcha,#5d7148)}
 .ipop{position:absolute;right:14px;top:52px;width:min(520px,80vw);background:#fff;border-radius:16px;padding:12px 16px;box-shadow:0 14px 40px rgba(40,30,10,.18);font-size:13px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:.25s;z-index:5}
 .ipop.show{opacity:1;pointer-events:auto;transform:none}
 .ipop .facts{justify-content:flex-start}
@@ -264,7 +265,9 @@ const CONFIG={
  /* Word box: write the lesson WORD (kanji + kana) in a row of cells. REPS boxes when the word brought new kanji,
     REPS_KNOWN when all its kanji were already learned; the first GUIDED_REPS show a faint guide. */
  WORD:{REPS:3,GUIDED_REPS:1,REPS_KNOWN:2,SKIP_BARE_KANJI:true},  // REPS_KNOWN: boxes for a word whose kanji are all already learned; SKIP_BARE_KANJI: no word box for a one-kanji word just drilled
- CLEAN_TARGET:3,WORD_BREAK_MS:400,   // pause between words before the sheet drops to the next word's row
+ CLEAN_TARGET:3,WORD_BREAK_MS:400,LABEL_FADE_MS:260,
+ SPEAK_WORD:true,SPEAK_RATE:0.9,   // word box: read the word aloud (ja-JP speechSynthesis, JMdict reading) + replay button
+   // pause between words before the sheet drops to the next word's row
 SCHEDULE_DAYS:[1,3,7,14,30],FLASH_MS:250,SLIDE_DELAY_MS:550,SLIDE_MS:340,   // (were 500 / 1100 / 620)
  /* kanji completion: parts pull apart (coloured, labelled) then merge into the kanji; tap to skip. AT = which completed levels play it */
  COMBINE:{MS:1500,AT:['L1','L3']}};  // hints are unlimited; any hint (or L3 miss) in a box repeats that level
@@ -410,7 +413,7 @@ function ladder(k,t){if(t==='W')return ['char','outline'];return ['kw','name','o
 /** Bottom card: hint button (L2/L3/word) + equation; info popover. Part labels live on the box (labels()). */
 function renderPanel(){const c=boxes[cur],k=c.k,st=c.s;let main;const anim=c.anim||{};c.anim={};
  let facts=k.isWord?'':`<button class="ib info" onclick="this.nextElementSibling.classList.toggle('show')" aria-label="Kanji info">${I_INFO}</button><div class="ipop"><div class="facts"><span><i>Meanings</i>${esc(k.meanings.join(', '))}</span><span><i>音</i>${k.on.join('、')}</span><span><i>訓</i>${k.kun.join('、')}</span><span><i>Strokes</i>${k.strokes}</span><span><i>JLPT</i>${k.jlpt}</span><span><i>Radical</i>${k.radical.glyph} ${esc(k.radical.meaning)} (#${k.radical.num})</span><a href="https://jisho.org/search/${encodeURIComponent(k.k)}%23kanji" target="_blank" rel="noopener">View on Jisho ↗</a></div></div>`;
- if(k.isWord)facts=`<button class="ib info" onclick="this.nextElementSibling.classList.toggle('show')" aria-label="Word info">${I_INFO}</button><div class="ipop"><div class="facts"><span><i>Word</i>${esc(k.k)}</span><span><i>Reading</i>${esc(k.reading)}</span><span><i>Meaning</i>${esc(k.keyword)}</span><span><i>Source</i>JMdict #${esc(k.jmdict)}</span><a href="https://jisho.org/search/${encodeURIComponent(k.k)}" target="_blank" rel="noopener">View on Jisho ↗</a></div></div>`;
+ if(k.isWord)facts=(CONFIG.SPEAK_WORD&&'speechSynthesis' in window?`<button class="ib spk" onclick="speakWord(boxes[cur].k)" aria-label="Play word">${I_SPK}</button>`:'')+`<button class="ib info" onclick="this.nextElementSibling.classList.toggle('show')" aria-label="Word info">${I_INFO}</button><div class="ipop"><div class="facts"><span><i>Word</i>${esc(k.k)}</span><span><i>Reading</i>${esc(k.reading)}</span><span><i>Meaning</i>${esc(k.keyword)}</span><span><i>Source</i>JMdict #${esc(k.jmdict)}</span><a href="https://jisho.org/search/${encodeURIComponent(k.k)}" target="_blank" rel="noopener">View on Jisho ↗</a></div></div>`;
  const N=k.parts.length,n=c.pad.strokes.length,pi=c.allDone||n>=k.strokes?N:partOf(k,n);
  if(pi>=N){main=`<div class="big">${equation(k,N,'full',anim)}</div>`}
  else{const p=k.parts[pi];
@@ -460,15 +463,36 @@ function upd(){const c=boxes[cur],n=c.pad.strokes.length;
 /** Floating part labels on the writing box. Current part: glyph + keyword + hiragana name in Level 1, otherwise only
  *  what hints revealed. Finished parts keep a small faded keyword. Placed above the part's KanjiVG bbox (else below),
  *  clamped inside the box. */
-function labels(c){c.b.querySelectorAll('.plab').forEach(e=>e.remove());const k=c.k,st=c.s;if(k.isWord||c.combining)return;
- const n=c.pad.strokes.length,N=k.parts.length,cp=n>=k.strokes?N:partOf(k,n),L=ladder(k,st.t),H=c.b.clientHeight,W=c.b.clientWidth,u=H/109;
- const seen=i=>{if(st.t==='L1')return {kw:1,name:1,glyph:1};const h=(c.hints||{})[i]||0,has=t=>L.indexOf(t)>-1&&L.indexOf(t)<h;return {kw:has('kw'),name:has('name'),glyph:0}};
- for(let i=0;i<Math.min(cp+1,N);i++){const p=k.parts[i],v=seen(i),done=i<cp;if(!v.kw&&!v.name)continue;if(done&&!p.kw)continue;
-  const e=document.createElement('div');e.className='plab'+(done?' done':'');
-  e.innerHTML=done?esc(p.kw):`${v.glyph?'<span class="pg">'+partSVG(k,i,'#5d7148')+'</span>':''}<span class="pt">${v.kw&&p.kw?'<b>'+esc(p.kw)+'</b>':''}${v.name&&p.name?'<small>'+esc(p.name)+'</small>':''}</span>`;
-  c.b.appendChild(e);const b=bbox(k,i),lw=e.offsetWidth,lh=e.offsetHeight;let x=(b.x+b.w/2)*u-lw/2,y=b.y*u-lh-6;
-  if(y<4){const below=(b.y+b.h)*u+6;y=below+lh<H-4?below:4}
-  x=Math.max(4,Math.min(W-lw-4,x));e.style.left=x+'px';e.style.top=y+'px'}}
+function labels(c){const k=c.k,st=c.s;
+ // only the CURRENT part is labelled; the previous label fades out as soon as its part is done
+ const old=[...c.b.querySelectorAll('.plab:not(.out)')];
+ if(k.isWord||c.combining){old.forEach(e=>e.remove());return}
+ const n=c.pad.strokes.length,N=k.parts.length,cp=n>=k.strokes?N:partOf(k,n),L=ladder(k,st.t),H=c.b.clientHeight,W=c.b.clientWidth;
+ const fade=e=>{e.classList.add('out');setTimeout(()=>e.remove(),CONFIG.LABEL_FADE_MS)};
+ const keep=old.find(e=>+e.dataset.pi===cp&&e.dataset.h===String((c.hints||{})[cp]||0));
+ old.forEach(e=>{if(e!==keep)fade(e)});if(keep||cp>=N)return;
+ const p=k.parts[cp],h=(c.hints||{})[cp]||0,has=t=>L.indexOf(t)>-1&&L.indexOf(t)<h;
+ const v=st.t==='L1'?{kw:1,name:1,glyph:1}:{kw:has('kw'),name:has('name'),glyph:0};
+ if(!(v.kw&&p.kw)&&!(v.name&&p.name))return;
+ const e=document.createElement('div');e.className='plab';e.dataset.pi=cp;e.dataset.h=h;
+ e.innerHTML=`${v.glyph?'<span class="pg">'+partSVG(k,cp,'#5d7148')+'</span>':''}<span class="pt">${v.kw&&p.kw?'<b>'+esc(p.kw)+'</b>':''}${v.name&&p.name?'<small>'+esc(p.name)+'</small>':''}</span>`;
+ c.b.appendChild(e);
+ const ink=c.pad.strokes.flatMap(s=>s.pts.map(q=>({x:q.x*H,y:q.y*H})));
+ const r=labelPos(k,cp,e.offsetWidth,e.offsetHeight,W,H,ink);e.style.left=r.x+'px';e.style.top=r.y+'px'}
+/** Choose where a part label goes so it never covers ink. Obstacles = every KanjiVG stroke of the kanji (what the user
+ *  will write) + the user's actual ink, inflated by a stroke-width margin. Candidates in order: above the part's bbox,
+ *  below it, left, right (all kept inside the box), then just outside the box edge (top, bottom, right, left).
+ *  First candidate with no obstacle inside wins; otherwise the least-covered one. Returns {x,y,hits} in px. */
+function labelPos(k,pi,lw,lh,W,H,ink){const u=H/109,b=bbox(k,pi),m=0.045*H,g=6,P=[];
+ for(let i=0;i<k.strokes;i++)idealPts(k,i).forEach(q=>P.push({x:q.x*H,y:q.y*H}));(ink||[]).forEach(q=>P.push(q));
+ const bx=b.x*u,by=b.y*u,bw=b.w*u,bh=b.h*u,cx=bx+bw/2-lw/2,cy=by+bh/2-lh/2,cl=(x,lo,hi)=>Math.max(lo,Math.min(hi,x));
+ const inX=x=>cl(x,4,W-lw-4),inY=y=>cl(y,4,H-lh-4);
+ const C=[[inX(cx),by-lh-g,1],[inX(cx),by+bh+g,1],[bx-lw-g,inY(cy),1],[bx+bw+g,inY(cy),1],
+  [inX(cx),-lh-g,0],[inX(cx),H+g,0],[W+g,inY(cy),0],[-lw-g,inY(cy),0]];
+ let best=null;for(const [x,y,inside] of C){if(inside&&(x<4||y<4||x+lw>W-4||y+lh>H-4))continue;
+  const hits=P.filter(q=>q.x>x-m&&q.x<x+lw+m&&q.y>y-m&&q.y<y+lh+m).length;
+  if(!best||hits<best.hits)best={x,y,hits};if(!hits)break}
+ return best}
 /** Hint button (Levels 2–3, word box). Each tap reveals the next rung of ladder(): keyword → name → outline
  *  (word box: character → outline). Any hint marks the box as hinted → a repeat box of the same level is added on completion. */
 function useHint(){const c=boxes[cur];if(c.s.t==='L1')return;const pi=partOf(c.k,Math.min(c.pad.strokes.length,c.k.strokes-1));c.hints=c.hints||{};const L=ladder(c.k,c.s.t),h=c.hints[pi]||0;c.hints[pi]=h+1;
@@ -506,7 +530,25 @@ function position(anim){const b=boxes[cur]&&boxes[cur].b;if(!b)return;const row=
  const rows=$('track');rows.classList.toggle('anim',anim);rows.style.transform=`translateY(${-row.offsetTop}px)`}
 /** Make box `cur` active (only it accepts ink), hide guides on finished boxes, reposition. */
 function focus(anim){boxes.forEach((x,i)=>{x.b.classList.toggle('cur',i===cur);x.pad.locked=i!==cur;if(i<cur)x.b.querySelectorAll(':scope>svg path[data-i],:scope>svg rect.hl,.mk,.mk-h,.plab').forEach(e=>e.style.display='none')});boxes[cur].anim={rev:0};position(anim);upd();
+ const c=boxes[cur];if(c.k.isWord&&!c.spoken){c.spoken=true;setTimeout(()=>{if(boxes[cur]===c)speakWord(c.k)},CONFIG.SLIDE_MS)}
 }
+/* ==================== AUDIO — word pronunciation ==================== */
+const I_SPK='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
+let jaVoice=null;
+/** Pick a Japanese voice (prefer a local ja-JP voice). Voices load asynchronously on some browsers. */
+function pickVoice(){if(!('speechSynthesis' in window))return;const v=speechSynthesis.getVoices();
+ jaVoice=v.find(x=>x.lang==='ja-JP'&&x.localService)||v.find(x=>/^ja([-_]|$)/i.test(x.lang))||null}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.addEventListener&&speechSynthesis.addEventListener('voiceschanged',pickVoice)}
+/** iOS Safari audio session: 'transient' ducks background audio while we speak; restored to 'auto' afterwards. */
+function audioSession(t){try{if(navigator.audioSession&&'type' in navigator.audioSession)navigator.audioSession.type=t}catch(_){}}
+/** Speak word object k using its JMdict reading (kana, so the TTS engine cannot pick a wrong kanji reading). */
+function speakWord(k){if(!CONFIG.SPEAK_WORD||!('speechSynthesis' in window)||!k)return;
+ speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(k.reading||k.k);u.lang='ja-JP';if(jaVoice)u.voice=jaVoice;u.rate=CONFIG.SPEAK_RATE;
+ audioSession('transient');speakWord.last=u;const done=()=>{if(speakWord.last===u)audioSession('auto')};u.onend=done;u.onerror=done;speechSynthesis.speak(u);
+ setTimeout(done,1500+500*u.text.length)} // fallback restore if the engine never fires end/error
+/* iOS only allows speech after a user gesture: prime the engine (silent utterance) on the first pointer down */
+document.addEventListener('pointerdown',function prime(){if('speechSynthesis' in window){const u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}document.removeEventListener('pointerdown',prime,true)},true);
+
 /** Part-complete flash (ring + sparks). */
 function flash(c,pi){const b=bbox(c.k,pi),W=c.b.clientHeight,s=W/109,cx=(b.x+b.w/2)*s,cy=(b.y+b.h/2)*s,r=Math.max(b.w,b.h)*s/2+14;
  const ring=document.createElement('div');ring.className='ring';ring.style.cssText=`left:${cx-r}px;top:${cy-r}px;width:${2*r}px;height:${2*r}px`;c.b.appendChild(ring);
