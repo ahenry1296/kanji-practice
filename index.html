@@ -234,6 +234,8 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
 :root{--muted:#1a1a1a}
 .rtag small,.jp small,.seal i,.jp em,.kun .ok,.on b,.facts i,.plab small,.peek small,.kchip small,.pname small,.hcount,.pempty,.lvname span,.klist .sk{color:#1a1a1a!important;opacity:1!important}
 .on{opacity:1}
+/* One box at a time (user request): static per-part boxes hidden; only the current-part highlight (rect.hl) shows */
+.pbox{display:none!important}
 </style></head><body>
 <div class="top">
  <div class="knav l"><button class="ib nb" id="prev" aria-label="Previous word"><span class="peek" id="peekp"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="ib" id="kchip" aria-label="Kanji list" onclick="searching=false;renderPicker();document.getElementById('klist').classList.toggle('show')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></button><div class="klist" id="klist"></div></div>
