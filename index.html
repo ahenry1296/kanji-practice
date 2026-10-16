@@ -150,9 +150,8 @@ body{display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-
 .klist .lvbar button.on{border-radius:15px;height:30px;font:600 12px var(--ui);background:var(--matcha);color:var(--matcha-deep);box-shadow:inset 0 0 0 1.5px rgba(93,113,72,.25)}
 .klist .soon{text-align:center;color:#b5ad9c;font-size:13px;padding:34px 0 30px;letter-spacing:.04em}
 .klist .setb{display:grid;grid-template-columns:26px 1fr auto;grid-template-rows:auto auto;align-items:center;column-gap:10px;width:100%;height:auto;border:none;background:none;border-radius:12px;padding:7px 8px;text-align:left;cursor:pointer;font-family:var(--ui)}
-.klist button.setb:hover{background:#f7f2e8}.klist button.setb.on{background:#eef3e6;color:var(--ink)}
+.klist button.setb:hover{background:#f7f2e8}.klist button.setb.sel{background:#eef3e6;color:var(--ink)}
 .klist .setb b{grid-row:span 2;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--indigo);box-shadow:inset 0 0 0 1.5px rgba(79,97,64,.35)}
-.klist .setb.on b{background:var(--indigo);color:#fff;box-shadow:none}
 .klist .st{font-size:13px;color:var(--ink);font-weight:600}.klist .sk{grid-column:2;font-family:var(--mincho);font-size:15px;color:var(--muted);letter-spacing:.06em}.klist .sd{grid-row:1/3;grid-column:3;font-size:11px;color:var(--verm)}
 .klist .sdrop{display:grid;grid-template-rows:0fr;transition:grid-template-rows .38s cubic-bezier(.3,.8,.3,1),opacity .3s;opacity:0}
 .klist .sdrop>div{overflow:hidden}.klist .setw.open .sdrop{grid-template-rows:1fr;opacity:1}
@@ -236,6 +235,11 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
 .on{opacity:1}
 /* One box at a time (user request): static per-part boxes hidden; only the current-part highlight (rect.hl) shows */
 .pbox{display:none!important}
+/* Picker fixes (user request): word chips always solid black and readable (selected = green ring, not white-on-green);
+   every lesson number badge has the same shape (rounded square, outline, dark-green number); tier tint stays as background. */
+.klist .kchips button.jp,.klist .kchips button.jp span,.klist .kchips button.jp small{color:#1a1a1a!important;opacity:1!important}
+.klist .kchips button.jp.sel{background:#eef3e6;box-shadow:inset 0 0 0 2px var(--matcha-deep)}
+.klist .setb b,.klist .setb.sel b{border-radius:8px;background:none;color:var(--indigo);box-shadow:inset 0 0 0 1.5px rgba(79,97,64,.35)}
 /* 音/訓 tag styled like the part label pill (user request): bold green glyph, black English under */
 .rtag{left:-58px;padding:4px 8px;border-radius:14px;background:#fdfaf5;box-shadow:0 2px 8px rgba(79,97,64,.18),inset 0 0 0 1px rgba(236,200,207,.8)}
 .rtag b{font:600 16px var(--ui);color:var(--indigo);border:none;padding:0}
@@ -305,7 +309,7 @@ const CONFIG={
  /* Word box: trace the lesson WORD (kanji + kana) in a row of N cells, N times (REPS:'chars'), or a fixed number.
     SKIP_BARE_KANJI: no word box for a one-kanji word whose kanji was just drilled. */
  WORD:{REPS:'chars',SKIP_BARE_KANJI:true},
- INK:'#6a8c4f',          // accepted ink (soft matcha); rejected ink is red and fades
+ INK:'#1a1a1a',          // accepted ink (dark sumi black, user request); rejected ink is red and fades
  WORD_BREAK_MS:400,LABEL_FADE_MS:260,   // pause between words before the sheet drops to the next word's row
  SPEAK_WORD:true,SPEAK_RATE:0.85,SPEAK_PITCH:1,DUCK_AUDIO:true,   // read the word aloud (ja-JP; Siri > O-ren > Kyoko > any ja)
  SCHEDULE_DAYS:[1,3,7,14,30],FLASH_MS:250,SLIDE_DELAY_MS:550,SLIDE_MS:340,
@@ -317,19 +321,19 @@ let gen=0;const later=(fn,ms)=>{const g=gen;return setTimeout(()=>{if(g===gen)fn
 
 /* ==================== STORAGE — localStorage records + spaced schedule ==================== */
 /** Read the progress record for a kanji ("<k>") or word ("w:<word>"). @returns {{cleanRecalls,hintsUsed,lastPracticed,nextReview,intervalDays}|null} */
-const recGet=k=>{try{return JSON.parse(localStorage.getItem('rec:'+k))}catch(_){return null}};
+const recGet=k=>{try{const r=JSON.parse(localStorage.getItem('rec:'+k));return r&&typeof r==='object'&&!Array.isArray(r)?r:null}catch(_){return null}}; // corrupt/non-object → null (treated as new)
 /** Finish a kanji/word and schedule its next review.
  *  Spaced schedule: first completion → SCHEDULE_DAYS[0]; each later completion moves one step up the list;
  *  a REVIEW that needed hints falls back to the first interval. @returns the updated record */
 function recFinish(k,sessClean,sessHints){const r=recGet(k)||{cleanRecalls:0,hintsUsed:0,lastPracticed:null,nextReview:null,intervalDays:0};
  const S=CONFIG.SCHEDULE_DAYS,wasReview=!!r.lastPracticed;let iv;
  if(wasReview&&sessHints>0)iv=S[0];else{const i=S.indexOf(r.intervalDays);iv=r.intervalDays?S[Math.min(i+1,S.length-1)]:S[0]}
- const now=new Date();r.cleanRecalls+=sessClean;r.done=(r.done||0)+1;r.hintsUsed+=sessHints;r.lastPracticed=now.toISOString();r.intervalDays=iv;r.nextReview=new Date(now.getTime()+iv*864e5).toISOString();
+ const now=new Date();r.cleanRecalls=(Number(r.cleanRecalls)||0)+sessClean;r.done=(Number(r.done)||0)+1;r.hintsUsed=(Number(r.hintsUsed)||0)+sessHints;r.lastPracticed=now.toISOString();r.intervalDays=iv;r.nextReview=new Date(now.getTime()+iv*864e5).toISOString();
  localStorage.setItem('rec:'+k,JSON.stringify(r));return r}
 /** Mastery tier of a word = number of full practices (rec.done): '' | bronze | silver | gold | diamond. */
-function tier(w){const n=(recGet('w:'+w)||{}).done||0;return n?CONFIG.MASTERY[Math.min(n,4)-1]:''}
+function tier(w){const n=Number((recGet('w:'+w)||{}).done)||0;return n?CONFIG.MASTERY[Math.min(n,4)-1]:''}
 /** Lifetime hint counter per kanji (localStorage "hints:<k>"). */
-const hintKey=k=>'hints:'+k;const hintCount=k=>+(localStorage.getItem(hintKey(k))||0);
+const hintKey=k=>'hints:'+k;const hintCount=k=>Number(localStorage.getItem(hintKey(k)))||0; // corrupt → 0
 /** Per-session tallies keyed by kanji char or "w:<word>": {clean, hints, extra}. */
 const sess={}; // per kanji this session: {clean, hints, extra}
 
@@ -440,7 +444,7 @@ const WK={};function wordObj(w){const key=w.w+'|'+w.r;if(WK[key])return WK[key];
 /** Lesson steps. A lesson is a list of WORDS. Each kanji (first appearance in the lesson, and only if never learned
  *  or due on the spaced schedule — or forced when practising a single kanji from search) gets the practice flow:
  *  {t:'P',pi} part-alone boxes, then {t:'K', g, parts, lines} for every CONFIG.FLOW.STAGES entry; then the word box(es) {t:'W'}. */
-const steps=[];const isDue=c=>{const r=recGet(c);return !r||!r.nextReview||new Date(r.nextReview)<=new Date()};
+const steps=[];const isDue=c=>{const r=recGet(c),t=r&&Date.parse(r.nextReview);return !r||!(t<=Infinity)||t<=Date.now()}; // missing/invalid date → due
 /** Groups steps into units (one kanji drill or one word) for celebrations; sessKey = key for sess/records. */
 const unitKey=s=>s?(s.t==='W'?'w'+s.ki:'k'+s.kc):'';const sessKey=s=>s.t==='W'?'w:'+s.w.w:s.kc;
 /** Step-by-step boxes: one stroke shown at a time, no hint button, no repeat. */
@@ -577,9 +581,12 @@ function useHint(){const c=boxes[cur];if(isStep(c.s))return;const pi=partOf(c.k,
  c.anim={};renderPanel();upd()}
 
 /* ==================== LEVELS / FLOW — boxes, slider, hint/repeat rule ==================== */
+/** Build `steps` for the lesson in D. opts.force: drill every kanji even if learned. opts.freshKi: the word the user
+ *  explicitly opened — its kanji always get the full flow (from step a/c), so re-opening a finished word starts
+ *  completely fresh instead of jumping to its word/trace box. */
 function makeSteps(opts={}){steps.length=0;const drilled=new Set(),F=CONFIG.FLOW;
- D.forEach((it,ki)=>{const w=it.w,ks=[...w.w].filter(c=>DATA.kanji[c]);let fresh=false;
-  ks.forEach(c=>{if(drilled.has(c)||(!opts.force&&!isDue(c)))return;drilled.add(c);fresh=true;const K=DATA.kanji[c];
+ D.forEach((it,ki)=>{const w=it.w,ks=[...w.w].filter(c=>DATA.kanji[c]);let fresh=false;const mine=new Set();
+  ks.forEach(c=>{const want=ki===opts.freshKi&&!mine.has(c);if(!want&&(drilled.has(c)||(!opts.force&&!isDue(c))))return;drilled.add(c);mine.add(c);fresh=true;drilled.add(c);fresh=true;const K=DATA.kanji[c];
    if(F.PARTS&&!(F.SKIP_SINGLE_PART&&K.parts.length<2))K.parts.forEach((p,pi)=>steps.push({ki,kc:c,t:'P',pi,g:'step'}));
    F.STAGES.forEach((st,si)=>steps.push({ki,kc:c,t:'K',si,g:st.g,parts:!!st.parts,lines:st.lines!==false}))});
   if(opts.kanjiOnly||(CONFIG.WORD.SKIP_BARE_KANJI&&fresh&&w.w.length===1))return;
@@ -599,7 +606,13 @@ function addRepeatBox(i){const s={...steps[i],repeat:true};steps.splice(i+1,0,s)
 /** Size boxes for the viewport (--B, --gap, --C) and resize canvases. */
 function layout(){const W=innerWidth,H=innerHeight,sh=$('stage').clientHeight;const B=Math.round(Math.max(200,Math.min(W*(W>H?0.44:0.86),sh-140)));const gap=Math.round(B*0.1);
  document.documentElement.style.setProperty('--B',B+'px');document.documentElement.style.setProperty('--gap',gap+'px');document.documentElement.style.setProperty('--C',`min(${B}px, ${Math.floor(W*0.9/5)}px)`);
- boxes.forEach(x=>requestAnimationFrame(()=>x.pad.resize()));position(false)}
+ requestAnimationFrame(sizePads);position(false)}
+/** Canvas memory/perf: only boxes within PAD_NEAR of the current one, or holding ink, get a real bitmap. A lesson can
+ *  have 80+ boxes; sizing them all cost >1 s per lesson open and can exceed iPad Safari's canvas memory limit.
+ *  All sizes are read first, then written (no forced layout per box). */
+const PAD_NEAR=2;
+function sizePads(){const M=boxes.map((x,i)=>[x,x.pad.cv.offsetWidth,x.pad.cv.offsetHeight,Math.abs(i-cur)<=PAD_NEAR||x.pad.strokes.length>0]);
+ M.forEach(([x,w,h,on])=>x.pad.resize(w,h,on))}
 /** Centre the current box horizontally in its row, and the current row vertically in the sheet. */
 function position(anim){const b=boxes[cur]&&boxes[cur].b;if(!b)return;const row=b.parentElement,ki=steps[cur].ki;
  row.classList.toggle('anim',anim);row.style.transition=anim?`transform ${CONFIG.SLIDE_MS}ms var(--ease-spring),opacity .4s`:'opacity .4s';
@@ -607,7 +620,7 @@ function position(anim){const b=boxes[cur]&&boxes[cur].b;if(!b)return;const row=
  rowEls.forEach((r,i)=>{r.classList.toggle('past',i<ki);r.classList.toggle('future',i>ki);r.classList.remove('leaving')});
  const rows=$('track');rows.classList.toggle('anim',anim);rows.style.transform=`translateY(${-row.offsetTop}px)`}
 /** Make box `cur` active (only it accepts ink), hide guides on finished boxes, reposition. */
-function focus(anim){boxes.forEach((x,i)=>{x.b.classList.toggle('cur',i===cur);x.pad.locked=i!==cur;if(i<cur)x.b.querySelectorAll(':scope>svg path[data-i],:scope>svg rect.hl,:scope>svg rect.pbox,.mk,.mk-h,.plab').forEach(e=>e.style.display='none')});boxes[cur].anim={rev:0};position(anim);upd();
+function focus(anim){boxes.forEach((x,i)=>{x.b.classList.toggle('cur',i===cur);x.pad.locked=i!==cur;if(i<cur)x.b.querySelectorAll(':scope>svg path[data-i],:scope>svg rect.hl,:scope>svg rect.pbox,.mk,.mk-h,.plab').forEach(e=>e.style.display='none')});boxes[cur].anim={rev:0};sizePads();position(anim);upd();
  const c=boxes[cur];if(c.k.isWord&&!c.spoken){c.spoken=true;later(()=>{if(boxes[cur]===c)speakWord(c.k)},CONFIG.SLIDE_MS)}
 }
 /* ==================== AUDIO — word pronunciation ==================== */
@@ -659,7 +672,8 @@ function traceGuide(c,n){const svg=c.b.querySelector(':scope>svg');svg.querySele
  g.insertAdjacentHTML('beforeend',`<path class="sarrow" d="M${m.x-h*Math.cos(ang-0.55)} ${m.y-h*Math.sin(ang-0.55)}L${m.x} ${m.y}L${m.x-h*Math.cos(ang+0.55)} ${m.y-h*Math.sin(ang+0.55)}"/><circle class="sdot tdot" cx="${a.x}" cy="${a.y}" r="2.6"/>`)}
 /** Pad callback for a finished stroke: check it; on part completion flash; on box completion decide clean vs hinted
  *  (hinted/failed → addRepeatBox), after the last part box play combineParts() + starburst, then slide on. */
-function onStroke(i,p){if(i!==cur)return;const c=boxes[i],n=p.strokes.length-1,pi0=partOf(c.k,n);
+function onStroke(i,p){if(i!==cur||!p)return;const c=boxes[i];if(!c||p.strokes.length>c.k.strokes){p.strokes.length=Math.min(p.strokes.length,c?c.k.strokes:0);p.redraw();return} // stray stroke: drop it
+ const n=p.strokes.length-1,pi0=partOf(c.k,n);
  const prev=p.strokes.slice(0,n).map((q,j)=>({i:j,pts:q.pts})).filter(q=>!c.k.isWord||partOf(c.k,q.i)===pi0);
  const r=checkStroke(c.k,n,p.strokes[n],isMem(c.s)?'L3':'L1',prev);if(!r.ok){reject(c,p,n);return}
  const pi=partOf(c.k,n),done=n===c.k.parts[pi].to;
@@ -667,20 +681,28 @@ function onStroke(i,p){if(i!==cur)return;const c=boxes[i],n=p.strokes.length-1,p
  // part complete: flash, then show next part (or finish the box)
  p.locked=true;flashing=true;flash(c,pi);if(isStep(c.s)){c.b.querySelectorAll(':scope>svg path[data-i]').forEach(q=>q.style.visibility='hidden');c.b.querySelectorAll('.mk').forEach(e=>e.remove())}
  const hl=c.b.querySelector('rect.hl');if(hl)hl.style.display='none';
- later(()=>{flashing=false;if(p.strokes.length>=c.k.strokes&&!sliding){sliding=true;c.allDone=true;c.anim={lock:pi,res:true};
+ // box complete: wait out any slide still running (finishing a box during the previous slide used to unlock the
+ // full box instead, leaving it stuck and accepting extra strokes past the last one)
+ const after=()=>{flashing=false;if(p.strokes.length>=c.k.strokes&&sliding){later(after,60);return}
+  if(p.strokes.length>=c.k.strokes){sliding=true;c.allDone=true;c.anim={lock:pi,res:true};
   if(!isStep(c.s)){const S=sess[sessKey(c.s)]=sess[sessKey(c.s)]||{clean:0,hints:0,extra:0};const used=Object.values(c.hints||{}).reduce((a,b)=>a+b,0)+(c.autoHints||0);const clean=used===0&&!c.failed;
    if(clean){if(isMem(c.s))S.clean++}else{S.hints+=used;S.extra++;addRepeatBox(cur);position(false)}}
   upd();const fin=()=>later(()=>go(cur+1),CONFIG.SLIDE_DELAY_MS);
   // (b) after the last part-alone box of a kanji: the parts written so far fly together into the kanji, then a starburst
-  const nx=steps[cur+1];if(c.s.t==='P'&&!(nx&&nx.t==='P'&&nx.kc===c.s.kc))combineParts(c,()=>{flash(c,null);fin()});else fin()}else{p.locked=false;c.anim={lock:pi,rev:pi+1};upd()}},FLASH_MS)}
+  const nx=steps[cur+1];if(c.s.t==='P'&&!(nx&&nx.t==='P'&&nx.kc===c.s.kc))combineParts(c,()=>{flash(c,null);fin()});else fin()}else{p.locked=false;c.anim={lock:pi,rev:pi+1};upd()}};later(after,FLASH_MS)}
 /** Move to step n. Changing word: dim the row, fade the heading, pause WORD_BREAK_MS, show the new heading, drop a row. */
-function go(n){if(n>=steps.length){celebrate(boxes[cur].k.src||boxes[cur].k);sliding=false;return}if(n<0)return;
+function go(n){if(n>=steps.length){celebrate(boxes[cur].k.src||boxes[cur].k);wordDone(steps[cur]);sliding=false;return}if(n<0)return;
  if(n===cur+1&&unitKey(steps[n])!==unitKey(steps[cur]))celebrate(boxes[cur].k.src||boxes[cur].k);
+ if(n===cur+1&&steps[n].ki!==steps[cur].ki)wordDone(steps[cur]);
  const k0=steps[cur].ki; // word index we are leaving
  if(steps[n].ki!==k0){ // new word: dim this row, fade the heading, pause, show the new word's heading, then drop to its row
   sliding=true;rowEls[k0].classList.add('leaving');$('kun').parentElement.classList.add('fade');const W=CONFIG.WORD_BREAK_MS;
   later(()=>{cur=n;setInfo();$('kun').parentElement.classList.remove('fade');later(()=>{focus(true);later(()=>sliding=false,500)},W*0.35)},W);return}
  cur=n;focus(true);later(()=>sliding=false,CONFIG.SLIDE_MS*0.75)}
+
+/** Word finished (last step of word s.ki done). Words that have a word box are already recorded by celebrate();
+ *  a one-kanji word (no word box, SKIP_BARE_KANJI) is recorded here so its practice count / tier grows each time. */
+function wordDone(s){if(!s||steps.some(x=>x.ki===s.ki&&x.t==='W'))return;const w=D[s.ki]&&D[s.ki].w;if(!w)return;const S=sess[s.kc]||{clean:0,hints:0};recFinish('w:'+w.w,S.clean,S.hints)}
 
 /* ==================== ANIMATIONS — combine + celebration ==================== */
 /** (b) Parts → kanji: the user's own ink from the part-alone boxes of this kanji (mapped back from each part box to
@@ -710,11 +732,15 @@ class Pad{constructor(cv){this.cv=cv;this.ctx=cv.getContext('2d');this.strokes=[
  cv.addEventListener('pointerdown',e=>this.down(e));cv.addEventListener('pointermove',e=>this.move(e));
  ['pointerup','pointercancel','pointerleave'].forEach(n=>cv.addEventListener(n,e=>this.up(e)));
  cv.addEventListener('touchstart',e=>{if(penSeen&&[...e.touches].every(t=>t.touchType!=='stylus'))return;e.preventDefault()},{passive:false})}
- resize(){const r=window.devicePixelRatio||1,w=this.cv.offsetWidth,h=this.cv.offsetHeight;this.w=h;this.cv.width=w*r;this.cv.height=h*r;this.ctx.setTransform(r,0,0,r,0,0);this.redraw()}
+ /** Size the backing store to CSS size × devicePixelRatio (w,h optional: pre-measured by sizePads to avoid layout
+  *  thrash). on=false releases the bitmap (0×0) — used for boxes that are empty and not near the current one. */
+ resize(w=this.cv.offsetWidth,h=this.cv.offsetHeight,on=true){const r=window.devicePixelRatio||1;this.w=h;
+  const W=on?Math.round(w*r):0,H=on?Math.round(h*r):0;this.sized=on;if(this.cv.width!==W||this.cv.height!==H){this.cv.width=W;this.cv.height=H}this.ctx.setTransform(r,0,0,r,0,0);if(on)this.redraw()}
  pt(e){const b=this.cv.getBoundingClientRect();let p=e.pointerType==='pen'?(e.pressure||.5):.5;return{x:(e.clientX-b.left)/b.height,y:(e.clientY-b.top)/b.height,p}}
  ok(e){if(e.pointerType==='pen')penSeen=true;return !(penSeen&&e.pointerType==='touch')}
- down(e){if(this.locked||!this.ok(e))return;e.preventDefault();try{this.cv.setPointerCapture(e.pointerId)}catch(_){}this.cur={id:e.pointerId,pen:e.pointerType==='pen',pts:[this.pt(e)]};}
- move(e){if(!this.cur||e.pointerId!==this.cur.id)return;e.preventDefault();let evs=e.getCoalescedEvents?e.getCoalescedEvents():[];if(!evs.length)evs=[e];evs.forEach(ev=>this.cur.pts.push(this.pt(ev)));this.redraw()}
+ down(e){if(this.locked||!this.ok(e)||(this.cur&&!(e.pointerType==='pen'&&!this.cur.pen)))return; // one stroke at a time: a 2nd finger is ignored (a pen replaces a palm touch)
+e.preventDefault();try{this.cv.setPointerCapture(e.pointerId)}catch(_){}this.cur={id:e.pointerId,pen:e.pointerType==='pen',pts:[this.pt(e)]};}
+ move(e){if(!this.cur||e.pointerId!==this.cur.id)return;e.preventDefault();let evs=e.getCoalescedEvents?e.getCoalescedEvents():[];if(!evs.length)evs=[e];evs.forEach(ev=>this.cur.pts.push(this.pt(ev)));if(!this.raf)this.raf=requestAnimationFrame(()=>{this.raf=0;this.redraw()})} // ≤1 redraw per frame (Pencil sends 240 Hz)
  up(e){if(!this.cur||e.pointerId!==this.cur.id)return;if(this.cur.pts.length)this.strokes.push(this.cur);this.cur=null;this.t=performance.now();this.redraw();this.onStroke&&this.onStroke(this)}
  undo(){this.strokes.pop();this.redraw()}clear(){this.strokes=[];this.redraw()}
  width(s,p){const base=this.w*0.034;return s.pen?base*(0.3+1.35*p):base}
@@ -728,8 +754,9 @@ class Pad{constructor(cv){this.cv=cv;this.ctx=cv.getContext('2d');this.strokes=[
   const L=P[P.length-1];c.lineWidth=this.width(s,L.p)*tw(P.length-1);c.beginPath();c.moveTo(px,py);c.lineTo(L.x,L.y);c.stroke()}
  redraw(){this.ctx.clearRect(0,0,this.cv.width,this.cv.height);this.strokes.forEach(s=>this.drawStroke(s));if(this.cur&&this.cur.pts.length)this.drawStroke(this.cur);
   if(this.fade){const a=1-Math.min(1,(performance.now()-this.fade.t0)/360);this.ctx.save();this.ctx.globalAlpha=a;this.red=true;this.drawStroke(this.fade.s);this.red=false;this.ctx.restore()}}}
-$('undo').onclick=()=>{const p=boxes[cur].pad;if(flashing||sliding)return;p.strokes.length?(p.undo(),upd()):0};
-$('clear').onclick=()=>{if(flashing||sliding)return;boxes[cur].pad.clear();boxes[cur].allDone=false;upd()};
+/* undo/clear ignore a finished box (e.g. the last box after the lesson-end seal): clearing it used to leave it locked & empty */
+$('undo').onclick=()=>{const p=boxes[cur].pad;if(flashing||sliding||boxes[cur].allDone)return;p.strokes.length?(p.undo(),upd()):0};
+$('clear').onclick=()=>{if(flashing||sliding||boxes[cur].allDone)return;boxes[cur].pad.clear();boxes[cur].allDone=false;upd()};
 $('prev').onclick=()=>restartAt((steps[cur].ki+D.length-1)%D.length);
 $('next').onclick=()=>restartAt((steps[cur].ki+1)%D.length);
 let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(layout,150)});
@@ -743,14 +770,14 @@ function setTier(s){const T=s.words.map(w=>tier(w.w)),M=CONFIG.MASTERY;return T.
 /** Picker state: expanded lessons and the level tabs. */
 const openSets=new Set(),LEVELS=['N5','N4','N3','N2','N1'];
 /** Level tab currently shown in the picker (remembered in localStorage "lv"). */
-const pickLv=()=>localStorage.getItem('lv')||(curSet?curSet.level:'N5');
+const pickLv=()=>{const l=localStorage.getItem('lv');return LEVELS.includes(l)?l:(curSet&&LEVELS.includes(curSet.level)?curSet.level:'N5')}; // unknown stored value → default
 function setLv(l){localStorage.setItem('lv',l);renderPicker()}
 /** Picker popover: sticky level tabs → lessons (accordion) → word chips. */
 function renderPicker(){if(!curSet)return;const ki=steps[cur]?steps[cur].ki:-1;
  const LV=pickLv(),bar=`<div class="lvbar">${LEVELS.map(l=>`<button class="${l===LV&&!searching?'on':''}" onclick="searching=false;setLv('${l}')">${l}</button>`).join('')}<button class="srchb ${searching?'on':''}" onclick="openSearch()" aria-label="Search">${I_SRCH}</button></div>`;
  if(searching){$('klist').innerHTML=bar+`<div class="sbox"><input id="sq" type="search" placeholder="漢字 · かな · English" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(sQuery)}" oninput="sQuery=this.value;renderResults()"></div><div id="sres"></div>`;renderResults();return}
- $('klist').innerHTML=bar+(SETS.some(s=>s.level===LV)?'':`<div class="soon">${LV} lessons coming soon</div>`)+SETS.filter(s=>s.level===LV).map(s=>`<div class="setw ${openSets.has(s.id)?'open':''}" data-id="${s.id}"><button class="setb ${s.id===curSet.id?'on':''}" onclick="toggleSet('${s.id}')"><b class="tier ${setTier(s)}">${s.n}</b><span class="st">${esc(s.title)}</span><span class="sk">${s.words.map(w=>esc(w.w)).join('<i>・</i>')}</span><span class="sd"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button>
-  <div class="sdrop"><div><div class="kchips">${s.words.map((w,wi)=>`<button class="jp tier ${tier(w.w)} ${s.id===curSet.id&&wi===ki?'on':''}" onclick="pickWord('${s.id}',${wi})"><span>${esc(w.w)}</span><small>${esc(w.m.split(';')[0])}</small></button>`).join('')}</div></div></div></div>`).join('')}
+ $('klist').innerHTML=bar+(SETS.some(s=>s.level===LV)?'':`<div class="soon">${LV} lessons coming soon</div>`)+SETS.filter(s=>s.level===LV).map(s=>`<div class="setw ${openSets.has(s.id)?'open':''}" data-id="${s.id}"><button class="setb ${s.id===curSet.id?'sel':''}" onclick="toggleSet('${s.id}')"><b class="tier ${setTier(s)}">${s.n}</b><span class="st">${esc(s.title)}</span><span class="sk">${s.words.map(w=>esc(w.w)).join('<i>・</i>')}</span><span class="sd"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button>
+  <div class="sdrop"><div><div class="kchips">${s.words.map((w,wi)=>`<button class="jp tier ${tier(w.w)} ${s.id===curSet.id&&wi===ki?'sel':''}" onclick="pickWord('${s.id}',${wi})"><span>${esc(w.w)}</span><small>${esc(w.m.split(';')[0])}</small></button>`).join('')}</div></div></div></div>`).join('')}
 /* ---- search: all bundled words + kanji by kanji, kana reading or English meaning ---- */
 const I_SRCH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
 let searching=false,sQuery='';
@@ -786,7 +813,7 @@ function resetLesson(){gen++;sliding=flashing=false;try{speechSynthesis.cancel()
  boxes.forEach(x=>{x.pad.locked=true;x.pad.strokes=[];x.pad.cur=null;x.pad.fade=null});boxes=[];Object.keys(sess).forEach(x=>delete sess[x])}
 /** Start lesson object L (a SETS entry or a custom search lesson) fresh at word wi. opts → makeSteps (force, kanjiOnly). */
 function loadLesson(L,opts={},wi=0){resetLesson();curSet=L;lessonOpts=opts;if(!L.custom){openSets.clear();openSets.add(L.id);localStorage.setItem('set',L.id)}
- D=L.words.map(w=>({k:w.w,w}));makeSteps(opts);cur=Math.max(0,steps.findIndex(x=>x.ki===wi));$('klist').classList.remove('show');searching=false;build();requestAnimationFrame(()=>layout())}
+ D=L.words.map(w=>({k:w.w,w}));makeSteps({...opts,freshKi:wi});cur=Math.max(0,steps.findIndex(x=>x.ki===wi));$('klist').classList.remove('show');searching=false;build();requestAnimationFrame(()=>layout())}
 let lessonOpts={};
 /** Re-enter word wi of the current lesson from scratch (prev/next/picker). */
 function restartAt(wi){loadLesson(curSet,lessonOpts,wi)}
