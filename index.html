@@ -244,6 +244,9 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
 .rtag{left:-58px;padding:4px 8px;border-radius:14px;background:#fdfaf5;box-shadow:0 2px 8px rgba(79,97,64,.18),inset 0 0 0 1px rgba(236,200,207,.8)}
 .rtag b{font:600 16px var(--ui);color:var(--indigo);border:none;padding:0}
 .rtag small{font-size:11px}
+/* Narrow iPads (≤800px wide, e.g. 768×1024): long kun readings (大 おお・おお.きい…) pushed the 音/訓 tag onto the
+   back button; scale the reading line down a little there. */
+@media (max-width:800px){.kun{font-size:34px}.reading .sep{margin:0 2px}}
 </style></head><body>
 <div class="top">
  <div class="knav l"><button class="ib nb" id="prev" aria-label="Previous word"><span class="peek" id="peekp"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="ib" id="kchip" aria-label="Kanji list" onclick="searching=false;renderPicker();document.getElementById('klist').classList.toggle('show')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></button><div class="klist" id="klist"></div></div>
