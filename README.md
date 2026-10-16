@@ -23,8 +23,8 @@ The data flow is described in the header comment at the top of the script in ind
 Every tunable setting is in `CONFIG` at the top of the script, and each one has a comment:
 - tolerances (`CHECK.strict` / `CHECK.memory` / `CHECK.ADAPT`)
 - `MISSES_FOR_HINT`
-- word-box reps (`WORD`)
-- `CLEAN_TARGET`
+- practice flow (`FLOW`: part boxes + stages c–h) and word-box reps (`WORD`)
+- ink colour (`INK`) and mastery tiers (`MASTERY`)
 - `SCHEDULE_DAYS`
 - word audio (`SPEAK_WORD`, `SPEAK_RATE`)
 - timings (`FLASH_MS`, `SLIDE_*`, `WORD_BREAK_MS`, `COMBINE`)
