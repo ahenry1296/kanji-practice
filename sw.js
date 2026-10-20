@@ -3,10 +3,11 @@
 // The lazy per-level data and link files are listed in levels.js and precached too.
 importScripts('levels.js');
 
-const VERSION = 'kanji-v14';
+const VERSION = 'kanji-v14b';
 
 const FILES = [
-  './', 'index.html', 'data.js', 'links.js', 'kana.js', 'levels.js',
+  './', 'index.html', 'data.js', 'links.js', 'kana.js', 'kana-links.js', 'confusables.js', 'proportion_metrics.js', 'levels.js',
+  'proportion-rules-kana.js', 'proportion-rules-N5.js', 'proportion-rules-N4.js', 'proportion-rules-N3.js', 'proportion-rules-N2.js', 'proportion-rules-N1.js',
   ...(self.KANJI_LEVEL_FILES || []),
   ...(self.KANJI_LINK_FILES || []),
   'manifest.webmanifest',

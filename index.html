@@ -232,7 +232,8 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
 .lb{display:flex;gap:12px;margin-top:20px;justify-content:center;flex-wrap:wrap}
 .lb button{min-width:120px;min-height:56px;border:none;border-radius:18px;background:#f3f1e6;color:#1a1a1a;cursor:pointer;font:600 18px var(--ui);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 16px}
 .lb button small{font:500 12px var(--ui);color:#1a1a1a}.lb button.pri{background:var(--matcha);box-shadow:inset 0 0 0 1.5px rgba(93,113,72,.25)}
-.box.veil{filter:blur(8px);opacity:.35;pointer-events:none}   /* other boxes never give a hint */
+.box.veil{filter:blur(8px);opacity:.35;pointer-events:none;transition:none}   /* hide instantly when leaving a step */
+.box.veil>canvas,.box.veil>svg,.box.veil .plab,.box.veil .rpt{visibility:hidden}   /* ink and guides fully hidden: only an empty faded box remains */   /* other boxes never give a hint */
 .srchb{flex:none!important;width:44px;display:inline-flex;align-items:center;justify-content:center}.srchb svg{width:15px;height:15px}
 .sbox{padding:4px 6px 8px}.sbox input{width:100%;box-sizing:border-box;height:38px;border-radius:19px;border:1.5px solid rgba(111,138,82,.3);padding:0 14px;font:15px var(--ui);background:#fbfaf4;outline:none;color:var(--ink)}
 .sbox input:focus{border-color:rgba(111,138,82,.6)}
@@ -275,6 +276,15 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
 <script src="data.js"></script>
 <script src="links.js"></script>
 <script src="kana.js"></script>
+<script src="kana-links.js"></script>
+<script src="confusables.js"></script>
+<script src="proportion-rules-kana.js"></script>
+<script src="proportion-rules-N5.js"></script>
+<script src="proportion-rules-N4.js"></script>
+<script src="proportion-rules-N3.js"></script>
+<script src="proportion-rules-N2.js"></script>
+<script src="proportion-rules-N1.js"></script>
+<script src="proportion_metrics.js"></script>
 <script src="levels.js"></script>
 <script>
 /* ============================================================================================
@@ -313,8 +323,11 @@ const CONFIG={
      scale = allowed scale range. guided = step/trace boxes and word boxes; memory = freehand boxes. */
   ADAPT:{on:true,prevEndWeight:1,
    rel:{start:0.15,end:0.19,mean:0.16,shift:0.03},   // relative check after the fit; shift = small extra offset forgiven
-   guided:{drift:0.12,scale:[0.85,1.18]},
-   memory:{drift:0.25,scale:[0.7,1.3]}},
+   guided:{drift:0.45,scale:[0.4,1.3]},   // v14.1: lenient on position/size (small or off-centre writing)
+   memory:{drift:0.45,scale:[0.4,1.3]}},
+  RULES:{on:true,weak:['カ力','ト卜','己已']},   // look-alike rules from proportion-rules-*.js (see ruleGate)
+  PROP:{on:true,factor:1.6,minLen:0.12},   // relative stroke lengths (see proportionGate)
+  FIRST:{on:true,scale:[0.4,1.3],drift:0.45,minChord:0.1,pairRatio:1.5},   // first stroke judged relative to itself (see firstStrokeFit)
   strict:{start:0.24,end:0.26,mean:0.17,shift:0.04,dirCos:0,len:[0.22,3.2]},   // step-by-step + trace boxes (absolute check)
   memory:{start:0.24,end:0.26,mean:0.17,shift:0.1,dirCos:0,len:[0.22,3.2]},     // freehand boxes (absolute check)
   // dirCos 0 = only a stroke going mostly the wrong way fails; tiny dots have no direction and always pass it
@@ -425,6 +438,12 @@ function fitPlacement(k,prev,mem){const C=CONFIG.CHECK,A=C.ADAPT,lim=mem?A.memor
  let num=0,den=0;P.forEach(p=>{const gx=p.g.x-mg.x,gy=p.g.y-mg.y;num+=p.w*(gx*(p.u.x-mu.x)+gy*(p.u.y-mu.y));den+=p.w*(gx*gx+gy*gy)});
  let s=den>1e-4?num/den:1;s=Math.min(lim.scale[1],Math.max(lim.scale[0],s));
  return {s,mg,mu,drift:lim.drift}}
+/** First stroke (nothing to fit against yet): judge it relative to itself — centroid aligned, scale from its chord
+ *  (clamped to CONFIG.CHECK.FIRST.scale) — so a kanji written small or off-centre still passes on shape. null = off. */
+function firstStrokeFit(k,i,u){const F=CONFIG.CHECK.FIRST;if(!F||!F.on||i!==0||k.strokes<2)return null;const g=idealPts(k,0),n=u.length;   // one-stroke characters are judged against the box
+  const centroid=P=>({x:P.reduce((a,q)=>a+q.x,0)/P.length,y:P.reduce((a,q)=>a+q.y,0)/P.length});
+  const cg=dist(g[0],g[g.length-1]),cu=dist(u[0],u[n-1]);let s=cg>F.minChord?cu/cg:1;s=Math.min(F.scale[1],Math.max(F.scale[0],s));
+  return {s,mu:centroid(u),mg:centroid(g),drift:F.drift}}
 /** Move ideal points g by fit f; total movement is capped at f.drift so the kanji cannot wander out of the box. */
 function applyFit(f,g){let h=g.map(q=>({x:f.mu.x+f.s*(q.x-f.mg.x),y:f.mu.y+f.s*(q.y-f.mg.y)}));
  const d=h.reduce((a,q,j)=>a+dist(q,g[j]),0)/g.length;if(d>f.drift){const r=f.drift/d;h=h.map((q,j)=>({x:g[j].x+(q.x-g[j].x)*r,y:g[j].y+(q.y-g[j].y)*r}))}return h}
@@ -438,6 +457,43 @@ const chordAng=P=>Math.atan2(P[P.length-1].y-P[0].y,P[P.length-1].x-P[0].x);
 function turning(P,st=4){let t=0,pa=null;for(let i=st;i<P.length;i+=st){const a=Math.atan2(P[i].y-P[i-st].y,P[i].x-P[i-st].x);if(pa!==null){let d=a-pa;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;t+=d}pa=a}return t*180/Math.PI}
 /** Max perpendicular distance from the chord, as a fraction of chord length (0 = straight). */
 function bow(P){const a=P[0],b=P[P.length-1],L=Math.hypot(b.x-a.x,b.y-a.y)||1e-6;let m=0;for(const q of P)m=Math.max(m,Math.abs((b.x-a.x)*(a.y-q.y)-(a.x-q.x)*(b.y-a.y))/L);return m/L}
+
+/**
+ * Stroke 1 was accepted provisionally, judged only against itself. Once stroke 2 is drawn, judge it again
+ * at the scale the two strokes share: its length relative to stroke 2 must match the reference, and its
+ * shape and placement must pass under the fit computed from both strokes.
+ * @returns {object|null} a 'Redo first' rejection, or null when stroke 1 holds up
+ */
+function rejudgeFirstStroke(k, i, stroke, prev, mem) {
+  const FIRST = CONFIG.CHECK.FIRST;
+  const isSecondStroke = i === 1 && prev.length === 1 && prev[0].i === 0;
+  if (!FIRST.on || !isSecondStroke) {
+    return null;
+  }
+  const N = CONFIG.CHECK.N;
+  const firstInk = resample(prev[0].pts, N);
+  const secondInk = resample(stroke.pts, N);
+  const inkRatio = plen(firstInk) / Math.max(plen(secondInk), 1e-6);
+  const refRatio = plen(idealPts(k, 0)) / Math.max(plen(idealPts(k, 1)), 1e-6);
+  const factor = inkRatio / refRatio;
+  const redo = (why, m) => ({ ok: false, msg: 'Redo first', redoFirst: true, shape: why, m });
+  if (factor > FIRST.pairRatio || factor < 1 / FIRST.pairRatio) {
+    return redo('firstLength', null);
+  }
+  const jointFit = fitPlacement(k, [prev[0], { i, pts: stroke.pts }], mem);
+  if (!jointFit) {
+    return null;
+  }
+  const base = mem ? CONFIG.CHECK.memory : CONFIG.CHECK.strict;
+  const tol = { ...base, ...CONFIG.CHECK.ADAPT.rel };
+  const expected = applyFit(jointFit, idealPts(k, 0));
+  const result = compare(firstInk, expected, tol);
+  if (!passes(result, tol)) {
+    return redo('firstPlacement', result);
+  }
+  const shapeFail = shapeGate(firstInk, expected, resample(prev[0].pts, 96), applyFit(jointFit, idealDense(k, 0)));
+  return shapeFail ? redo(`first:${shapeFail}`, result) : null;
+}
 
 /** @returns '' if the shape matches, else the failing test name (never shown; used by tests). CONFIG.CHECK.SHAPE tunes it. */
 /** Moving-average smoothing (window 2w+1) so hand tremor doesn't count as bend or extra length. */
@@ -457,17 +513,83 @@ function shapeGate(u,g,ud,gd){const S=CONFIG.CHECK.SHAPE;if(!S||!S.on)return '';
  const bg=bow(g),bu=bow(u),cu=Math.hypot(u[u.length-1].x-u[0].x,u[u.length-1].y-u[0].y);   // bow in box units: |Δ| must exceed both bow×chord and bowAbs
  if(Math.abs(bu*cu-bg*cg)>Math.max(S.bow*cg,S.bowAbs))return 'curve';
  return ''}
+/** Proportion check against strokes already written (look-alikes such as 土/士, 未/末, 日/目): for every earlier stroke j
+ *  that is long enough, (this chord / chord j) must be within CONFIG.CHECK.PROP.factor× of the reference ratio. @returns '' or 'proportion' */
+function proportionGate(k,i,u,prev){const P=CONFIG.CHECK.PROP;if(!P||!P.on||!prev.length)return '';
+ const chord=Q=>dist(Q[0],Q[Q.length-1]),gi=chord(idealPts(k,i)),ui=chord(u);if(gi<P.minLen)return '';
+ for(const q of prev){const gj=chord(idealPts(k,q.i));if(gj<P.minLen)continue;const uj=chord(resample(q.pts,CONFIG.CHECK.N));if(uj<1e-3)continue;
+  const want=gi/gj,got=ui/uj,off=Math.max(got/want,want/got);if(off>P.factor)return 'proportion'}
+ return ''}
+/** Look-alike rules (proportion-rules-*.js, window.PROPORTION_RULES): each rule is checked as soon as the strokes it
+ *  involves are written. Supported metrics: lengthRatio, angle. Weak pairs (CONFIG.CHECK.RULES.weak) get double tolerance.
+ *  @returns '' or 'rule:<id>' */
+/* ==================== LOOK-ALIKE RULES — proportion-rules-*.js, judged by proportion_metrics.js ==================== */
+
+/** KanjiVG viewBox size: proportion_metrics.js takes ink as path strings in this space. */
+const KANJIVG_BOX = 109;
+/** Rule types that are scale-free, so they can be judged as soon as their strokes are drawn. */
+const EARLY_METRICS = new Set(['lengthRatio', 'angle', 'bend', 'contact', 'hook']);
+
+/** Ink points (box units) as an 'M x y L …' path in the 109-unit KanjiVG box. */
+function inkToPath(points) {
+  const coords = points.map((q) => `${(q.x * KANJIVG_BOX).toFixed(2)} ${(q.y * KANJIVG_BOX).toFixed(2)}`);
+  return `M ${coords[0]} L ${coords.slice(1).join(' L ')}`;
+}
+
+/** Copy of rule with doubled tolerance when it separates a weak pair (CONFIG.CHECK.RULES.weak). */
+function withPairTolerance(rule) {
+  const weakPairs = CONFIG.CHECK.RULES.weak;
+  const weak = rule.rivals.some((x) => weakPairs.includes(rule.char + x) || weakPairs.includes(x + rule.char));
+  return weak ? { ...rule, tolerance: rule.tolerance * 2 } : rule;
+}
+
+/**
+ * Apply Botthree's look-alike rules to k after stroke i. On the last stroke every rule is checked with
+ * ProportionMetrics.checkChar (positions relative to the drawn character's own bounding box). Before that,
+ * only scale-free rules whose strokes are all drawn are checked, with evaluateRule on the strokes so far.
+ * @returns {string} '' when every applicable rule passes, else 'rule:<id>'
+ */
+function ruleGate(k, i, u, prev) {
+  const settings = CONFIG.CHECK.RULES;
+  const rules = (window.PROPORTION_RULES || {})[k.k];
+  const metrics = window.ProportionMetrics;
+  if (!settings || !settings.on || !rules || !metrics) {
+    return '';
+  }
+  const inkByStroke = { [i]: u };
+  prev.forEach((q) => { inkByStroke[q.i] = q.pts; });
+  const drawn = Array.from({ length: i + 1 }, (_, j) => inkByStroke[j]);
+  if (drawn.some((pts) => !pts)) {
+    return '';
+  }
+  const paths = drawn.map(inkToPath);
+  const active = rules.filter((rule) => !rule.displayOnly).map(withPairTolerance);
+  if (i === k.strokes - 1) {
+    const { failed } = metrics.checkChar(k.k, paths, { [k.k]: active });
+    return failed.length ? `rule:${failed[0].rule.id}` : '';
+  }
+  const dueNow = active.filter((rule) => {
+    const strokes = rule.metric.strokes || [];
+    return EARLY_METRICS.has(rule.metric.type) && strokes.length && Math.max(...strokes) === i;
+  });
+  const failedRule = dueNow.find((rule) => !metrics.evaluateRule(rule, paths).passes);
+  return failedRule ? `rule:${failedRule.id}` : '';
+}
 const passes=(r,t)=>r.sd<=t.start&&r.ed<=t.end&&r.mean<=t.mean&&r.dirCos>=t.dirCos&&r.ratio>=t.len[0]&&r.ratio<=t.len[1];
 /** Check stroke i of kanji/word k. level 'L1' = guided (step/trace) tolerances, 'L3' = memory (freehand) tolerances.
  *  First stroke (or first of a character in a word) → absolute tolerances; later strokes → relative to the fit.
  *  Returns {ok, msg, m}: msg is an internal reason code for tests/debugging only — it is never shown to the user. */
 function checkStroke(k,i,stroke,level='L1',prev=[]){const C=CONFIG.CHECK,mem=level==='L3',base=mem?C.memory:C.strict;
- const u=resample(stroke.pts,C.N),f=fitPlacement(k,prev,mem);
+ const u=resample(stroke.pts,C.N),f=fitPlacement(k,prev,mem)||firstStrokeFit(k,i,u);
+ const firstVerdict=rejudgeFirstStroke(k,i,stroke,prev,mem);
+ if(firstVerdict)return firstVerdict;
  const tol=f?{...base,...C.ADAPT.rel}:base,exp=j=>f?applyFit(f,idealPts(k,j)):idealPts(k,j);
  const r=compare(u,exp(i),tol);
+ const provisionalFirst=i===0&&k.strokes>1&&!k.isWord&&C.FIRST.on&&!prev.length;
+ if(provisionalFirst){return r.dirCos>=0&&!r.rev?{ok:true,m:r,provisional:true}:{ok:false,msg:'Wrong direction',m:r}}   // shape, length and placement are re-judged at stroke 2's scale (rejudgeFirstStroke)
  // a later stroke that matches clearly better → wrong order (stops near-identical neighbours being accepted)
  const last0=k.parts&&k.isWord?k.parts[partOf(k,i)].to:k.strokes-1;
- if(passes(r,tol)){const sg=shapeGate(u,exp(i),resample(stroke.pts,96),f?applyFit(f,idealDense(k,i)):idealDense(k,i));if(sg)return {ok:false,msg:'Shape',shape:sg,m:r};for(let j=i+1;j<=last0;j++){const q=compare(u,exp(j),tol);if(passes(q,tol)&&q.mean+q.sd<0.6*(r.mean+r.sd))return {ok:false,msg:'Wrong order',m:r}}return {ok:true,m:r}}
+ if(passes(r,tol)){const sg=shapeGate(u,exp(i),resample(stroke.pts,96),f?applyFit(f,idealDense(k,i)):idealDense(k,i))||proportionGate(k,i,u,prev)||ruleGate(k,i,u,prev);if(sg)return {ok:false,msg:'Shape',shape:sg,m:r};for(let j=i+1;j<=last0;j++){const q=compare(u,exp(j),tol);if(passes(q,tol)&&q.mean+q.sd<0.6*(r.mean+r.sd))return {ok:false,msg:'Wrong order',m:r}}return {ok:true,m:r}}
  // wrong order? does it match another not-yet-written stroke well
  const last=k.parts&&k.isWord?k.parts[partOf(k,i)].to:k.strokes-1;
  for(let j=i+1;j<=last;j++){const q=compare(u,exp(j),tol);if(q.sd<=tol.start&&q.ed<=tol.end&&q.mean<=tol.mean&&q.dirCos>=tol.dirCos)return {ok:false,msg:'Wrong order',m:r}}
@@ -530,12 +652,12 @@ function readingTag(word,reading){const R=hira(reading),W=[...word],memo={};
  const cands=c=>{const k=DATA.kanji[c];if(!k)return null;const o=[];
   const add=(r,t)=>{r=hira(r).replace(/[-.]/g,'');if(!r)return;o.push([r,t]);if(VOICED[r[0]])o.push([VOICED[r[0]]+r.slice(1),t]);if(r.length>1&&/[つくちき]$/.test(r))o.push([r.slice(0,-1)+'っ',t])};
   k.on.forEach(r=>add(r,'on'));k.kun.forEach(r=>{add(r.split('.')[0],'kun');add(r,'kun')});return o};
- const go=(wi,ri)=>{const key=wi+','+ri;if(key in memo)return memo[key];let res=null;
+ const matchFrom=(wi,ri)=>{const key=wi+','+ri;if(key in memo)return memo[key];let res=null;
   if(wi===W.length)res=ri===R.length?[]:null;
-  else{const C=cands(W[wi]);if(!C){if(hira(W[wi])===R[ri]){const t=go(wi+1,ri+1);res=t}}
-   else for(const [r,t] of C){if(R.startsWith(r,ri)){const tail=go(wi+1,ri+r.length);if(tail){res=[t,...tail];break}}}}
+  else{const C=cands(W[wi]);if(!C){if(hira(W[wi])===R[ri]){const t=matchFrom(wi+1,ri+1);res=t}}
+   else for(const [r,t] of C){if(R.startsWith(r,ri)){const tail=matchFrom(wi+1,ri+r.length);if(tail){res=[t,...tail];break}}}}
   return memo[key]=res};
- const T=go(0,0);if(!T||!T.length)return null;
+ const T=matchFrom(0,0);if(!T||!T.length)return null;
  if(T.every(t=>t==='on'))return ['音','on'];if(T.every(t=>t==='kun'))return ['訓','kun'];
  if(T.length===2)return T[0]==='on'?['重箱','jūbako']:['湯桶','yutō'];return null}
 /** Format a KANJIDIC2 kun reading "a.bc" with the okurigana in a lighter span. */
@@ -564,8 +686,13 @@ function renderPanel(){const c=boxes[cur],k=c.k,st=c.s;let main;const anim=c.ani
   main=`<div class="pmain">${glyph}${text.trim()?'<div class="ptext">'+text+'</div>':''}${glyph?'<div class="pdiv"></div>':''}<div class="pside">${equation(k,pi,mode,anim)}</div></div>`}
  // memory link (components → meaning) while the kanji is shown or traced; hidden in freehand/recall boxes so recall stays real
  if(!k.isWord&&!k.isPart&&!isMem(st)&&memLink(k))main+=`<div class="mlink">${esc(memLink(k))}</div>`;
+ const kl=k.isWord&&k.cells===1&&(window.KANA_LINKS||{})[k.k];
+ if(kl&&!isMem(st))main+=`<div class="mlink">${esc(kl)}</div>`;   // kana memory link (kana-links.js), hidden in memory boxes
  if(k.isPart&&pi>=N&&k.pi===k.src.parts.length-1&&memLink(k.src))main+=`<div class="mlink">${esc(memLink(k.src))}</div>`;
- $('panel').innerHTML=main+facts;}
+ $('panel').innerHTML=main+facts.replace('</div></div>',lookalikeHTML(k.src||k)+'</div></div>');}
+/** Look-alike notes for character c (confusables.js), shown in the info popover only — never as error feedback. */
+function lookalikeHTML(k){const c=k&&k.k;if(!c||!window.CONFUSABLES)return '';const P=CONFUSABLES.pairs.filter(p=>p.chars.includes(c)&&p.note);
+ return P.slice(0,3).map(p=>`<span><i>Look-alike</i>${esc(p.chars.join(' / '))}: ${esc(p.note)}</span>`).join('')}
 /** Top line (reading + meaning, always visible), progress segments, L3 pips, picker and peek pills. */
 function setInfo(){const bk=boxes[cur]&&boxes[cur].k,k=bk&&(bk.src||bk);if(!k)return;let tg=null;
  if(bk.isWord){$('kun').textContent=bk.reading;$('on').textContent=bk.keyword;tg=readingTag(bk.k,bk.reading)}else{
@@ -648,7 +775,7 @@ function useHint(){const c=boxes[cur];if(isStep(c.s))return;const pi=partOf(c.k,
  *  completely fresh instead of jumping to its word/trace box. */
 function makeSteps(opts={}){steps.length=0;const drilled=new Set(),F=CONFIG.FLOW;
  D.forEach((it,ki)=>{const w=it.w,ks=[...w.w].filter(c=>DATA.kanji[c]);let fresh=false;const mine=new Set();
-  ks.forEach(c=>{const want=ki===opts.freshKi&&!mine.has(c);if(!want&&(drilled.has(c)||(!opts.force&&!isDue(c))))return;drilled.add(c);mine.add(c);fresh=true;drilled.add(c);fresh=true;const K=DATA.kanji[c];
+  ks.forEach(c=>{const want=ki===opts.freshKi&&!mine.has(c);if(!want&&(drilled.has(c)||(!opts.force&&!isDue(c))))return;drilled.add(c);mine.add(c);fresh=true;const K=DATA.kanji[c];
    const lvl=want||opts.force?0:fadeLevel(c);
    if(lvl>=2){steps.push({ki,kc:c,t:'K',si:F.STAGES.length-1,g:'free',parts:false,lines:false,recall:true});return} // recall-first: write from meaning/reading
    if(lvl===1){steps.push({ki,kc:c,t:'K',si:F.STAGES.length-1,g:'free',parts:false,lines:false,recall:true});steps.push({ki,kc:c,t:'K',si:2,g:'trace',parts:true,lines:true});steps.push({ki,kc:c,t:'K',si:5,g:'free',parts:false,lines:false});return}
@@ -664,8 +791,6 @@ function fadeLevel(c){const r=recGet(c);if(!r||!r.lastPracticed)return 0;const s
 /** A component counts as known once any learned kanji containing it (or the component itself) was finished cleanly:
  *  its part-alone boxes are then skipped (it still shows, keyword included, in the part boxes and equation). */
 function partKnown(g){if(CONFIG.FLOW.REVIEW_PARTS===false)return false;return Object.values(DATA.kanji).some(K=>(Number((recGet(K.k)||{}).streak)||0)>=1&&(K.k===g||K.parts.some(p=>p.g===g)))}
-/** Jump to the first step of word i in the current lesson. */
-function pickK(i){$('klist').classList.remove('show');restartAt(i)}
 /** Create one writing box (guide SVG + canvas Pad) for step s. */
 function makeBox(s){const K=DATA.kanji[s.kc],k=s.t==='W'?wordObj(s.w):s.t==='P'?partObj(K,s.pi):K,b=document.createElement('div');b.className='box'+(k.isWord?' wbox':'')+(s.lines===false?' nolines':'');if(k.isWord){b.style.setProperty('--n',k.cells);b.style.setProperty('--C',`min(var(--B), ${Math.floor(90/k.cells)}vw)`)}
   b.appendChild(guide(k,{step:'step',trace:'faint',free:'blank'}[s.g],s.parts));const cv=document.createElement('canvas');b.appendChild(cv);
@@ -733,6 +858,19 @@ function flash(c,pi){const b=pi==null?{x:14,y:14,w:81,h:81}:bbox(c.k,pi),W=c.b.c
  c.b.classList.add('flash');setTimeout(()=>{c.b.classList.remove('flash');c.b.querySelectorAll('.ring,.spark').forEach(e=>e.remove())},FLASH_MS+40)}
 /** Rejected stroke: red ink fades out (no message). Memory boxes are marked failed (→ repeat).
  *  After MISSES_FOR_HINT misses on the same stroke its outline is shown, which counts as a hint. */
+/**
+ * Stroke 1 failed its re-check once stroke 2 was drawn: fade both strokes out, then show the trace for stroke 1.
+ * @param {object} box
+ * @param {object} pad
+ */
+function redoFirstStroke(box, pad) {
+  pad.strokes.pop();           // stroke 2 fades out quietly
+  reject(box, pad, 0);         // stroke 1 fades out and counts as a miss
+  if (box.miss[0] !== CONFIG.CHECK.MISSES_FOR_HINT) {
+    traceGuide(box, 0);      // reject() already showed it on the hint-th miss
+  }
+  upd();
+}
 function reject(c,p,n){const s=p.strokes.pop();p.fade={s,t0:performance.now()};const tick=()=>{p.redraw();if(p.fade&&performance.now()-p.fade.t0<360)requestAnimationFrame(tick);else{p.fade=null;p.redraw()}};tick();
  c.miss=c.miss||{};c.miss[n]=(c.miss[n]||0)+1;if(isMem(c.s))c.failed=true;
  if(c.miss[n]===CONFIG.CHECK.MISSES_FOR_HINT){traceGuide(c,n);if(!isStep(c.s)){c.autoHints=(c.autoHints||0)+1;localStorage.setItem(hintKey(c.k.k),hintCount(c.k.k)+1)}}}
@@ -749,7 +887,7 @@ function traceGuide(c,n){const svg=c.b.querySelector(':scope>svg');svg.querySele
 function onStroke(i,p){if(i!==cur||!p)return;const c=boxes[i];if(!c||p.strokes.length>c.k.strokes){p.strokes.length=Math.min(p.strokes.length,c?c.k.strokes:0);p.redraw();return} // stray stroke: drop it
  const n=p.strokes.length-1,pi0=partOf(c.k,n);
  const prev=p.strokes.slice(0,n).map((q,j)=>({i:j,pts:q.pts})).filter(q=>!c.k.isWord||partOf(c.k,q.i)===pi0);
- const r=checkStroke(c.k,n,p.strokes[n],isMem(c.s)?'L3':'L1',prev);if(!r.ok){reject(c,p,n);return}
+ const r=checkStroke(c.k,n,p.strokes[n],isMem(c.s)?'L3':'L1',prev);if(r.redoFirst){redoFirstStroke(c,p);return}if(!r.ok){reject(c,p,n);return}
  const pi=partOf(c.k,n),done=n===c.k.parts[pi].to;
  if(!done){upd();return}
  // part complete: flash, then show next part (or finish the box)
@@ -795,15 +933,55 @@ function combineParts(c,done){const K=c.k.src,MS=CONFIG.COMBINE.MS,ki=c.s.ki;c.c
  ov.addEventListener('pointerdown',e=>{e.preventDefault();end()});later(end,MS+200)}
 /* ==================== LESSON END — complete screen (next lesson / repeat / review) ==================== */
 /** Next lesson after the current one in the same tab, or null (custom/search/review lessons have none). */
-function nextSet(){if(!curSet||curSet.custom)return null;const L=SETS.filter(s=>s.level===curSet.level),i=L.indexOf(curSet);return L[i+1]||null}
-/** Show the lesson-complete card after the last seal: big 次へ (next lesson) or 復習 (when due), plus 繰り返す (repeat). */
-function lessonEnd(){const el=$('lend'),N=nextSet(),due=dueWords().length;
- const btn=(cls,jp,en,fn)=>`<button class="${cls}" onclick="closeEnd();${fn}"><span>${jp}</span><small>${en}</small></button>`;
- el.innerHTML=`<div class="lcard"><div class="lt">完了<small>Lesson complete</small></div><div class="lb">`+
-  (N?btn('pri','次へ','Next: '+esc(N.title),`loadSet('${N.id}')`):due?btn('pri','復習','Review '+due,'openReview()'):'')+
-  btn('',  '繰り返す','Repeat','restartAt(0)')+(N&&due?btn('','復習','Review '+due,'openReview()'):'')+`</div></div>`;el.classList.add('show')}
+/**
+ * The lesson after the current one in the same tab.
+ * @returns {object|null} null for custom (search/review) lessons and for the last lesson of a tab
+ */
+function nextSet() {
+  if (!curSet || curSet.custom) {
+    return null;
+  }
+  const sameTab = SETS.filter((set) => set.level === curSet.level);
+  const index = sameTab.indexOf(curSet);
+  return sameTab[index + 1] || null;
+}
+
+/**
+ * One button on the lesson-complete card (Japanese label above English).
+ * @param {string} cls CSS class ('pri' for the main action)
+ * @param {string} japanese
+ * @param {string} english already escaped
+ * @param {string} action JavaScript run after the card closes
+ * @returns {string} HTML
+ */
+function endButton(cls, japanese, english, action) {
+  return `<button class="${cls}" onclick="closeEnd();${action}"><span>${japanese}</span><small>${english}</small></button>`;
+}
+
+/** Show the lesson-complete card after the last seal: 次へ (next lesson) or 復習 (when due) first, then 繰り返す (repeat). */
+function lessonEnd() {
+  const next = nextSet();
+  const dueCount = dueWords().length;
+  const reviewButton = (cls) => endButton(cls, '復習', `Review ${dueCount}`, 'openReview()');
+  let buttons = '';
+  if (next) {
+    buttons += endButton('pri', '次へ', `Next: ${esc(next.title)}`, `loadSet('${next.id}')`);
+  } else if (dueCount) {
+    buttons += reviewButton('pri');
+  }
+  buttons += endButton('', '繰り返す', 'Repeat', 'restartAt(0)');
+  if (next && dueCount) {
+    buttons += reviewButton('');
+  }
+  const card = $('lend');
+  card.innerHTML = `<div class="lcard"><div class="lt">完了<small>Lesson complete</small></div><div class="lb">${buttons}</div></div>`;
+  card.classList.add('show');
+}
+
 /** Hide the lesson-complete card. */
-function closeEnd(){$('lend').classList.remove('show')}
+function closeEnd() {
+  $('lend').classList.remove('show');
+}
 /** Seal + petals; records the completion and shows the next review interval. */
 function celebrate(k){const key=k.isWord?'w:'+k.k:k.k,S=sess[key]||{clean:0,hints:0},r=recFinish(key,S.clean,S.hints),d=r.intervalDays;
  const s=$('seal');s.innerHTML=`${k.k}<small>完了</small><i>done</i><em>Next review: ${d===1?'tomorrow':'in '+d+' days'}</em>`;s.classList.add('show');setTimeout(()=>s.classList.remove('show'),1600);
@@ -853,39 +1031,208 @@ const SETS=DATA.levels.flatMap(L=>L.sets.map((s,i)=>({...s,level:L.id,n:i+1})));
 /* ---- かな: hiragana (あ) and katakana (ア) rows from kana.js (KanjiVG strokes); merged into DATA.chars ---- */
 if(window.KANA){Object.assign(DATA.chars,KANA.chars);KANA.sets.forEach((s,i)=>SETS.push({...s,n:SETS.filter(x=>x.level===s.level).length+1}))}
 /* ---- 部首 (components-first) path: every kanji ordered so that kanji used as components come before kanji built from them ---- */
-/** Order all kanji: repeatedly take the fewest-stroke kanji whose kanji-components are already placed. @returns kanji chars */
-function componentOrder(){const all=Object.values(DATA.kanji).sort((a,b)=>a.strokes-b.strokes||a.k.localeCompare(b.k)),done=new Set(),out=[];
- while(out.length<all.length){const ready=all.filter(K=>!done.has(K.k)&&K.parts.every(p=>p.g===K.k||!DATA.kanji[p.g]||done.has(p.g)));
-  const K=ready[0]||all.find(x=>!done.has(x.k));done.add(K.k);out.push(K.k)}return out}
-const RAD_N=5;componentOrder().forEach((c,i)=>{const n=Math.floor(i/RAD_N);if(i%RAD_N===0)SETS.push({id:'R-'+(n+1),title:'Building blocks '+(n+1),level:'部首',n:n+1,words:[]});
- const K=DATA.kanji[c];SETS[SETS.length-1].words.push({w:c,r:hira((K.kun[0]||K.on[0]||'').split('.')[0].replace(/-/g,'')),m:K.keyword})});
+/** Kanji per lesson on the 部首 path. */
+const RAD_N = 5;
+
+/**
+ * True when every component of `kanji` that is itself a kanji has already been placed.
+ * @param {object} kanji DATA.kanji entry
+ * @param {Set<string>} placed
+ */
+function componentsPlaced(kanji, placed) {
+  return kanji.parts.every((part) => part.g === kanji.k || !DATA.kanji[part.g] || placed.has(part.g));
+}
+
+/**
+ * Order all kanji components-first: repeatedly take the fewest-stroke kanji whose kanji-components are placed.
+ * @returns {string[]} kanji characters
+ */
+function componentOrder() {
+  const byStrokes = Object.values(DATA.kanji).sort((a, b) => a.strokes - b.strokes || a.k.localeCompare(b.k));
+  const placed = new Set();
+  const order = [];
+  while (order.length < byStrokes.length) {
+    const unplaced = byStrokes.filter((kanji) => !placed.has(kanji.k));
+    const next = unplaced.find((kanji) => componentsPlaced(kanji, placed)) || unplaced[0];
+    placed.add(next.k);
+    order.push(next.k);
+  }
+  return order;
+}
+
+/**
+ * Practice word for a bare kanji: its first kun (else on) reading in hiragana, without okurigana.
+ * @param {object} kanji
+ * @returns {{w:string,r:string,m:string}}
+ */
+function kanjiAsWord(kanji) {
+  const reading = (kanji.kun[0] || kanji.on[0] || '').split('.')[0].replace(/-/g, '');
+  return { w: kanji.k, r: hira(reading), m: kanji.keyword };
+}
+
+/** Build the 部首 lessons ('Building blocks n'), RAD_N kanji each, in componentOrder(). */
+function buildRadicalLessons() {
+  componentOrder().forEach((char, index) => {
+    const number = Math.floor(index / RAD_N) + 1;
+    if (index % RAD_N === 0) {
+      SETS.push({ id: `R-${number}`, title: `Building blocks ${number}`, level: '部首', n: number, words: [] });
+    }
+    SETS[SETS.length - 1].words.push(kanjiAsWord(DATA.kanji[char]));
+  });
+}
+buildRadicalLessons();
+
 /* ---- 復習 review queue: every learned word or kanji whose spaced-review date has passed, interleaved across lessons ---- */
-/** Due items, most overdue first, max CONFIG.REVIEW_MAX, then shuffled so lessons interleave. @returns word objects */
-function dueWords(){const now=Date.now(),seen=new Map();SETS.forEach(S=>S.words.forEach(w=>{if(seen.has(w.w))return;const r=recGet('w:'+w.w)||(w.w.length===1?recGet(w.w):null);
-  const t=r&&Date.parse(r.nextReview);if(r&&r.lastPracticed&&t<=now)seen.set(w.w,{w,t})}));
- const L=[...seen.values()].sort((a,b)=>a.t-b.t).slice(0,CONFIG.REVIEW_MAX).map(x=>x.w);for(let i=L.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[L[i],L[j]]=[L[j],L[i]]}return L}
+
+/**
+ * Review record for a word: its own record, or (one-kanji words) the kanji's record.
+ * @param {string} text word text
+ * @returns {object|null}
+ */
+function reviewRecord(text) {
+  const wordRecord = recGet(`w:${text}`);
+  if (wordRecord) {
+    return wordRecord;
+  }
+  return text.length === 1 ? recGet(text) : null;
+}
+
+/**
+ * Shuffle an array in place (Fisher–Yates) so the review interleaves lessons.
+ * @param {Array} items
+ * @returns {Array} the same array
+ */
+function shuffle(items) {
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [items[i], items[j]] = [items[j], items[i]];
+  }
+  return items;
+}
+
+/**
+ * Due words: most overdue first, at most CONFIG.REVIEW_MAX, then shuffled.
+ * @returns {object[]} word objects {w,r,m}
+ */
+function dueWords() {
+  const now = Date.now();
+  const due = new Map();
+  SETS.forEach((set) => set.words.forEach((word) => {
+    if (due.has(word.w)) {
+      return;
+    }
+    const record = reviewRecord(word.w);
+    const dueAt = record && Date.parse(record.nextReview);
+    if (record && record.lastPracticed && dueAt <= now) {
+      due.set(word.w, { word, dueAt });
+    }
+  }));
+  const mostOverdue = [...due.values()].sort((a, b) => a.dueAt - b.dueAt).slice(0, CONFIG.REVIEW_MAX);
+  return shuffle(mostOverdue.map((entry) => entry.word));
+}
+
 /** Open the review queue as a one-off lesson (recall-first: due kanji get their faded steps). */
-function openReview(){const W=dueWords();if(!W.length)return;loadLesson({id:'review',title:'復習',words:W,level:pickLv(),custom:true},{review:true})}let curSet=null;
+function openReview() {
+  const words = dueWords();
+  if (!words.length) {
+    return;
+  }
+  loadLesson({ id: 'review', title: '復習', words, level: pickLv(), custom: true }, { review: true });
+}
+
+let curSet = null;
 /** Lesson badge tier = lowest mastery tier among its words ('' if any word was never completed). */
 function setTier(s){const T=s.words.map(w=>tier(w.w)),M=CONFIG.MASTERY;return T.some(t=>!t)?'':M[Math.min(...T.map(t=>M.indexOf(t)))]}
 /** Picker state: expanded lessons and the level tabs. */
 const openSets=new Set(),LEVELS=['あ','ア','部首','N5','N4','N3','N2','N1'];
 /** Level tab currently shown in the picker (remembered in localStorage "lv"). */
 const pickLv=()=>{const l=localStorage.getItem('lv');return LEVELS.includes(l)&&(SETS.some(s=>s.level===l)||levelFile(l))?l:(curSet&&LEVELS.includes(curSet.level)?curSet.level:'N5')}; // unknown stored value → default
-/* ---- lazy per-level data (N4–N1): levels.js lists files; each registers window.KANJI_LEVELS[<lv>] (SCHEMA.md) ---- */
-const LEVEL_FILES=window.KANJI_LEVEL_FILES||[],loadedLv=new Set();
-/** File name for level l if one is listed in levels.js, else undefined. */
-const levelFile=l=>LEVEL_FILES.find(f=>f==='data-'+l+'.js');
-/** Merge a registered level into DATA/SETS/search (idempotent). */
-function mergeLevel(l){const X=(window.KANJI_LEVELS||{})[l];if(!X||loadedLv.has(l))return;loadedLv.add(l);Object.assign(DATA.kanji,X.kanji||{});Object.assign(DATA.chars,X.chars||{});
- Object.assign(window.MEMORY_LINKS,X.links||{});Object.assign(window.COMPONENT_KW,X.componentKw||{});
- (X.level&&X.level.sets||[]).forEach((s,i)=>{SETS.push({...s,level:l,n:i+1});s.words.forEach(w=>{if(!ALLWORDS.some(x=>x.w===w.w))ALLWORDS.push(w)})})}
-/** Load level l's data file once (script tag, so it works from file:// and the SW cache). @returns Promise<boolean> */
-function ensureLevel(l){return new Promise(res=>{const f=levelFile(l);if(!f||loadedLv.has(l))return res(true);const sc=document.createElement('script');sc.src=f;
- sc.onload=()=>{mergeLevel(l);const lf=(window.KANJI_LINK_FILES||[]).find(f=>f==='links-'+l+'.js');if(!lf)return res(true);   // then its memory links (merge into links.js objects)
-  const ls=document.createElement('script');ls.src=lf;ls.onload=ls.onerror=()=>res(true);document.head.appendChild(ls)};sc.onerror=()=>res(false);document.head.appendChild(sc)})}
-/** Switch the picker to level l (loading its data first when needed). */
-function setLv(l){localStorage.setItem('lv',l);ensureLevel(l).then(()=>renderPicker())}
+/* ==================== LAZY LEVEL DATA — N4–N1 files listed in levels.js (format: kanji-data/SCHEMA.md) ==================== */
+
+/** Data files that may be loaded on demand, from levels.js. */
+const LEVEL_FILES = window.KANJI_LEVEL_FILES || [];
+
+/** Levels whose data has already been merged. */
+const loadedLv = new Set();
+
+/**
+ * File name for level `level` if levels.js lists one.
+ * @param {string} level e.g. 'N4'
+ * @returns {string|undefined}
+ */
+const levelFile = (level) => LEVEL_FILES.find((file) => file === `data-${level}.js`);
+
+/**
+ * Merge a registered level (window.KANJI_LEVELS[level]) into DATA, SETS and the search list. Safe to call twice.
+ * @param {string} level
+ */
+function mergeLevel(level) {
+  const registered = (window.KANJI_LEVELS || {})[level];
+  if (!registered || loadedLv.has(level)) {
+    return;
+  }
+  loadedLv.add(level);
+  Object.assign(DATA.kanji, registered.kanji || {});
+  Object.assign(DATA.chars, registered.chars || {});
+  Object.assign(window.MEMORY_LINKS, registered.links || {});
+  Object.assign(window.COMPONENT_KW, registered.componentKw || {});
+  const sets = (registered.level && registered.level.sets) || [];
+  sets.forEach((set, index) => {
+    SETS.push({ ...set, level, n: index + 1 });
+    set.words.forEach((word) => {
+      if (!ALLWORDS.some((known) => known.w === word.w)) {
+        ALLWORDS.push(word);
+      }
+    });
+  });
+}
+
+/**
+ * Load one script by URL (a script tag works from file:// and from the service-worker cache).
+ * @param {string} url
+ * @returns {Promise<boolean>} true when it loaded
+ */
+function loadScript(url) {
+  return new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.src = url;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.head.appendChild(script);
+  });
+}
+
+/**
+ * Load level `level` once: its data file, then its memory-link file (links-<level>.js) if levels.js lists one.
+ * @param {string} level
+ * @returns {Promise<boolean>} false only when the data file failed to load
+ */
+async function ensureLevel(level) {
+  const file = levelFile(level);
+  if (!file || loadedLv.has(level)) {
+    return true;
+  }
+  const loaded = await loadScript(file);
+  if (!loaded) {
+    return false;
+  }
+  mergeLevel(level);
+  const linkFile = (window.KANJI_LINK_FILES || []).find((name) => name === `links-${level}.js`);
+  if (linkFile) {
+    await loadScript(linkFile);   // merges into the links.js objects; a missing file is harmless
+  }
+  return true;
+}
+
+/**
+ * Switch the picker to level `level`, loading its data first when needed.
+ * @param {string} level
+ */
+async function setLv(level) {
+  localStorage.setItem('lv', level);
+  await ensureLevel(level);
+  renderPicker();
+}
 /** Picker popover: sticky level tabs → lessons (accordion) → word chips. */
 function renderPicker(){if(!curSet)return;const ki=steps[cur]?steps[cur].ki:-1;
  const LV=pickLv(),bar=`<div class="lvbar">${LEVELS.filter(l=>SETS.some(s=>s.level===l)||levelFile(l)).map(l=>`<button class="${l===LV&&!searching?'on':''}" onclick="searching=false;setLv('${l}')">${l}</button>`).join('')}${(n=>n?`<button class="revb" onclick="openReview()" aria-label="Review due"><span>復習</span><b>${n}</b></button>`:'')(dueWords().length)}<button class="srchb ${searching?'on':''}" onclick="openSearch()" aria-label="Search">${I_SRCH}</button></div>`;
