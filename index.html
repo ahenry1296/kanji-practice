@@ -30,7 +30,7 @@ body{display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-
 .knav{display:flex;gap:10px}.knav.r{justify-content:flex-end}
 .reading{text-align:center}
 .kun{font-size:38px;letter-spacing:.08em;line-height:1.15;font-weight:500;color:var(--ink)}
-.kun .ok{color:#a29d90;font-size:.68em}
+.kun .ok{color:#1a1a1a;font-size:1em} /* okurigana full size, in (…) so つ never reads as っ */
 .kun .sep{color:#cfc8b8;margin:0 .4em;font-size:.6em;vertical-align:.25em}
 .on{font-size:16px;color:var(--muted);letter-spacing:.14em;margin-top:3px}
 .on b{font-weight:600;font-size:10px;color:#a29d90;margin-right:8px;letter-spacing:.1em;border:1px solid #ddd5c3;border-radius:5px;padding:1px 5px;vertical-align:2px}
@@ -83,7 +83,7 @@ body{display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-
 .controls{display:flex;align-items:center;justify-content:center;gap:24px}
 .prog{display:flex;flex-direction:column;align-items:center;gap:6px;width:280px}
 .segs{display:flex;gap:4px;align-items:center;max-width:100%}
-.seg{height:6px;flex:0 1 34px;min-width:3px;border-radius:3px;background:rgba(79,97,64,.12);transition:background .4s,width .4s}
+.seg{height:10px;flex:0 1 34px;min-width:3px;border-radius:3px;background:rgba(79,97,64,.12);transition:background .4s,width .4s}
 .seg.sm{flex-basis:16px}
 .seg.done{background:rgba(79,97,64,.45)}.seg.now{background:var(--indigo);box-shadow:0 0 0 3px rgba(74,90,168,.15)}
 .lvname{font-size:13px;font-weight:600;color:var(--indigo);letter-spacing:.03em}
@@ -130,9 +130,9 @@ body{display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-
 .ptext{min-width:0!important}
 .pname{font-size:26px}.pkw{font-size:28px}
 .panel{position:relative}
-.ib.info{position:absolute;right:14px;top:14px;width:34px;height:34px;box-shadow:none;background:transparent;color:#b5ad9c}
+.ib.info{position:absolute;right:8px;top:8px;width:44px;height:44px;box-shadow:none;background:transparent;color:#b5ad9c}
 .ib.info svg{width:20px;height:20px}
-.tspk{position:absolute;right:-48px;top:50%;transform:translateY(-50%);width:38px;height:38px;color:var(--matcha,#5d7148);pointer-events:auto}
+.tspk{position:absolute;right:-52px;top:50%;transform:translateY(-50%);width:44px;height:44px;color:var(--matcha,#5d7148);pointer-events:auto}
 .reading{position:relative}
 .ipop{position:absolute;right:14px;top:52px;width:min(520px,80vw);background:#fff;border-radius:16px;padding:12px 16px;box-shadow:0 14px 40px rgba(40,30,10,.18);font-size:13px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:.25s;z-index:5}
 .ipop.show{opacity:1;pointer-events:auto;transform:none}
@@ -145,9 +145,9 @@ body{display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-
 .box .cx{stroke:rgba(150,170,120,.75);stroke-width:.9;stroke-dasharray:2.2 2}.box .cl{stroke:var(--blue);stroke-width:1.3}
 .klist{display:block;width:330px;max-height:72vh;overflow:auto;padding:10px}
 .klist{padding-top:0}
-.klist .lvbar{position:sticky;top:0;z-index:2;display:flex;gap:4px;padding:10px 4px 8px;margin:0 -4px 4px;background:#fff;box-shadow:0 6px 8px -6px rgba(60,50,30,.12)}
-.klist .lvbar button{flex:1;padding:0;line-height:30px;height:30px;border:none;border-radius:15px;background:#f3f1e6;font:600 12px var(--ui);letter-spacing:.06em;color:var(--muted);cursor:pointer;transition:background .25s,color .25s}
-.klist .lvbar button.on{border-radius:15px;height:30px;font:600 12px var(--ui);background:var(--matcha);color:var(--matcha-deep);box-shadow:inset 0 0 0 1.5px rgba(93,113,72,.25)}
+.klist .lvbar{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;gap:4px;padding:10px 4px 8px;margin:0 -4px 4px;background:#fff;box-shadow:0 6px 8px -6px rgba(60,50,30,.12)}
+.klist .lvbar button{flex:1 0 44px;min-width:44px;padding:0;line-height:44px;height:44px;border:none;border-radius:15px;background:#f3f1e6;font:600 12px var(--ui);letter-spacing:.06em;color:var(--muted);cursor:pointer;transition:background .25s,color .25s}
+.klist .lvbar button.on{border-radius:15px;height:44px;font:600 12px var(--ui);background:var(--matcha);color:var(--matcha-deep);box-shadow:inset 0 0 0 1.5px rgba(93,113,72,.25)}
 .klist .soon{text-align:center;color:#b5ad9c;font-size:13px;padding:34px 0 30px;letter-spacing:.04em}
 .klist .setb{display:grid;grid-template-columns:26px 1fr auto;grid-template-rows:auto auto;align-items:center;column-gap:10px;width:100%;height:auto;border:none;background:none;border-radius:12px;padding:7px 8px;text-align:left;cursor:pointer;font-family:var(--ui)}
 .klist button.setb:hover{background:#f7f2e8}.klist button.setb.sel{background:#eef3e6;color:var(--ink)}
@@ -157,7 +157,7 @@ body{display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-
 .klist .sdrop>div{overflow:hidden}.klist .setw.open .sdrop{grid-template-rows:1fr;opacity:1}
 .klist .kchips{display:flex;flex-wrap:wrap;gap:6px;padding:4px 8px 10px 44px}
 .klist .chev{width:14px;height:14px;margin-left:6px;vertical-align:-2px;color:#b5ad9c;transition:transform .3s}.klist .setw.open .chev{transform:rotate(180deg)}
-.klist .kchips button{min-width:40px;height:38px;padding:0 9px;font-size:19px}.klist .sk i{font-style:normal;color:#cfc8b8;margin:0 1px}
+.klist .kchips button{min-width:48px;height:48px;padding:0 9px;font-size:19px}.klist .sk i{font-style:normal;color:#cfc8b8;margin:0 1px}
 .klist.show{opacity:1;pointer-events:auto;transform:none}
 .klist button{height:52px;border:none;border-radius:12px;background:#f7f2e7;font:26px var(--mincho);cursor:pointer;color:var(--ink)}
 .klist button.on{background:var(--indigo);color:#fff}
@@ -222,7 +222,9 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
 .tier.diamond{background:linear-gradient(110deg,#eef6ff 0%,#dcecff 35%,#ffffff 50%,#e4f0ff 65%,#f3e9ff 100%)!important;background-size:250% 100%!important;animation:shimmer 3.2s linear infinite}
 @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-150% 0}}
 .klist .setb b.tier{border-radius:8px}
-.srchb{flex:none!important;width:30px;display:inline-flex;align-items:center;justify-content:center}.srchb svg{width:15px;height:15px}
+.mlink{margin-top:8px;font:500 14px var(--ui);color:#1a1a1a;text-align:center;opacity:.85}
+.klist .lvbar .revb{flex:none;padding:0 10px;display:inline-flex;gap:5px;align-items:center;background:#fdf0f2;color:#1a1a1a;min-width:64px}.revb b{font-size:11px;background:#c7798a;color:#fff;border-radius:9px;padding:0 6px;line-height:17px}
+.srchb{flex:none!important;width:44px;display:inline-flex;align-items:center;justify-content:center}.srchb svg{width:15px;height:15px}
 .sbox{padding:4px 6px 8px}.sbox input{width:100%;box-sizing:border-box;height:38px;border-radius:19px;border:1.5px solid rgba(111,138,82,.3);padding:0 14px;font:15px var(--ui);background:#fbfaf4;outline:none;color:var(--ink)}
 .sbox input:focus{border-color:rgba(111,138,82,.6)}
 .srow{display:flex;flex-wrap:wrap;gap:6px;padding:6px 6px;border-bottom:1px solid #f0ece0}
@@ -246,8 +248,9 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
 .rtag small{font-size:11px}
 /* Narrow iPads (≤800px wide, e.g. 768×1024): long kun readings (大 おお・おお.きい…) pushed the 音/訓 tag onto the
    back button; scale the reading line down a little there. */
-@media (max-width:800px){.kun{font-size:34px}.reading .sep{margin:0 2px}}
-</style></head><body>
+@media (max-width:900px){.kun{font-size:34px}.reading .sep{margin:0 2px}}
+.ib.nb:disabled{opacity:.3;pointer-events:none} /* first/last word: prev/next stop instead of wrapping */
+</style><link rel="icon" href="icons/icon-192.png"></head><body>
 <div class="top">
  <div class="knav l"><button class="ib nb" id="prev" aria-label="Previous word"><span class="peek" id="peekp"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="ib" id="kchip" aria-label="Kanji list" onclick="searching=false;renderPicker();document.getElementById('klist').classList.toggle('show')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></button><div class="klist" id="klist"></div></div>
  <div class="reading"><span class="rtag" id="rtag"></span><div class="kun" id="kun"></div><div class="on" id="on"></div><button class="ib tspk" id="tspk" aria-label="Play word"></button></div>
@@ -260,6 +263,9 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
 <div class="seal" id="seal"></div>
 
 <script src="data.js"></script>
+<script src="links.js"></script>
+<script src="kana.js"></script>
+<script src="levels.js"></script>
 <script>
 /* ============================================================================================
    漢字練習 — Kanji Practice (single-page app, no build step)
@@ -315,7 +321,8 @@ const CONFIG={
  INK:'#1a1a1a',          // accepted ink (dark sumi black, user request); rejected ink is red and fades
  WORD_BREAK_MS:400,LABEL_FADE_MS:260,   // pause between words before the sheet drops to the next word's row
  SPEAK_WORD:true,SPEAK_RATE:0.85,SPEAK_PITCH:1,DUCK_AUDIO:true,   // read the word aloud (ja-JP; Siri > O-ren > Kyoko > any ja)
- SCHEDULE_DAYS:[1,3,7,14,30],FLASH_MS:250,SLIDE_DELAY_MS:550,SLIDE_MS:340,
+ SCHEDULE_DAYS:[1,3,7,14,30],REVIEW_MAX:12,   // review queue size (short sessions)
+ FLASH_MS:250,SLIDE_DELAY_MS:550,SLIDE_MS:340,
  MASTERY:['bronze','silver','gold','diamond'],   // word chip tint by full practices completed: 1,2,3,4+
  COMBINE:{MS:1500}};   // parts → kanji animation after the part boxes; tap to skip
 const FLASH_MS=CONFIG.FLASH_MS;
@@ -331,7 +338,7 @@ const recGet=k=>{try{const r=JSON.parse(localStorage.getItem('rec:'+k));return r
 function recFinish(k,sessClean,sessHints){const r=recGet(k)||{cleanRecalls:0,hintsUsed:0,lastPracticed:null,nextReview:null,intervalDays:0};
  const S=CONFIG.SCHEDULE_DAYS,wasReview=!!r.lastPracticed;let iv;
  if(wasReview&&sessHints>0)iv=S[0];else{const i=S.indexOf(r.intervalDays);iv=r.intervalDays?S[Math.min(i+1,S.length-1)]:S[0]}
- const now=new Date();r.cleanRecalls=(Number(r.cleanRecalls)||0)+sessClean;r.done=(Number(r.done)||0)+1;r.hintsUsed=(Number(r.hintsUsed)||0)+sessHints;r.lastPracticed=now.toISOString();r.intervalDays=iv;r.nextReview=new Date(now.getTime()+iv*864e5).toISOString();
+ const now=new Date();r.cleanRecalls=(Number(r.cleanRecalls)||0)+sessClean;r.done=(Number(r.done)||0)+1;r.hintsUsed=(Number(r.hintsUsed)||0)+sessHints;r.streak=sessHints>0?0:(Number(r.streak)||0)+1;r.lastPracticed=now.toISOString();r.intervalDays=iv;r.nextReview=new Date(now.getTime()+iv*864e5).toISOString();
  localStorage.setItem('rec:'+k,JSON.stringify(r));return r}
 /** Mastery tier of a word = number of full practices (rec.done): '' | bronze | silver | gold | diamond. */
 function tier(w){const n=Number((recGet('w:'+w)||{}).done)||0;return n?CONFIG.MASTERY[Math.min(n,4)-1]:''}
@@ -353,7 +360,8 @@ const BB={};function bbox(k,pi){const key=k.k+pi;if(BB[key])return BB[key];const
 function partSVG(k,pi,col='#222'){const b=bbox(k,pi),m=Math.max(b.w,b.h)/2+6,cx=b.x+b.w/2,cy=b.y+b.h/2;const p=k.parts[pi];
  let h=`<svg viewBox="${cx-m} ${cy-m} ${2*m} ${2*m}">`;for(let i=p.from;i<=p.to;i++)h+=`<path d="${k.paths[i]}" fill="none" stroke="${col}" stroke-width="${Math.max(3,m/9)}" stroke-linecap="round" stroke-linejoin="round"/>`;return h+'</svg>'}
 /** Display keyword of a part. */
-function kw(p){return p.kw||(p.word?'':'—')}
+/** Stable component keyword: Jisho/KANJIDIC2 radical meaning, else the app-authored COMPONENT_KW (links.js). */
+function kw(p){return p.kw||(window.COMPONENT_KW||{})[p.g]||''}   // no keyword known → show nothing (no placeholder)
 
 /* ==================== STROKE CHECKING ==================== */
 /* Learning unit = PART (component from KanjiVG groups, see data.js k.parts). Strokes are how a part is written.
@@ -467,6 +475,8 @@ function equation(k,curPi,mode='full',anim={}){const N=k.parts.length;
   else if(i===curPi){cls='now'+(anim.rev===i?' rev':'');inner=mode==='full'?`${partSVG(k,i)}<span>${esc(kw(p))}</span>`:mode==='kw'?`<div class="q">?</div><span>${esc(kw(p))}</span>`:`<div class="q">?</div><span class="blank"></span>`}
   else{cls='empty';inner='<i class="slot"></i><span class="blank"></span>'}
   return `${i?'<span class="op">+</span>':''}<div class="p ${cls}">${inner}</div>`}).join('')+`<span class="op">→</span><div class="res ${curPi>=N?(anim.res?'rev':''):'hidden'}">${k.k}<b>${esc(k.keyword)}</b></div></div>`}
+/** App-authored memory link for kanji k (links.js), or '' (single-part kanji have none). */
+const memLink=k=>k&&!k.isWord&&(window.MEMORY_LINKS||{})[k.k]||'';
 /** Katakana → hiragana. */
 const hira=t=>String(t||'').replace(/[\u30a1-\u30f6]/g,c=>String.fromCharCode(c.charCodeAt(0)-96));
 const VOICED={か:'が',き:'ぎ',く:'ぐ',け:'げ',こ:'ご',さ:'ざ',し:'じ',す:'ず',せ:'ぜ',そ:'ぞ',た:'だ',ち:'ぢ',つ:'づ',て:'で',と:'ど',は:'ば',ひ:'び',ふ:'ぶ',へ:'べ',ほ:'ぼ',};
@@ -485,7 +495,7 @@ function readingTag(word,reading){const R=hira(reading),W=[...word],memo={};
  if(T.every(t=>t==='on'))return ['音','on'];if(T.every(t=>t==='kun'))return ['訓','kun'];
  if(T.length===2)return T[0]==='on'?['重箱','jūbako']:['湯桶','yutō'];return null}
 /** Format a KANJIDIC2 kun reading "a.bc" with the okurigana in a lighter span. */
-function okuri(r){r=r.replace(/^-|-$/g,'');const [a,b]=r.split('.');return b?a+'<span class="ok">'+b+'</span>':a}
+function okuri(r){r=r.replace(/^-|-$/g,'');const [a,b]=r.split('.');return b?a+'<span class="ok">('+b+')</span>':a}
 /** Hint rungs for a level. */
 function ladder(k,s){if(s.t==='W')return ['char','outline'];return ['kw','name','outline']}
 /** Bottom card: hint button (L2/L3/word) + equation; info popover. Part labels live on the box (labels()). */
@@ -506,6 +516,9 @@ function renderPanel(){const c=boxes[cur],k=c.k,st=c.s;let main;const anim=c.ani
    `;glyph=`<button class="pglyph mem hintb" onclick="useHint()" aria-label="${h<L.length?lab[L[h]]:'Show outline again'}">${I_BULB}</button>`}
   if(!k.isWord){text='';if(isStep(st))glyph=''} // part name/keyword now float on the writing box (see labels())
   main=`<div class="pmain">${glyph}${text.trim()?'<div class="ptext">'+text+'</div>':''}${glyph?'<div class="pdiv"></div>':''}<div class="pside">${equation(k,pi,mode,anim)}</div></div>`}
+ // memory link (components → meaning) while the kanji is shown or traced; hidden in freehand/recall boxes so recall stays real
+ if(!k.isWord&&!k.isPart&&!isMem(st)&&memLink(k))main+=`<div class="mlink">${esc(memLink(k))}</div>`;
+ if(k.isPart&&pi>=N&&k.pi===k.src.parts.length-1&&memLink(k.src))main+=`<div class="mlink">${esc(memLink(k.src))}</div>`;
  $('panel').innerHTML=main+facts;}
 /** Top line (reading + meaning, always visible), progress segments, L3 pips, picker and peek pills. */
 function setInfo(){const bk=boxes[cur]&&boxes[cur].k,k=bk&&(bk.src||bk);if(!k)return;let tg=null;
@@ -590,10 +603,21 @@ function useHint(){const c=boxes[cur];if(isStep(c.s))return;const pi=partOf(c.k,
 function makeSteps(opts={}){steps.length=0;const drilled=new Set(),F=CONFIG.FLOW;
  D.forEach((it,ki)=>{const w=it.w,ks=[...w.w].filter(c=>DATA.kanji[c]);let fresh=false;const mine=new Set();
   ks.forEach(c=>{const want=ki===opts.freshKi&&!mine.has(c);if(!want&&(drilled.has(c)||(!opts.force&&!isDue(c))))return;drilled.add(c);mine.add(c);fresh=true;drilled.add(c);fresh=true;const K=DATA.kanji[c];
-   if(F.PARTS&&!(F.SKIP_SINGLE_PART&&K.parts.length<2))K.parts.forEach((p,pi)=>steps.push({ki,kc:c,t:'P',pi,g:'step'}));
+   const lvl=want||opts.force?0:fadeLevel(c);
+   if(lvl>=2){steps.push({ki,kc:c,t:'K',si:F.STAGES.length-1,g:'free',parts:false,lines:false,recall:true});return} // recall-first: write from meaning/reading
+   if(lvl===1){steps.push({ki,kc:c,t:'K',si:F.STAGES.length-1,g:'free',parts:false,lines:false,recall:true});steps.push({ki,kc:c,t:'K',si:2,g:'trace',parts:true,lines:true});steps.push({ki,kc:c,t:'K',si:5,g:'free',parts:false,lines:false});return}
+   if(F.PARTS&&!(F.SKIP_SINGLE_PART&&K.parts.length<2))K.parts.forEach((p,pi)=>{if(!partKnown(p.g))steps.push({ki,kc:c,t:'P',pi,g:'step'})});
    F.STAGES.forEach((st,si)=>steps.push({ki,kc:c,t:'K',si,g:st.g,parts:!!st.parts,lines:st.lines!==false}))});
+  if(!ks.length&&opts.kana){['step','trace','free'].forEach((g,r)=>steps.push({ki,w,t:'W',rep:r,g,lines:true}));return} // kana: stroke by stroke → trace → from memory
   if(opts.kanjiOnly||(CONFIG.WORD.SKIP_BARE_KANJI&&fresh&&w.w.length===1))return;
   const n=CONFIG.WORD.REPS==='chars'?[...w.w].length:CONFIG.WORD.REPS;for(let r=0;r<n;r++)steps.push({ki,w,t:'W',rep:r,g:'trace'})})}
+/** Scaffold fading level for kanji c from its record: 0 = full flow (new, or last practice needed hints),
+ *  1 = short review (recall box first, then one trace with part boxes + one freehand), 2 = recall box only
+ *  (2+ clean completions in a row). Evidence: retrieval practice + fading worked examples (RESEARCH.md). */
+function fadeLevel(c){const r=recGet(c);if(!r||!r.lastPracticed)return 0;const st=Number(r.streak)||0;return st>=2?2:st>=1?1:0}
+/** A component counts as known once any learned kanji containing it (or the component itself) was finished cleanly:
+ *  its part-alone boxes are then skipped (it still shows, keyword included, in the part boxes and equation). */
+function partKnown(g){if(CONFIG.FLOW.REVIEW_PARTS===false)return false;return Object.values(DATA.kanji).some(K=>(Number((recGet(K.k)||{}).streak)||0)>=1&&(K.k===g||K.parts.some(p=>p.g===g)))}
 /** Jump to the first step of word i in the current lesson. */
 function pickK(i){$('klist').classList.remove('show');restartAt(i)}
 /** Create one writing box (guide SVG + canvas Pad) for step s. */
@@ -760,24 +784,52 @@ e.preventDefault();try{this.cv.setPointerCapture(e.pointerId)}catch(_){}this.cur
 /* undo/clear ignore a finished box (e.g. the last box after the lesson-end seal): clearing it used to leave it locked & empty */
 $('undo').onclick=()=>{const p=boxes[cur].pad;if(flashing||sliding||boxes[cur].allDone)return;p.strokes.length?(p.undo(),upd()):0};
 $('clear').onclick=()=>{if(flashing||sliding||boxes[cur].allDone)return;boxes[cur].pad.clear();boxes[cur].allDone=false;upd()};
-$('prev').onclick=()=>restartAt((steps[cur].ki+D.length-1)%D.length);
-$('next').onclick=()=>restartAt((steps[cur].ki+1)%D.length);
+$('prev').onclick=()=>{const ki=steps[cur].ki;if(ki>0)restartAt(ki-1)};   // stops at the ends (button greys out), no silent wrap
+$('next').onclick=()=>{const ki=steps[cur].ki;if(ki<D.length-1)restartAt(ki+1)};
 let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(layout,150)});
 document.addEventListener('gesturestart',e=>e.preventDefault());
 
 /* ==================== SET PICKER — levels → lessons → words ==================== */
 /** Flattened list of lessons from DATA.levels (N5 now; add N4..N1 levels in data.js). */
-const SETS=DATA.levels.flatMap(L=>L.sets.map((s,i)=>({...s,level:L.id,n:i+1})));let curSet=null;
+const SETS=DATA.levels.flatMap(L=>L.sets.map((s,i)=>({...s,level:L.id,n:i+1})));
+/* ---- かな: hiragana (あ) and katakana (ア) rows from kana.js (KanjiVG strokes); merged into DATA.chars ---- */
+if(window.KANA){Object.assign(DATA.chars,KANA.chars);KANA.sets.forEach((s,i)=>SETS.push({...s,n:SETS.filter(x=>x.level===s.level).length+1}))}
+/* ---- 部首 (components-first) path: every kanji ordered so that kanji used as components come before kanji built from them ---- */
+/** Order all kanji: repeatedly take the fewest-stroke kanji whose kanji-components are already placed. @returns kanji chars */
+function componentOrder(){const all=Object.values(DATA.kanji).sort((a,b)=>a.strokes-b.strokes||a.k.localeCompare(b.k)),done=new Set(),out=[];
+ while(out.length<all.length){const ready=all.filter(K=>!done.has(K.k)&&K.parts.every(p=>p.g===K.k||!DATA.kanji[p.g]||done.has(p.g)));
+  const K=ready[0]||all.find(x=>!done.has(x.k));done.add(K.k);out.push(K.k)}return out}
+const RAD_N=5;componentOrder().forEach((c,i)=>{const n=Math.floor(i/RAD_N);if(i%RAD_N===0)SETS.push({id:'R-'+(n+1),title:'Building blocks '+(n+1),level:'部首',n:n+1,words:[]});
+ const K=DATA.kanji[c];SETS[SETS.length-1].words.push({w:c,r:hira((K.kun[0]||K.on[0]||'').split('.')[0].replace(/-/g,'')),m:K.keyword})});
+/* ---- 復習 review queue: every learned word or kanji whose spaced-review date has passed, interleaved across lessons ---- */
+/** Due items, most overdue first, max CONFIG.REVIEW_MAX, then shuffled so lessons interleave. @returns word objects */
+function dueWords(){const now=Date.now(),seen=new Map();SETS.forEach(S=>S.words.forEach(w=>{if(seen.has(w.w))return;const r=recGet('w:'+w.w)||(w.w.length===1?recGet(w.w):null);
+  const t=r&&Date.parse(r.nextReview);if(r&&r.lastPracticed&&t<=now)seen.set(w.w,{w,t})}));
+ const L=[...seen.values()].sort((a,b)=>a.t-b.t).slice(0,CONFIG.REVIEW_MAX).map(x=>x.w);for(let i=L.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[L[i],L[j]]=[L[j],L[i]]}return L}
+/** Open the review queue as a one-off lesson (recall-first: due kanji get their faded steps). */
+function openReview(){const W=dueWords();if(!W.length)return;loadLesson({id:'review',title:'復習',words:W,level:pickLv(),custom:true},{review:true})}let curSet=null;
 /** Lesson badge tier = lowest mastery tier among its words ('' if any word was never completed). */
 function setTier(s){const T=s.words.map(w=>tier(w.w)),M=CONFIG.MASTERY;return T.some(t=>!t)?'':M[Math.min(...T.map(t=>M.indexOf(t)))]}
 /** Picker state: expanded lessons and the level tabs. */
-const openSets=new Set(),LEVELS=['N5','N4','N3','N2','N1'];
+const openSets=new Set(),LEVELS=['あ','ア','部首','N5','N4','N3','N2','N1'];
 /** Level tab currently shown in the picker (remembered in localStorage "lv"). */
-const pickLv=()=>{const l=localStorage.getItem('lv');return LEVELS.includes(l)?l:(curSet&&LEVELS.includes(curSet.level)?curSet.level:'N5')}; // unknown stored value → default
-function setLv(l){localStorage.setItem('lv',l);renderPicker()}
+const pickLv=()=>{const l=localStorage.getItem('lv');return LEVELS.includes(l)&&(SETS.some(s=>s.level===l)||levelFile(l))?l:(curSet&&LEVELS.includes(curSet.level)?curSet.level:'N5')}; // unknown stored value → default
+/* ---- lazy per-level data (N4–N1): levels.js lists files; each registers window.KANJI_LEVELS[<lv>] (SCHEMA.md) ---- */
+const LEVEL_FILES=window.KANJI_LEVEL_FILES||[],loadedLv=new Set();
+/** File name for level l if one is listed in levels.js, else undefined. */
+const levelFile=l=>LEVEL_FILES.find(f=>f==='data-'+l+'.js');
+/** Merge a registered level into DATA/SETS/search (idempotent). */
+function mergeLevel(l){const X=(window.KANJI_LEVELS||{})[l];if(!X||loadedLv.has(l))return;loadedLv.add(l);Object.assign(DATA.kanji,X.kanji||{});Object.assign(DATA.chars,X.chars||{});
+ Object.assign(window.MEMORY_LINKS,X.links||{});Object.assign(window.COMPONENT_KW,X.componentKw||{});
+ (X.level&&X.level.sets||[]).forEach((s,i)=>{SETS.push({...s,level:l,n:i+1});s.words.forEach(w=>{if(!ALLWORDS.some(x=>x.w===w.w))ALLWORDS.push(w)})})}
+/** Load level l's data file once (script tag, so it works from file:// and the SW cache). @returns Promise<boolean> */
+function ensureLevel(l){return new Promise(res=>{const f=levelFile(l);if(!f||loadedLv.has(l))return res(true);const sc=document.createElement('script');sc.src=f;
+ sc.onload=()=>{mergeLevel(l);res(true)};sc.onerror=()=>res(false);document.head.appendChild(sc)})}
+/** Switch the picker to level l (loading its data first when needed). */
+function setLv(l){localStorage.setItem('lv',l);ensureLevel(l).then(()=>renderPicker())}
 /** Picker popover: sticky level tabs → lessons (accordion) → word chips. */
 function renderPicker(){if(!curSet)return;const ki=steps[cur]?steps[cur].ki:-1;
- const LV=pickLv(),bar=`<div class="lvbar">${LEVELS.map(l=>`<button class="${l===LV&&!searching?'on':''}" onclick="searching=false;setLv('${l}')">${l}</button>`).join('')}<button class="srchb ${searching?'on':''}" onclick="openSearch()" aria-label="Search">${I_SRCH}</button></div>`;
+ const LV=pickLv(),bar=`<div class="lvbar">${LEVELS.filter(l=>SETS.some(s=>s.level===l)||levelFile(l)).map(l=>`<button class="${l===LV&&!searching?'on':''}" onclick="searching=false;setLv('${l}')">${l}</button>`).join('')}${(n=>n?`<button class="revb" onclick="openReview()" aria-label="Review due"><span>復習</span><b>${n}</b></button>`:'')(dueWords().length)}<button class="srchb ${searching?'on':''}" onclick="openSearch()" aria-label="Search">${I_SRCH}</button></div>`;
  if(searching){$('klist').innerHTML=bar+`<div class="sbox"><input id="sq" type="search" placeholder="漢字 · かな · English" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(sQuery)}" oninput="sQuery=this.value;renderResults()"></div><div id="sres"></div>`;renderResults();return}
  $('klist').innerHTML=bar+(SETS.some(s=>s.level===LV)?'':`<div class="soon">${LV} lessons coming soon</div>`)+SETS.filter(s=>s.level===LV).map(s=>`<div class="setw ${openSets.has(s.id)?'open':''}" data-id="${s.id}"><button class="setb ${s.id===curSet.id?'sel':''}" onclick="toggleSet('${s.id}')"><b class="tier ${setTier(s)}">${s.n}</b><span class="st">${esc(s.title)}</span><span class="sk">${s.words.map(w=>esc(w.w)).join('<i>・</i>')}</span><span class="sd"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button>
   <div class="sdrop"><div><div class="kchips">${s.words.map((w,wi)=>`<button class="jp tier ${tier(w.w)} ${s.id===curSet.id&&wi===ki?'sel':''}" onclick="pickWord('${s.id}',${wi})"><span>${esc(w.w)}</span><small>${esc(w.m.split(';')[0])}</small></button>`).join('')}</div></div></div></div>`).join('')}
@@ -805,7 +857,12 @@ function toggleSet(id){const el=$('klist').querySelector(`.setw[data-id="${id}"]
 function pickWord(id,wi){$('klist').classList.remove('show');if(!curSet||curSet.id!==id)loadSet(id,wi);else restartAt(wi)}
 /** Prev/next hover pill content: the neighbouring word with reading + meaning. */
 function peekHTML(it){if(!it)return '';const w=it.w;return `<b>${esc(w.w)}</b><small>${esc(w.r)}<em>${esc(w.m.split(';')[0])}</em></small>`}
-function renderPeek(){const ki=steps[cur]?steps[cur].ki:0,n=D.length;$('peekp').innerHTML=peekHTML(D[(ki+n-1)%n]);$('peekn').innerHTML=peekHTML(D[(ki+1)%n])}
+function renderPeek(){const ki=steps[cur]?steps[cur].ki:0,n=D.length;$('peekp').innerHTML=peekHTML(D[ki-1]);$('peekn').innerHTML=peekHTML(D[ki+1]);$('prev').disabled=ki<=0;$('next').disabled=ki>=n-1}
+/** Picker closes on Escape, on a tap outside it, and on rotation/resize. */
+const closePicker=()=>$('klist').classList.remove('show');
+addEventListener('keydown',e=>{if(e.key==='Escape')closePicker()});addEventListener('orientationchange',closePicker);
+let lastW=innerWidth;addEventListener('resize',()=>{if(innerWidth!==lastW){lastW=innerWidth;closePicker()}});
+document.addEventListener('pointerdown',e=>{const k=$('klist');if(k.classList.contains('show')&&!k.contains(e.target)&&!e.target.closest('#kchip'))closePicker()},true);
 /* hover (mouse or Apple Pencil hover) expands the prev/next pill; touch has no hover → plain tap */
 ['prev','next'].forEach(id=>{const b=$(id);b.addEventListener('pointerenter',e=>{if(e.pointerType!=='touch')b.classList.add('peeking')});
  b.addEventListener('pointerleave',()=>b.classList.remove('peeking'));b.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')b.classList.remove('peeking')})});
@@ -816,15 +873,15 @@ function resetLesson(){gen++;sliding=flashing=false;try{speechSynthesis.cancel()
  boxes.forEach(x=>{x.pad.locked=true;x.pad.strokes=[];x.pad.cur=null;x.pad.fade=null});boxes=[];Object.keys(sess).forEach(x=>delete sess[x])}
 /** Start lesson object L (a SETS entry or a custom search lesson) fresh at word wi. opts → makeSteps (force, kanjiOnly). */
 function loadLesson(L,opts={},wi=0){resetLesson();curSet=L;lessonOpts=opts;if(!L.custom){openSets.clear();openSets.add(L.id);localStorage.setItem('set',L.id)}
- D=L.words.map(w=>({k:w.w,w}));makeSteps({...opts,freshKi:wi});cur=Math.max(0,steps.findIndex(x=>x.ki===wi));$('klist').classList.remove('show');searching=false;build();requestAnimationFrame(()=>layout())}
+ D=L.words.map(w=>({k:w.w,w}));makeSteps({...opts,freshKi:opts.review?-1:wi});cur=Math.max(0,steps.findIndex(x=>x.ki===wi));$('klist').classList.remove('show');searching=false;build();requestAnimationFrame(()=>layout())}
 let lessonOpts={};
 /** Re-enter word wi of the current lesson from scratch (prev/next/picker). */
 function restartAt(wi){loadLesson(curSet,lessonOpts,wi)}
 /** Load lesson id (optionally at word wi). */
-function loadSet(id,wi=0){loadLesson(SETS.find(s=>s.id===id)||SETS[0],{},wi)}
+function loadSet(id,wi=0){const L=SETS.find(s=>s.id===id)||SETS[0];loadLesson(L,{kana:!!L.kana},wi)}
 
 /* ==================== SERVICE WORKER + INIT ==================== */
-loadSet(localStorage.getItem('set')||SETS[0].id);
+{const id=localStorage.getItem('set')||SETS[0].id,lv=(id.match(/^(N[1-4])-/)||[])[1];if(lv&&levelFile(lv))ensureLevel(lv).then(()=>loadSet(id));else loadSet(id)} // saved lesson in a lazy level: load its file first
 $('tspk').innerHTML=I_SPK;$('tspk').addEventListener('click',e=>{e.stopPropagation();speak(curReading())}); // direct gesture → speak
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js'); // offline cache (see sw.js)
 </script></body></html>
