@@ -69,3 +69,21 @@ Re-running the steps with the pinned sources reproduces the current data.js byte
   - `tools/test_v13.py` (new features)
   - `tools/test_level_files.py` (per-level file validator)
 - Research behind the changes: `RESEARCH.md`.
+
+## v14
+- **Shape gate** (`CONFIG.CHECK.SHAPE`, `shapeGate()`): after the lenient position check, every stroke must also match the reference stroke on:
+  - path length within 0.5–2× (after the placement fit)
+  - start→end direction within ±30°
+  - end-hook angle within 80° (measured on raw points, so hooks are judged before smoothing)
+  - total turning within 120°
+  - bow within max(0.2×chord, 0.15 box)
+
+  Dots and short ticks (path length under 0.12 box) skip the gate.
+- **Veil:** every box except the current one is blurred (8px), faded and inert, so finished ink never hints the recall.
+- **Lesson-complete card:** 次へ (next lesson) / 繰り返す (repeat) / 復習 (when due).
+- **Lazy memory links:** links-N4.js and links-N3.js load with their level and are cached by the service worker.
+- **New tests:**
+  - `tools/test_v14.py`
+  - `tools/test_sw_upgrade.py` (old → new SW on one profile)
+  - `tools/test_all_lessons.py`
+  - `test_accuracy.py` now covers wrong-shape cases: curve+rotate, rotate 50°, another stroke's shape at the right place, and Alexander's 上 screenshot.
