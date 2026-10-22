@@ -87,3 +87,10 @@ Re-running the steps with the pinned sources reproduces the current data.js byte
   - `tools/test_sw_upgrade.py` (old → new SW on one profile)
   - `tools/test_all_lessons.py`
   - `test_accuracy.py` now covers wrong-shape cases: curve+rotate, rotate 50°, another stroke's shape at the right place, and Alexander's 上 screenshot.
+
+## v14.1
+- **Lenient position and size.** The first stroke is judged against itself (`firstStrokeFit`), and the placement fit may scale 0.4–1.3× and move up to 0.45 of the box. Small or off-centre writing passes; the strokes must still match each other.
+- **Look-alikes.** `proportionGate` checks stroke-length ratios against earlier strokes (within 1.6×). `ruleGate` applies kanji-data/proportion-rules-*.js (lengthRatio and angle rules), with double tolerance for カ/力, ト/卜 and 己/已.
+- **Kana memory links** (kana-links.js) show in kana lessons.
+- **Look-alike notes** (confusables.js) appear in the ⓘ info popover only, never as error feedback.
+- **Readability:** the lazy-level, review-queue, lesson-end and 部首-order sections were rewritten to the style rules, along with sw.js and levels.js.

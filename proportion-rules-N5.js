@@ -62,6 +62,20 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
     {"id": "曰-vs-日-1", "char": "曰", "rivals": ["日"], "metric": {"type": "position", "strokes": [3], "field": "ex"}, "comparator": ">", "threshold": 0.8582, "tolerance": 0.0709, "reference": 1.0, "rivalReference": 0.7164, "score": 2.36, "note": "曰: stroke 4 ends right of 0.86 of the square (unlike 日).", "displayOnly": true},
     {"id": "曰-vs-日-2", "char": "曰", "rivals": ["日"], "metric": {"type": "aspectRatio"}, "comparator": ">", "threshold": 0.8988, "tolerance": 0.0836, "reference": 1.0661, "rivalReference": 0.7315, "score": 2.07, "note": "曰: wider (width/height more than 0.90) than 日.", "displayOnly": true}
   ],
+  "白": [
+    {"id": "白-vs-自-1", "char": "白", "rivals": ["自"], "metric": {"type": "lengthRatio", "strokes": [0, 1]}, "comparator": ">", "threshold": 0.4367, "tolerance": 0.0685, "reference": 0.5737, "rivalReference": 0.2996, "score": 2.91, "note": "白: stroke 1 is more than 0.44× the length of stroke 2 (unlike 自)."},
+    {"id": "白-vs-自-2", "char": "白", "rivals": ["自"], "metric": {"type": "position", "strokes": [4], "field": "ey"}, "comparator": ">", "threshold": 0.7815, "tolerance": 0.0696, "reference": 0.9207, "rivalReference": 0.6424, "score": 2.32, "note": "白: stroke 5 ends below 0.78 of the square (unlike 自)."},
+    {"id": "白-vs-百-1", "char": "白", "rivals": ["百"], "metric": {"type": "lengthRatio", "strokes": [0, 1]}, "comparator": "<", "threshold": 2.0859, "tolerance": 0.7561, "reference": 0.5737, "rivalReference": 3.5982, "score": 8.23, "note": "白: stroke 1 is less than 2.09× the length of stroke 2 (unlike 百).", "phase": 2},
+    {"id": "白-vs-百-2", "char": "白", "rivals": ["百"], "metric": {"type": "position", "strokes": [0], "field": "ex"}, "comparator": "<", "threshold": 0.5451, "tolerance": 0.2061, "reference": 0.133, "rivalReference": 0.9572, "score": 6.87, "note": "白: stroke 1 ends left of 0.55 of the square (unlike 百).", "phase": 2}
+  ],
+  "母": [
+    {"id": "母-vs-毋-1", "char": "母", "rivals": ["毋"], "metric": {"type": "position", "strokes": [2], "field": "ey"}, "comparator": "<", "threshold": 0.5056, "tolerance": 0.1375, "reference": 0.2306, "rivalReference": 0.7807, "score": 4.58, "note": "母: stroke 3 ends above 0.51 of the square (unlike 毋)."},
+    {"id": "母-vs-毋-2", "char": "母", "rivals": ["毋"], "metric": {"type": "angle", "strokes": [2]}, "comparator": "<", "threshold": 71.5, "tolerance": 12.75, "reference": 46.0, "rivalReference": 97.0, "score": 2.04, "note": "母: stroke 3 points less than 72° (unlike 毋)."}
+  ],
+  "毋": [
+    {"id": "毋-vs-母-1", "char": "毋", "rivals": ["母"], "metric": {"type": "position", "strokes": [2], "field": "ey"}, "comparator": ">", "threshold": 0.5056, "tolerance": 0.1375, "reference": 0.7807, "rivalReference": 0.2306, "score": 4.58, "note": "毋: stroke 3 ends below 0.51 of the square (unlike 母).", "displayOnly": true},
+    {"id": "毋-vs-母-2", "char": "毋", "rivals": ["母"], "metric": {"type": "angle", "strokes": [2]}, "comparator": ">", "threshold": 71.5, "tolerance": 12.75, "reference": 97.0, "rivalReference": 46.0, "score": 2.04, "note": "毋: stroke 3 points more than 72° (unlike 母).", "displayOnly": true}
+  ],
   "話": [
     {"id": "話-vs-詰-1", "char": "話", "rivals": ["詰"], "metric": {"type": "angle", "strokes": [7]}, "comparator": ">", "threshold": 73.5, "tolerance": 38.25, "reference": 150.0, "rivalReference": -3.0, "score": 6.12, "note": "話: stroke 8 points more than 74° (unlike 詰).", "phase": 2},
     {"id": "話-vs-詰-2", "char": "話", "rivals": ["詰"], "metric": {"type": "position", "strokes": [7], "field": "ex"}, "comparator": "<", "threshold": 0.7283, "tolerance": 0.1359, "reference": 0.4565, "rivalReference": 1.0, "score": 4.53, "note": "話: stroke 8 ends left of 0.73 of the square (unlike 詰).", "phase": 2}
@@ -126,12 +140,6 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
   "東": [
     {"id": "東-vs-束-1", "char": "東", "rivals": ["束"], "metric": {"type": "position", "strokes": [6], "field": "ex"}, "comparator": "<", "threshold": 0.4385, "tolerance": 0.2193, "reference": 0.0, "rivalReference": 0.877, "score": 7.31, "note": "東: stroke 7 ends left of 0.44 of the square (unlike 束).", "phase": 2},
     {"id": "東-vs-束-2", "char": "東", "rivals": ["束"], "metric": {"type": "lengthRatio", "strokes": [4, 5]}, "comparator": "<", "threshold": 1.1364, "tolerance": 0.3492, "reference": 0.438, "rivalReference": 1.8349, "score": 6.42, "note": "東: stroke 5 is less than 1.14× the length of stroke 6 (unlike 束).", "phase": 2}
-  ],
-  "白": [
-    {"id": "白-vs-百-1", "char": "白", "rivals": ["百"], "metric": {"type": "lengthRatio", "strokes": [0, 1]}, "comparator": "<", "threshold": 2.0859, "tolerance": 0.7561, "reference": 0.5737, "rivalReference": 3.5982, "score": 8.23, "note": "白: stroke 1 is less than 2.09× the length of stroke 2 (unlike 百).", "phase": 2},
-    {"id": "白-vs-百-2", "char": "白", "rivals": ["百"], "metric": {"type": "position", "strokes": [0], "field": "ex"}, "comparator": "<", "threshold": 0.5451, "tolerance": 0.2061, "reference": 0.133, "rivalReference": 0.9572, "score": 6.87, "note": "白: stroke 1 ends left of 0.55 of the square (unlike 百).", "phase": 2},
-    {"id": "白-vs-自-1", "char": "白", "rivals": ["自"], "metric": {"type": "lengthRatio", "strokes": [0, 1]}, "comparator": ">", "threshold": 0.4367, "tolerance": 0.0685, "reference": 0.5737, "rivalReference": 0.2996, "score": 2.91, "note": "白: stroke 1 is more than 0.44× the length of stroke 2 (unlike 自).", "phase": 2},
-    {"id": "白-vs-自-2", "char": "白", "rivals": ["自"], "metric": {"type": "position", "strokes": [4], "field": "ey"}, "comparator": ">", "threshold": 0.7815, "tolerance": 0.0696, "reference": 0.9207, "rivalReference": 0.6424, "score": 2.32, "note": "白: stroke 5 ends below 0.78 of the square (unlike 自).", "phase": 2}
   ],
   "百": [
     {"id": "百-vs-白-1", "char": "百", "rivals": ["白"], "metric": {"type": "lengthRatio", "strokes": [0, 1]}, "comparator": ">", "threshold": 2.0859, "tolerance": 0.7561, "reference": 3.5982, "rivalReference": 0.5737, "score": 8.23, "note": "百: stroke 1 is more than 2.09× the length of stroke 2 (unlike 白).", "phase": 2},

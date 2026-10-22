@@ -393,6 +393,117 @@
     return { passes: failed.length === 0, failed };
   }
 
+  // ---------- stroke-pair topology (lenient contact check; mirrors proportion_metrics.py) ----------
+  // Distances are shares of the drawn character's size (larger side of the bounding box of all
+  // points). See kanji-data/STROKE_TOPOLOGY.md.
+
+  const TOPOLOGY_TOUCH = 0.05;
+  const TOPOLOGY_NEAR = 0.15;
+  const TOPOLOGY_END_SHARE = 0.15;
+  const TOPOLOGY_CHECK = {
+    missingCrossDepth: 0.03,
+    missingCrossGap: 0.03,
+    extraCrossSeparation: 0.08,
+    extraCrossDepth: 0.09,
+    touchCrossDepth: 0.26,
+  };
+
+  /** Resampled points (about 1 unit apart), every second one kept, per stroke. */
+  function topologyPoints(strokes) {
+    return strokes.map((stroke) =>
+      everyOther(resample(typeof stroke === "string" ? samplePath(stroke) : samplePolyline(stroke)).points));
+  }
+
+  /** Cumulative arc length at each point. */
+  function arcLengths(points) {
+    const out = [0];
+    for (let i = 1; i < points.length; i++) out.push(out[i - 1] + dist(points[i - 1], points[i]));
+    return out;
+  }
+
+  /** "start", "body" or "end": where point `index` lies along the stroke. */
+  function strokePart(index, arc) {
+    const total = arc[arc.length - 1] || 1;
+    const share = arc[index] / total;
+    return share <= TOPOLOGY_END_SHARE ? "start" : share >= 1 - TOPOLOGY_END_SHARE ? "end" : "body";
+  }
+
+  /** Larger side of the bounding box of every point (at least 1). */
+  function characterSize(strokes) {
+    const xs = strokes.flatMap((s) => s.map((p) => p[0]));
+    const ys = strokes.flatMap((s) => s.map((p) => p[1]));
+    return Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys), 1);
+  }
+
+  /**
+   * Min distance, where ("end-body" …) and cross depth of strokes a (earlier) and b, as shares of size.
+   * Depth: for the deepest crossing, the smaller along-stroke distance from it to either stroke's nearer end.
+   * @returns {[number, string, number]}
+   */
+  function pairMeasure(a, b, size) {
+    const arcA = arcLengths(a);
+    const arcB = arcLengths(b);
+    let depth = 0;
+    for (let k = 0; k < a.length - 1; k++) {
+      for (let m = 0; m < b.length - 1; m++) {
+        if (segmentsCross(a[k], a[k + 1], b[m], b[m + 1])) {
+          const da = Math.min(arcA[k], arcA[arcA.length - 1] - arcA[k + 1]);
+          const db = Math.min(arcB[m], arcB[arcB.length - 1] - arcB[m + 1]);
+          depth = Math.max(depth, Math.min(da, db));
+        }
+      }
+    }
+    let best = Infinity;
+    let bestK = 0;
+    let bestM = 0;
+    a.forEach((p, k) => b.forEach((q, m) => {
+      const d = dist(p, q);
+      if (d < best) { best = d; bestK = k; bestM = m; }
+    }));
+    return [best / size, `${strokePart(bestK, arcA)}-${strokePart(bestM, arcB)}`, depth / size];
+  }
+
+  /**
+   * Reference rows [i, j, relation (0 separate, 1 touches, 2 crosses), min distance, where, depth]
+   * for stroke pairs within TOPOLOGY_NEAR.
+   */
+  function strokeTopology(strokes) {
+    const points = topologyPoints(strokes);
+    const size = characterSize(points);
+    const rows = [];
+    for (let j = 0; j < points.length; j++) {
+      for (let i = 0; i < j; i++) {
+        const [gap, where, depth] = pairMeasure(points[i], points[j], size);
+        if (gap > TOPOLOGY_NEAR) continue;
+        const relation = depth > 0 ? 2 : gap <= TOPOLOGY_TOUCH ? 1 : 0;
+        rows.push([i, j, relation, pyRound(gap, 3), where, pyRound(depth, 3)]);
+      }
+    }
+    return rows;
+  }
+
+  /**
+   * Clear contact violations of a drawing against its reference topology ([] = pass). Lenient:
+   * only stored reference pairs are checked and every borderline case passes.
+   * @returns {{kind: string, strokes: number[], gap: number, depth: number}[]}
+   */
+  function topologyViolations(topology, strokes) {
+    const points = topologyPoints(strokes);
+    const size = characterSize(points);
+    const t = TOPOLOGY_CHECK;
+    const out = [];
+    for (const [i, j, relation, refGap, , refDepth] of topology) {
+      if (j >= points.length) continue;
+      const [gap, , depth] = pairMeasure(points[i], points[j], size);
+      let kind = null;
+      if (relation === 2 && refDepth >= t.missingCrossDepth && depth === 0 && gap > t.missingCrossGap) kind = "missingCross";
+      else if (relation === 0 && refGap >= t.extraCrossSeparation && depth > t.extraCrossDepth) kind = "extraCross";
+      else if (relation === 1 && depth > t.touchCrossDepth) kind = "touchCrossed";
+      if (kind) out.push({ kind, strokes: [i, j], gap, depth });
+    }
+    return out;
+  }
+
   return { FIELDS, pyRound, pathSegments, samplePath, resample, samplePolyline, strokeFeatures, relativeRows, metricValue,
-    evaluateRule, checkChar };
+    evaluateRule, checkChar, TOPOLOGY_CHECK, strokeTopology, topologyViolations };
 });

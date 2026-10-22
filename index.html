@@ -16,11 +16,20 @@
 :root{/* palette: faded matcha + faded sakura on warm off-white */
 --matcha:#b5c99a;--matcha2:#a3b18a;--matcha-deep:#5d7148;--sakura:#f4d6dc;--sakura2:#ecc8cf;--sakura-deep:#c7798a;--paper:#fdfaf5;--err:#d9412b;
 --blue:var(--matcha2);--indigo:var(--matcha-deep);--indigo2:#7d9163;--verm:var(--sakura-deep);--ink:#23261f;--muted:#7b776f;--card:rgba(255,255,255,.82);
---ui:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans CJK JP","Noto Sans JP",system-ui,sans-serif;
---mincho:"Hiragino Mincho ProN","Yu Mincho","Noto Serif CJK JP","Noto Serif JP",serif;
+/* English text is Cambria. Where the device has no Cambria, the bundled Caladea (metric-compatible with Cambria) stands in.
+   unicode-range keeps this face to Latin, so kana and kanji always fall through to the Japanese fonts below. */
+@font-face{font-family:"Cambria Latin";src:local("Cambria"),url(fonts/Caladea-Regular.ttf) format("truetype");font-weight:400;font-style:normal;font-display:swap;unicode-range:U+0000-024F,U+2000-206F,U+20AC,U+2122}
+@font-face{font-family:"Cambria Latin";src:local("Cambria Bold"),local("Cambria-Bold"),url(fonts/Caladea-Bold.ttf) format("truetype");font-weight:600 900;font-style:normal;font-display:swap;unicode-range:U+0000-024F,U+2000-206F,U+20AC,U+2122}
+@font-face{font-family:"Cambria Latin";src:local("Cambria Italic"),local("Cambria-Italic"),url(fonts/Caladea-Italic.ttf) format("truetype");font-weight:400;font-style:italic;font-display:swap;unicode-range:U+0000-024F,U+2000-206F,U+20AC,U+2122}
+/* Latin text is Cambria; Cambria has no Japanese glyphs, so kana and kanji fall through to the same Japanese
+   fonts as before (gothic for UI text, mincho for the large characters). */
+--ui:"Cambria Latin",Cambria,Georgia,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans CJK JP","Noto Sans JP",system-ui,sans-serif;
+--mincho:"Cambria Latin",Cambria,Georgia,"Hiragino Mincho ProN","Yu Mincho","Noto Serif CJK JP","Noto Serif JP",serif;
 --ease-spring:cubic-bezier(.32,1.28,.48,1);}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;overflow:hidden;font-family:var(--ui);color:var(--ink);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-font-smoothing:antialiased}
+html,body{margin:0;height:100%;overflow:hidden;font-family:var(--ui);}
+button,input,select,textarea,svg text{font-family:var(--ui)}   /* form controls do not inherit fonts by default */
+html,body{color:var(--ink);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-font-smoothing:antialiased}
 body{display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-top)) 0 calc(14px + env(safe-area-inset-bottom));
  background:
   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45  0 0 0 0 .38  0 0 0 0 .28  0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E"),
@@ -30,10 +39,10 @@ body{display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-
 .knav{display:flex;gap:10px}.knav.r{justify-content:flex-end}
 .reading{text-align:center}
 .kun{font-size:38px;letter-spacing:.08em;line-height:1.15;font-weight:500;color:var(--ink)}
-.kun .ok{color:#1a1a1a;font-size:1em} /* okurigana full size, in (…) so つ never reads as っ */
+.kunr .kstem{font-weight:700;color:var(--ink)}.kunr .okuri{font-weight:400;color:#b5ad9c}   /* kanji part bold, okurigana faded */
 .kun .sep{color:#cfc8b8;margin:0 .4em;font-size:.6em;vertical-align:.25em}
 .on{font-size:16px;color:var(--muted);letter-spacing:.14em;margin-top:3px}
-.on b{font-weight:600;font-size:10px;color:#a29d90;margin-right:8px;letter-spacing:.1em;border:1px solid #ddd5c3;border-radius:5px;padding:1px 5px;vertical-align:2px}
+.on b{font-weight:600;font-size:11px;color:#a29d90;margin-right:8px;letter-spacing:.1em;border:1px solid #ddd5c3;border-radius:5px;padding:1px 5px;vertical-align:2px}
 .ib{width:46px;height:46px;border-radius:50%;border:none;background:var(--card);box-shadow:0 1px 2px rgba(60,50,30,.08),0 4px 14px rgba(60,50,30,.10);display:inline-flex;align-items:center;justify-content:center;color:var(--indigo);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s,box-shadow .15s;padding:0}
 .ib:active{transform:scale(.93)}
 /* prev/next peek pill: absolutely positioned behind the round button, grows outward (no layout shift) */
@@ -53,7 +62,7 @@ body{display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-
 .stage{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;min-height:0}
 .sheet{position:relative;flex:none;height:calc(var(--B) + 48px)}
 .rows{position:absolute;left:0;right:0;top:0;will-change:transform;pointer-events:none}.rows>.track:not(.past):not(.future){pointer-events:auto}
-.controls{position:relative;z-index:3}
+.controls{position:relative;z-index:31}   /* above the non-modal picker (#klist, z 30): undo/clear stay clickable at every size */
 .rows.anim{transition:transform 480ms cubic-bezier(.45,.05,.25,1)}
 /* one practice-sheet row per WORD; levels slide horizontally inside the row */
 .track{position:relative;display:flex;align-items:center;gap:var(--gap);will-change:transform;height:calc(var(--B) + 48px);transition:opacity .6s}
@@ -71,9 +80,10 @@ body{display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-
 .combo .cstroke{fill:none;stroke-width:3.6;stroke-linecap:round;stroke-linejoin:round}
 .box.combining>canvas{opacity:0}
 .track.anim{transition:transform var(--slide,340ms) var(--ease-spring)}
-.box{flex:none;width:var(--B);height:var(--B);border:2.5px solid var(--blue);background:#fffefb;position:relative;border-radius:6px;opacity:.62;transform:scale(.86);filter:saturate(.8);
- box-shadow:0 2px 6px rgba(60,50,30,.06),0 10px 30px rgba(60,50,30,.08);transition:opacity 500ms ease,transform 620ms var(--ease-spring),box-shadow 500ms ease,filter .5s}
-.box.cur{opacity:1;transform:none;filter:none;box-shadow:0 2px 4px rgba(79,97,64,.08),0 18px 50px rgba(79,97,64,.18),0 0 0 7px rgba(150,170,120,.13)}
+.box{flex:none;width:var(--B);height:var(--B);border:2.5px solid var(--blue);background:#fffefb;position:relative;border-radius:6px;opacity:.62;transform:scale(.86);filter:blur(var(--veil-blur)) saturate(.8);
+ box-shadow:0 2px 6px rgba(60,50,30,.06),0 10px 30px rgba(60,50,30,.08);transition:opacity 500ms ease,transform 620ms var(--ease-spring),box-shadow 500ms ease}   /* no filter transition: a box blurs instantly (born blurred, blurred the moment it stops being current) */
+.box{--veil-blur:clamp(20px, calc(var(--B) * 0.06), 28px)}   /* blurred, not hidden: box outline and ink blob stay visible, strokes unreadable */   /* strong enough that strokes cannot be read or traced at any box size */
+.box.cur{opacity:1;transform:none;filter:none;transition:opacity 500ms ease,transform 620ms var(--ease-spring),box-shadow 500ms ease,filter .25s ease;box-shadow:0 2px 4px rgba(79,97,64,.08),0 18px 50px rgba(79,97,64,.18),0 0 0 7px rgba(150,170,120,.13)}
 .box::before,.box::after{content:"";position:absolute;border:0 dashed rgba(150,170,120,.75);z-index:0}
 .box::before{left:50%;top:0;bottom:0;border-left-width:1.5px}.box::after{top:50%;left:0;right:0;border-top-width:1.5px}
 .box>svg,.box>canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1}
@@ -81,6 +91,7 @@ body{display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-
 .box.cur>canvas{pointer-events:auto}
 /* controls */
 .controls{display:flex;align-items:center;justify-content:center;gap:24px}
+.controls .ib{flex:none;min-width:46px;min-height:46px}   /* undo/clear keep 46px targets on phones */
 .prog{display:flex;flex-direction:column;align-items:center;gap:6px;width:280px}
 .segs{display:flex;gap:4px;align-items:center;max-width:100%}
 .seg{height:10px;flex:0 1 34px;min-width:3px;border-radius:3px;background:rgba(79,97,64,.12);transition:background .4s,width .4s}
@@ -115,7 +126,7 @@ body{display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-
 .eq .q{display:flex;align-items:center;justify-content:center;width:36px;height:36px;color:#b08a5a;font-size:22px;font-weight:600}
 .eq .p span.blank{display:block;width:34px;height:8px;border-radius:4px;background:rgba(120,100,60,.12);margin-top:6px}
 .eq .res.hidden{color:transparent;position:relative;min-width:44px}.eq .res.hidden::before{content:"？";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#d3c6aa;font-family:var(--ui);font-size:.7em}
-.eq .res.hidden b{color:var(--verm);opacity:.8}.eq .res.hidden::before{bottom:auto!important;height:1em}
+.eq .res.hidden b{color:#a8455a;opacity:1}.eq .res.hidden::before{bottom:auto!important;height:1em}
 .rev{animation:rev .55s var(--ease-spring) both}
 @keyframes rev{0%{transform:scale(.4) translateY(6px);opacity:0;filter:blur(3px)}100%{transform:none;opacity:1;filter:none}}
 .lockin{animation:lockin .5s ease both}
@@ -145,19 +156,21 @@ body{display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-
 .box .cx{stroke:rgba(150,170,120,.75);stroke-width:.9;stroke-dasharray:2.2 2}.box .cl{stroke:var(--blue);stroke-width:1.3}
 .klist{display:block;width:330px;max-height:72vh;overflow:auto;padding:10px}
 .klist{padding-top:0}
-.klist .lvbar{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;gap:4px;padding:10px 4px 8px;margin:0 -4px 4px;background:#fff;box-shadow:0 6px 8px -6px rgba(60,50,30,.12)}
-.klist .lvbar button{flex:1 0 44px;min-width:44px;padding:0;line-height:44px;height:44px;border:none;border-radius:15px;background:#f3f1e6;font:600 12px var(--ui);letter-spacing:.06em;color:var(--muted);cursor:pointer;transition:background .25s,color .25s}
-.klist .lvbar button.on{border-radius:15px;height:44px;font:600 12px var(--ui);background:var(--matcha);color:var(--matcha-deep);box-shadow:inset 0 0 0 1.5px rgba(93,113,72,.25)}
+button,input{font-family:inherit}   /* form controls take the page fonts (Cambria for English) */
+.klist .lvbar{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:repeat(var(--lv-cols),minmax(0,1fr));gap:var(--lv-gap);padding:10px 4px 8px;margin:0 -4px 4px;background:#fff;box-shadow:0 6px 8px -6px rgba(60,50,30,.12);--lv-cols:5;--lv-gap:6px}   /* one grid: equal columns, same gap both ways */
+.klist .lvbar button{width:100%;min-width:0;padding:0;line-height:44px;height:44px;border:none;border-radius:15px;background:#f3f1e6;font:600 12px var(--ui);letter-spacing:.06em;color:var(--muted);cursor:pointer;transition:background .25s,color .25s}
+.klist .lvbar button,.klist .lvbar button.on{margin:0}
+.klist .lvbar button.on{border-radius:15px;height:44px;font:600 12px var(--ui);background:var(--matcha);color:#3f5130;box-shadow:inset 0 0 0 1.5px rgba(93,113,72,.25)}
 .klist .soon{text-align:center;color:#b5ad9c;font-size:13px;padding:34px 0 30px;letter-spacing:.04em}
 .klist .setb{display:grid;grid-template-columns:26px 1fr auto;grid-template-rows:auto auto;align-items:center;column-gap:10px;width:100%;height:auto;border:none;background:none;border-radius:12px;padding:7px 8px;text-align:left;cursor:pointer;font-family:var(--ui)}
 .klist button.setb:hover{background:#f7f2e8}.klist button.setb.sel{background:#eef3e6;color:var(--ink)}
 .klist .setb b{grid-row:span 2;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--indigo);box-shadow:inset 0 0 0 1.5px rgba(79,97,64,.35)}
 .klist .st{font-size:13px;color:var(--ink);font-weight:600}.klist .sk{grid-column:2;font-family:var(--mincho);font-size:15px;color:var(--muted);letter-spacing:.06em}.klist .sd{grid-row:1/3;grid-column:3;font-size:11px;color:var(--verm)}
 .klist .sdrop{display:grid;grid-template-rows:0fr;transition:grid-template-rows .38s cubic-bezier(.3,.8,.3,1),opacity .3s;opacity:0}
-.klist .sdrop>div{overflow:hidden}.klist .setw.open .sdrop{grid-template-rows:1fr;opacity:1}
+.klist .sdrop>div{overflow:hidden;min-height:0}.klist .setw:not(.open) .sdrop{visibility:hidden;transition:grid-template-rows .38s cubic-bezier(.3,.8,.3,1),opacity .3s,visibility 0s .38s}.klist .setw.open .sdrop{grid-template-rows:1fr;opacity:1}
 .klist .kchips{display:flex;flex-wrap:wrap;gap:6px;padding:4px 8px 10px 44px}
 .klist .chev{width:14px;height:14px;margin-left:6px;vertical-align:-2px;color:#b5ad9c;transition:transform .3s}.klist .setw.open .chev{transform:rotate(180deg)}
-.klist .kchips button{min-width:48px;height:48px;padding:0 9px;font-size:19px}.klist .sk i{font-style:normal;color:#cfc8b8;margin:0 1px}
+.klist .kchips button{min-width:48px;height:48px;padding:0 9px;font-size:19px}.klist .sk i{font-style:normal;color:#6b665c;margin:0 1px}
 .klist.show{opacity:1;pointer-events:auto;transform:none}
 .klist button{height:52px;border:none;border-radius:12px;background:#f7f2e7;font:26px var(--mincho);cursor:pointer;color:var(--ink)}
 .klist button.on{background:var(--indigo);color:#fff}
@@ -210,10 +223,10 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
 .box.nolines::before,.box.nolines::after{display:none}
 .rtag{position:absolute;left:-46px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;line-height:1.05}
 .rtag b{font:500 15px var(--mincho);color:var(--indigo);border:1px solid rgba(111,138,82,.35);border-radius:6px;padding:1px 4px}
-.rtag small,.jp small,.seal i{font-size:10px;color:var(--muted);opacity:.75;letter-spacing:.04em;font-style:normal}
+.rtag small,.jp small,.seal i{font-size:11px;color:var(--muted);opacity:.75;letter-spacing:.04em;font-style:normal}
 .jp{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
 .jp span{font-family:var(--mincho)}.jp em{font-style:normal;font-size:11px;color:var(--muted);margin-left:6px;font-family:var(--ui)}
-.klist .kchips button.jp{height:auto;min-height:44px;padding:4px 10px}.klist .kchips button.jp small{font-size:9.5px;max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.klist .kchips button.jp{height:auto;min-height:44px;padding:4px 10px}.klist .kchips button.jp small{font-size:11px;max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .eq .p span{font-weight:500;color:var(--muted);opacity:.85}
 .seal i{display:block;margin-top:2px}
 .tier.bronze{background:linear-gradient(150deg,#f6e3cf,#e8c4a0)!important}
@@ -223,7 +236,7 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
 @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-150% 0}}
 .klist .setb b.tier{border-radius:8px}
 .mlink{margin-top:8px;font:500 14px var(--ui);color:#1a1a1a;text-align:center;opacity:.85}
-.klist .lvbar .revb{flex:none;padding:0 10px;display:inline-flex;gap:5px;align-items:center;background:#fdf0f2;color:#1a1a1a;min-width:64px}.revb b{font-size:11px;background:#c7798a;color:#fff;border-radius:9px;padding:0 6px;line-height:17px}
+.klist .lvbar .revb{padding:0 4px;display:inline-flex;gap:4px;align-items:center;justify-content:center;background:#fdf0f2;color:#1a1a1a}.klist .lvbar .srchb{grid-column:-2;display:inline-flex;align-items:center;justify-content:center}   /* search always in the last column */.revb b{font-size:11px;background:#c7798a;color:#fff;border-radius:9px;padding:0 6px;line-height:17px}
 .klist .sk .nw{white-space:nowrap}   /* picker word lists break only between words */
 .lend{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(250,248,240,.6);opacity:0;pointer-events:none;transition:opacity .35s}
 .lend.show{opacity:1;pointer-events:auto}
@@ -232,10 +245,14 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
 .lb{display:flex;gap:12px;margin-top:20px;justify-content:center;flex-wrap:wrap}
 .lb button{min-width:120px;min-height:56px;border:none;border-radius:18px;background:#f3f1e6;color:#1a1a1a;cursor:pointer;font:600 18px var(--ui);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 16px}
 .lb button small{font:500 12px var(--ui);color:#1a1a1a}.lb button.pri{background:var(--matcha);box-shadow:inset 0 0 0 1.5px rgba(93,113,72,.25)}
-.box.veil{filter:blur(8px);opacity:.35;pointer-events:none;transition:none}   /* hide instantly when leaving a step */
-.box.veil>canvas,.box.veil>svg,.box.veil .plab,.box.veil .rpt{visibility:hidden}   /* ink and guides fully hidden: only an empty faded box remains */   /* other boxes never give a hint */
+.sent{display:block;color:#111;margin-top:6px;line-height:1.5}.sent a{color:#111;text-decoration:underline;min-height:44px;display:inline-flex;align-items:center}
+.sbox{position:relative}.sclear{position:absolute;right:2px;top:50%;transform:translateY(-50%);width:44px;height:44px;border:none;background:none;font:400 22px var(--ui);color:#1a1a1a;cursor:pointer}.slabel{font-size:13px;color:var(--muted,#6b6b6b);margin:10px 4px 2px;letter-spacing:.02em}
+.smore{text-align:center;color:#1a1a1a;font-size:12px;padding:10px 0}
+.defs{position:absolute;width:0;height:0;overflow:hidden}
+.box.veil canvas,.box.veil>svg{filter:url(#veil-warp)}   /* ink is warped, then the whole box is blurred */
+.box.veil{filter:blur(var(--veil-blur)) saturate(.6) contrast(.7);opacity:.5;background:#cfcdc2;pointer-events:none;transition:none}   /* other boxes stay visibly blurred (ink kept, unreadable) in every mode */
 .srchb{flex:none!important;width:44px;display:inline-flex;align-items:center;justify-content:center}.srchb svg{width:15px;height:15px}
-.sbox{padding:4px 6px 8px}.sbox input{width:100%;box-sizing:border-box;height:38px;border-radius:19px;border:1.5px solid rgba(111,138,82,.3);padding:0 14px;font:15px var(--ui);background:#fbfaf4;outline:none;color:var(--ink)}
+.sbox{padding:4px 6px 8px}.sbox input{width:100%;box-sizing:border-box;height:44px;border-radius:22px;border:1.5px solid rgba(111,138,82,.3);padding:0 14px;font:15px var(--ui);background:#fbfaf4;outline:none;color:var(--ink)}
 .sbox input:focus{border-color:rgba(111,138,82,.6)}
 .srow{display:flex;flex-wrap:wrap;gap:6px;padding:6px 6px;border-bottom:1px solid #f0ece0}
 .srow button{border:none;border-radius:12px;background:#f5f3ea;padding:5px 10px;cursor:pointer;color:var(--ink)}
@@ -243,7 +260,7 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
 
 /* Readability override (user request): all secondary/English text solid black, fully visible */
 :root{--muted:#1a1a1a}
-.rtag small,.jp small,.seal i,.jp em,.kun .ok,.on b,.facts i,.plab small,.peek small,.kchip small,.pname small,.hcount,.pempty,.lvname span,.klist .sk{color:#1a1a1a!important;opacity:1!important}
+.rtag small,.jp small,.seal i,.jp em,.on b,.facts i,.plab small,.peek small,.kchip small,.pname small,.hcount,.pempty,.lvname span,.klist .sk{color:#1a1a1a!important;opacity:1!important}
 .on{opacity:1}
 /* One box at a time (user request): static per-part boxes hidden; only the current-part highlight (rect.hl) shows */
 .pbox{display:none!important}
@@ -259,10 +276,257 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
 /* Narrow iPads (≤800px wide, e.g. 768×1024): long kun readings (大 おお・おお.きい…) pushed the 音/訓 tag onto the
    back button; scale the reading line down a little there. */
 @media (max-width:900px){.kun{font-size:34px}.reading .sep{margin:0 2px}}
+@media (max-width:600px){.track.past{translate:0 -100vh}   /* phones: finished rows leave upward instead of hiding under the header */
+   /* phones: readings on one line, then the 訓/音 tag, keyword and speaker on the line below */
+ .reading{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;column-gap:6px;max-width:calc(100vw - 150px);margin:0 auto}
+ .kun{order:1;flex-basis:100%;font-size:clamp(18px,6vw,34px);white-space:nowrap}
+ .rtag{order:2;position:static;transform:none;display:inline-flex;padding:2px 6px}
+ .reading .on{order:3}
+ .tspk{order:4;position:static;transform:none;display:inline-flex}
+}
 .ib.nb:disabled{opacity:.3;pointer-events:none} /* first/last word: prev/next stop instead of wrapping */
-</style><link rel="icon" href="icons/icon-192.png"></head><body>
+</style><link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" href="icons/icon-192.png" type="image/png">
+<style id="v15-ui-css">
+/*
+ * v15 screens (Placement, Level check, Unit test, Practice) — styles for v15-ui.js.
+ * Ported from kanji-data/prototype/proto.css. Uses the app's own tokens (--ui, --mincho, --matcha, --ink …) and
+ * classes (.lend, .lcard, .lb, .ib.wide, .tier.*, .segs/.seg). New classes are prefixed v15- to avoid collisions.
+ */
+
+/* overlay: reuses .lend (fixed, fades in with .show); scrolls, starts at the top */
+:root { --v15-bar-h: 76px; }   /* bottom bar: 56px button row + 2 × 10px padding */
+#v15.lend { z-index: 50; align-items: flex-start; overflow-y: auto; background: var(--paper); padding: 16px 0 calc(var(--v15-bar-h) + 24px + env(safe-area-inset-bottom)); }
+#v15.lend:not(.show) { display: none; }
+#v15 .lcard.v15-card { width: min(94vw, 520px); text-align: left; margin: 0 auto; }
+@media (max-width: 419px) { #v15 .lcard.v15-card { padding: 20px 16px; } }
+#v15 h1 { font: 600 22px var(--ui); margin: 0 0 12px; color: var(--ink); }
+#v15 h1 .ja { margin-right: 8px; }
+#v15 p { font: 400 16px/1.5 var(--ui); margin: 0 0 12px; color: var(--ink); }
+#v15 .v15-muted { color: var(--muted); }
+#v15 .v15-small { font-size: 13px; }
+#v15 .v15-headline { font: 700 28px/1.2 var(--ui); margin: 4px 0 6px; }
+#v15 .v15-score { font: 600 20px var(--ui); margin: 0 0 4px; }
+
+.v15-top { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.v15-top .v15-count { font: 400 13px var(--ui); color: var(--muted); }
+.v15-banner { font: 600 15px var(--ui); color: var(--ink); background: #eef2e6; border-radius: 12px; padding: 8px 12px; margin: 0 0 12px; }
+.v15-banner.miss { background: #fdf0f2; font-weight: 400; }
+
+.v15-char { font: 400 96px/1.1 var(--mincho); text-align: center; margin: 8px 0; color: var(--ink); }
+.v15-word { font: 400 64px/1.15 var(--mincho); text-align: center; margin: 8px 0 4px; color: var(--ink); word-break: keep-all; }
+.v15-word u { text-decoration-thickness: 3px; text-underline-offset: 8px; text-decoration-color: var(--verm); }
+.v15-gloss { font: 400 15px var(--ui); color: var(--muted); text-align: center; margin-bottom: 12px; }
+.v15-ask { text-align: center; }
+@media (max-width: 399px) { .v15-char { font-size: 72px; } .v15-word { font-size: 52px; } }
+
+/* choices: full-width 52px rows */
+.v15-choices { display: flex; flex-direction: column; gap: 8px; }
+.v15-choice {
+  min-height: 52px; width: 100%; border: none; border-radius: 14px; background: #f3f1e6; color: #1a1a1a;
+  font: 500 20px var(--ui); text-align: left; padding: 0 16px; cursor: pointer; display: flex; align-items: center;
+  justify-content: space-between; gap: 8px;
+}
+.v15-choice.picked { box-shadow: inset 0 0 0 2px var(--indigo); background: #eef2e6; }
+.v15-choice.right { background: var(--matcha); }
+.v15-choice.wrong { box-shadow: inset 0 0 0 2px var(--err); background: #fff; }
+.v15-choice .tag { font: 600 13px var(--ui); }
+.v15-choice.idk { font-size: 16px; }
+
+.v15-input { width: 100%; min-height: 52px; font: 400 22px var(--ui); border: 1.5px solid #d8d4c8; border-radius: 14px; padding: 0 14px; background: #fff; color: var(--ink); }
+.v15-feedback { min-height: 24px; font: 400 16px var(--ui); margin: 10px 0 0; }
+.v15-feedback.ok { color: var(--indigo); font-weight: 600; }
+.v15-feedback .also { color: var(--muted); font-size: 13px; }
+
+/* fixed bottom bar (at most 2 buttons side by side) */
+.v15-bar {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 51;
+  display: flex;
+  justify-content: center;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  background: var(--paper);                    /* U2: opaque, content no longer shows through */
+  box-shadow: 0 -1px 0 rgba(60, 50, 30, .10), 0 -8px 16px -12px rgba(60, 50, 30, .25);
+}
+.v15-bar .lb { margin-top: 0; width: min(94vw, 520px); flex-wrap: nowrap; justify-content: center; }
+.v15-bar .lb button { flex: 1 1 160px; min-width: 160px; max-width: 260px; }   /* U2: spec §5.1, each ≥160px at 375 */
+/* U2: disabled stays legible (muted, not faded) */
+.v15-bar .lb button:disabled {
+  opacity: 1;
+  cursor: not-allowed;
+  background: #ece8de;
+  color: #6b6658;
+  box-shadow: inset 0 0 0 1px rgba(35, 38, 31, .14);
+}
+
+/* rank badge pill (spec §1) */
+.v15-badge { display: inline-flex; align-items: center; height: 28px; border-radius: 14px; padding: 0 10px; font: 600 13px var(--ui); color: #1a1a1a; background: #f3f1e6; box-shadow: inset 0 0 0 1px rgba(35, 38, 31, .12); white-space: nowrap; }
+.v15-change { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.v15-change .to { font: 600 16px system-ui, sans-serif; color: var(--muted); }
+
+/* kanji chips 44px with tier tint */
+.v15-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; }
+.v15-chip { position: relative; width: 44px; height: 44px; border-radius: 12px; border: none; background: #f3f1e6; color: #1a1a1a; font: 400 22px var(--mincho); display: inline-flex; align-items: center; justify-content: center; box-shadow: inset 0 0 0 1px rgba(35, 38, 31, .08); padding: 0; flex: none; }
+button.v15-chip { cursor: pointer; }
+.v15-chip.sel { box-shadow: inset 0 0 0 2.5px var(--indigo); }
+.v15-chip .new { position: absolute; top: -3px; right: -3px; width: 10px; height: 10px; border-radius: 50%; background: var(--verm); }
+.v15-grid { content-visibility: auto; contain-intrinsic-size: auto 600px; }
+
+/* rows 52px */
+.v15-rows { display: flex; flex-direction: column; gap: 8px; margin: 8px 0; }
+.v15-row { min-height: 52px; width: 100%; display: flex; align-items: center; gap: 12px; padding: 4px 12px; border: none; border-radius: 14px; background: #f7f5ee; color: #1a1a1a; text-align: left; font: 500 15px var(--ui); }
+button.v15-row { cursor: pointer; }
+.v15-row .grow { flex: 1 1 auto; min-width: 0; }
+.v15-row .kanjis { display: block; font: 400 18px var(--mincho); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.v15-group { font: 600 15px var(--ui); margin: 16px 0 4px; }
+
+/* level tabs, pills, segmented control (44px) */
+.v15-tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 4px 0 12px; }
+.v15-tabs button, .v15-pill { min-height: 44px; border: none; border-radius: 12px; background: #f3f1e6; color: #1a1a1a; font: 600 15px var(--ui); cursor: pointer; }
+.v15-tabs button.on, .v15-pill.on { background: var(--matcha); box-shadow: inset 0 0 0 1.5px rgba(93, 113, 72, .25); }
+.v15-pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 12px; }
+.v15-pill { padding: 0 14px; min-width: 44px; }
+.v15-seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: #f3f1e6; border-radius: 14px; padding: 4px; margin: 4px 0 12px; }
+.v15-seg button { min-height: 44px; border: none; border-radius: 11px; background: transparent; font: 600 15px var(--ui); color: #1a1a1a; cursor: pointer; }
+.v15-seg button.on { background: #fff; box-shadow: 0 1px 3px rgba(60, 50, 30, .15); }
+.v15-filter { display: flex; align-items: center; min-height: 52px; border-radius: 14px; background: #f7f5ee; padding: 0 12px; margin-bottom: 8px; }
+.v15-filter label { font: 500 15px var(--ui); flex: none; margin-right: 8px; }
+.v15-filter select { flex: 1 1 auto; min-width: 0; min-height: 44px; border: none; background: transparent; font: 600 15px var(--ui); color: #1a1a1a; text-align: right; }
+
+/* unit picker: rows come first in the DOM (so "Unit 1" is the first match for keyboard/AT order), tabs shown on top */
+.v15-units { display: flex; flex-direction: column; }
+.v15-tabs button[data-level]::before { content: attr(data-level); }   /* visible label; the name is aria-label */
+
+/* menu in the picker, under the level bar */
+.klist .v15-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 10px; }
+/* always 2 columns: the picker panel stays narrow at every viewport width */
+.klist .v15-menu button { position: relative; width: 100%; min-width: 0; min-height: 52px; }
+.klist .v15-menu .v15-mbadge { display: contents; }
+.klist .v15-menu button b {
+  position: absolute;
+  top: 6px;
+  right: 6px;                                  /* U1: same inset on both sides, so it sits in the corner */
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  font: 700 11px/1 var(--ui);
+  background: #fdf0f2;
+  color: #1a1a1a;
+}
+
+/* quit button on question screens */
+#v15 .v15-quit { margin: 0 0 8px; }
+
+/* "I wrote it correctly" pill and toasts (lesson screen) */
+/* under the lesson header (clear of the nav buttons and the bottom word card) */
+/* U3 (spec §7): bottom-right of the bottom card (.panel), under the box. The panel grows while the pill shows. */
+#v15ovr {
+  position: fixed;
+  right: calc((100vw - var(--v15-panel-w)) / 2 + 14px);
+  bottom: calc(var(--v15-panel-gap) + 10px + env(safe-area-inset-bottom));
+  z-index: 52;
+  white-space: nowrap;
+}
+#v15ovr[hidden] { display: none; }
+/* top is set by toast() to just below the writing box; it never takes pointer input (drawing goes through) */
+#v15toast { position: fixed; left: 50%; top: 96px; transform: translateX(-50%); z-index: 53; max-width: min(72vw, 280px); pointer-events: none; text-align: center; font: 400 15px var(--ui); color: var(--ink); background: #fdf0f2; border-radius: 12px; padding: 10px 14px; box-shadow: 0 4px 14px rgba(60, 50, 30, .12); }
+#v15toast:not(.on) { opacity: 0; }   /* stays in the accessibility tree as a live region */
+
+/* modal (resume, unanswered) */
+.v15-modal { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; background: rgba(250, 248, 240, .75); padding: 12px; }
+.v15-modal .lcard { width: min(94vw, 420px); }
+.v15-modal .lb button { flex: 1 1 0; min-width: 0; }
+
+/* focus: a clear ring on every v15 control (3:1 against the paper); headings that take focus get no ring */
+#v15 button:focus-visible, #v15 input:focus-visible, #v15 select:focus-visible, #v15ovr:focus-visible,
+.klist .v15-menu button:focus-visible { outline: 3px solid #4a5d38; outline-offset: 2px; }
+#v15 [tabindex="-1"]:focus { outline: none; }
+.v15-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) {
+  .tier.diamond, #v15 .tier.diamond { animation: none !important; }
+  #v15, #v15 *, #v15ovr, #v15toast, .klist .v15-menu * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+
+/* wide screens: the bottom bar follows the card instead of sitting at the far window edge */
+@media (min-width: 768px) {
+  #v15.lend.show { flex-direction: column; align-items: center; justify-content: flex-start; }
+}
+
+/* ---- layout fixes at narrow widths (kanji-qa v15_ui_url_* overlap / off-screen findings) ---- */
+
+/* A v15 screen covers the lesson: hide the lesson's buttons underneath (#undo, #clear, #kchip, #tspk, #next …) so
+   they are neither under the v15 chips and rows nor reachable by touch, Tab or a screen reader. The lesson's text
+   stays as it is (it is covered anyway). */
+body:has(#v15.show) > .top .knav > button,
+body:has(#v15.show) > .top .reading button,
+body:has(#v15.show) > #stage button,
+body:has(#v15.show) > #panel button {
+  visibility: hidden !important;   /* setInfo() sets an inline visibility on #undo and #clear */
+}
+
+/* Search box: the × sits beside the field instead of on top of it. */
+.klist .sbox {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.klist .sbox input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+}
+.klist .sbox .sclear {
+  position: static;
+  transform: none;
+  flex: none;
+}
+
+/* ---- U1–U3 layout fixes (Botfour, see kanji-team BOARD) ---- */
+
+:root {
+  --v15-panel-w: min(94vw, 1020px);            /* same as the app's .panel width */
+  --v15-panel-gap: 14px;                        /* space under the .panel */
+}
+
+/* U1: the picker opens below the header, clear of the kun badge and the gloss */
+.klist { top: calc(100% + 20px); }
+/* U1: the lesson chip (.plab) would poke out beside the open picker */
+body:has(#klist.show) .plab { visibility: hidden; }
+/* U1: no divider line under the level bar */
+.klist .lvbar { box-shadow: none; }
+
+/* U3: the override pill gets its own row at the bottom of the panel */
+body:has(#v15ovr:not([hidden])) #panel {
+  height: calc(var(--PH, 150px) + 56px);
+  padding-bottom: 66px;
+}
+
+/* U3: on a v15 screen with a bottom bar (check reading, U0) the pill sits just above the bar, clear of its buttons */
+body:has(#v15.show .v15-bar) #v15ovr { bottom: calc(var(--v15-bar-h) + 10px + env(safe-area-inset-bottom)); }
+
+/* U3: while the pill floats above the bar, a v15 screen scrolls its last row clear of the pill */
+body:has(#v15ovr:not([hidden])) #v15.lend { padding-bottom: calc(var(--v15-bar-h) + 80px + env(safe-area-inset-bottom)); }
+
+/* U3: the hint button stays inside the panel at phone widths */
+#panel .pmain { max-width: 100%; }
+@media (max-width: 479px) {
+  #panel { padding-inline: 14px; }
+  #panel .pmain { gap: 12px; }
+  #panel .pglyph.hintb { width: 72px; height: 72px; }
+}
+
+/* UX-B4: the miss banner holds its own "I wrote 一 correctly" pill, right under the message */
+.v15-banner.miss p { margin: 0; }
+.v15-banner .v15-ovr { width: max-content; max-width: 100%; height: 40px; margin-top: 8px; white-space: nowrap; }
+/* UX-B4: legend for the "new" dot on placement result chips */
+.v15-legend { display: flex; align-items: center; gap: 6px; margin: 4px 0 8px; }
+.v15-legend .new { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--verm); }
+</style></head><body>
 <div class="top">
- <div class="knav l"><button class="ib nb" id="prev" aria-label="Previous word"><span class="peek" id="peekp"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="ib" id="kchip" aria-label="Kanji list" onclick="searching=false;renderPicker();document.getElementById('klist').classList.toggle('show')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></button><div class="klist" id="klist"></div></div>
+ <div class="knav l"><button class="ib nb" id="prev" aria-label="Previous word"><span class="peek" id="peekp"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="ib" id="kchip" aria-label="Kanji list" onclick="searching=false;closeEnd();renderPicker();document.getElementById('klist').classList.toggle('show')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></button><div class="klist" id="klist"></div></div>
  <div class="reading"><span class="rtag" id="rtag"></span><div class="kun" id="kun"></div><div class="on" id="on"></div><button class="ib tspk" id="tspk" aria-label="Play word"></button></div>
  <div class="knav r"><button class="ib nb" id="next" aria-label="Next word"><span class="peek" id="peekn"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button></div>
 </div>
@@ -270,7 +534,10 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
  <div class="controls"><button class="ib" id="undo" aria-label="Undo stroke"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 010 11H11"/></svg></button><div class="prog"><div class="segs" id="dots"></div><div class="lvname" id="lvname"></div></div><button class="ib" id="clear" aria-label="Clear box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button></div>
 </div>
 <div class="panel" id="panel"></div>
-<div class="seal" id="seal"></div>
+<!-- Veil warp: scrambles the ink inside veiled boxes so a blurred previous box keeps its outline and ink blob
+     but no stroke shape survives for the eye or a matcher (QA_PLAN.md R1). -->
+<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false"><filter id="veil-warp" x="-25%" y="-25%" width="150%" height="150%" primitiveUnits="objectBoundingBox"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="1" seed="7"/><feDisplacementMap in="SourceGraphic" scale="1.1" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
+<div class="seal" id="seal" data-verdict=""></div>
 <div class="lend" id="lend" role="dialog" aria-label="Lesson complete"></div>
 
 <script src="data.js"></script>
@@ -285,7 +552,20 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
 <script src="proportion-rules-N2.js"></script>
 <script src="proportion-rules-N1.js"></script>
 <script src="proportion_metrics.js"></script>
+<script src="stroke-topology-kana.js"></script>
+<script src="stroke-topology-N5.js"></script>
+<script src="hook-rules-data.js"></script>
+<script src="prefix-lookalikes.js"></script>
 <script src="levels.js"></script>
+<script src="sentences-N5.js"></script>
+<!-- v15: hook layer, models and glue (kanji-data V15_INTEGRATION.md load order); the data files load after
+     the page (v15-ui.js, window.V15_DATA_SCRIPTS) -->
+<script src="hook-categories.js"></script>
+<script src="hook_rules.js"></script>
+<script src="hook-straight.js"></script>
+<script src="rank-model.js"></script>
+<script src="v15-integration.js"></script>
+<script>window.V15_DATA_SCRIPTS = ["reading-answer.js", "placement-model.js", "unit-test-model.js", "level-check-model.js", "practice-model.js", "reading-tests.js", "placement-pools.js", "practice-catalog.js", "practice-sets.js"];</script>
 <script>
 /* ============================================================================================
    漢字練習 — Kanji Practice (single-page app, no build step)
@@ -325,7 +605,8 @@ const CONFIG={
    rel:{start:0.15,end:0.19,mean:0.16,shift:0.03},   // relative check after the fit; shift = small extra offset forgiven
    guided:{drift:0.45,scale:[0.4,1.3]},   // v14.1: lenient on position/size (small or off-centre writing)
    memory:{drift:0.45,scale:[0.4,1.3]}},
-  RULES:{on:true,weak:['カ力','ト卜','己已']},   // look-alike rules from proportion-rules-*.js (see ruleGate)
+  RULES:{on:true,weak:['カ力','ト卜','己已']},
+  TOPOLOGY:{on:true},   // stroke contacts from stroke-topology-*.js, judged leniently by topologyViolations (see topologyGate)   // look-alike rules from proportion-rules-*.js (see ruleGate)
   PROP:{on:true,factor:1.6,minLen:0.12},   // relative stroke lengths (see proportionGate)
   FIRST:{on:true,scale:[0.4,1.3],drift:0.45,minChord:0.1,pairRatio:1.5},   // first stroke judged relative to itself (see firstStrokeFit)
   strict:{start:0.24,end:0.26,mean:0.17,shift:0.04,dirCos:0,len:[0.22,3.2]},   // step-by-step + trace boxes (absolute check)
@@ -333,7 +614,8 @@ const CONFIG={
   // dirCos 0 = only a stroke going mostly the wrong way fails; tiny dots have no direction and always pass it
   /* Shape gate: path-length ratio vs reference (after the fit's scale), chord direction ±angle°, total turning
      difference ≤turn°, bow (max chord deviation / chord) difference ≤bow. Strokes shorter than minLen skip it. */
-  SHAPE:{on:true,minLen:0.12,len:[0.7,1.45],angle:30,turn:120,bow:0.2,bowAbs:0.15,seg:0,segN:4,hook:70,hookF:0.07},
+  SHAPE:{on:true,minLen:0.12,len:[0.7,1.45],angle:25,turn:120,bow:0.2,bowAbs:0.15,seg:0,segN:4,hook:85,hookF:0.07,turnMinLen:0.2,shortAngle:25,shortMinChord:0.03,
+   veer:{angle:20,turn:45}},   // v15: heading off by >angle° AND turning >turn° more than the reference = a curve sweeping away (上 卜-style stroke 2)
   MISSES_FOR_HINT:3},   // after this many rejected tries on one stroke: tracing guide (outline + start dot + arrow),
  /* PRACTICE FLOW per new/due kanji:  a) each part alone (step-by-step) → b) combine animation + starburst →
     STAGES c–h on the full kanji; g = memory check (dashed guide lines), h = memory check, no lines.
@@ -348,7 +630,8 @@ const CONFIG={
  WORD_BREAK_MS:400,LABEL_FADE_MS:260,   // pause between words before the sheet drops to the next word's row
  SPEAK_WORD:true,SPEAK_RATE:0.85,SPEAK_PITCH:1,DUCK_AUDIO:true,   // read the word aloud (ja-JP; Siri > O-ren > Kyoko > any ja)
  SCHEDULE_DAYS:[1,3,7,14,30],REVIEW_MAX:12,   // review queue size (short sessions)
- FLASH_MS:250,SLIDE_DELAY_MS:550,SLIDE_MS:340,
+ FLASH_MS:250,SEAL_PAUSE:{ms:700,pairs:['木本','大犬','大太','王玉']},   // characters that are the start of a longer look-alike (大→犬) seal only after this pause
+  SLIDE_DELAY_MS:550,SLIDE_MS:340,
  MASTERY:['bronze','silver','gold','diamond'],   // word chip tint by full practices completed: 1,2,3,4+
  COMBINE:{MS:1500}};   // parts → kanji animation after the part boxes; tap to skip
 const FLASH_MS=CONFIG.FLASH_MS;
@@ -367,7 +650,8 @@ function recFinish(k,sessClean,sessHints){const r=recGet(k)||{cleanRecalls:0,hin
  const now=new Date();r.cleanRecalls=(Number(r.cleanRecalls)||0)+sessClean;r.done=(Number(r.done)||0)+1;r.hintsUsed=(Number(r.hintsUsed)||0)+sessHints;r.streak=sessHints>0?0:(Number(r.streak)||0)+1;r.lastPracticed=now.toISOString();r.intervalDays=iv;r.nextReview=new Date(now.getTime()+iv*864e5).toISOString();
  localStorage.setItem('rec:'+k,JSON.stringify(r));return r}
 /** Mastery tier of a word = number of full practices (rec.done): '' | bronze | silver | gold | diamond. */
-function tier(w){const n=Number((recGet('w:'+w)||{}).done)||0;return n?CONFIG.MASTERY[Math.min(n,4)-1]:''}
+/** Chip tint: the v15 rank (V15.tierOf) for a studied one-kanji word, else the word-done tier. */
+function tier(w){const v=window.V15UI&&V15UI.kanjiTier(w);if(v)return v;const n=Number((recGet('w:'+w)||{}).done)||0;return n?CONFIG.MASTERY[Math.min(n,4)-1]:''}
 /** Lifetime hint counter per kanji (localStorage "hints:<k>"). */
 const hintKey=k=>'hints:'+k;const hintCount=k=>Number(localStorage.getItem(hintKey(k)))||0; // corrupt → 0
 /** Per-session tallies keyed by kanji char or "w:<word>": {clean, hints, extra}. */
@@ -440,10 +724,12 @@ function fitPlacement(k,prev,mem){const C=CONFIG.CHECK,A=C.ADAPT,lim=mem?A.memor
  return {s,mg,mu,drift:lim.drift}}
 /** First stroke (nothing to fit against yet): judge it relative to itself — centroid aligned, scale from its chord
  *  (clamped to CONFIG.CHECK.FIRST.scale) — so a kanji written small or off-centre still passes on shape. null = off. */
-function firstStrokeFit(k,i,u){const F=CONFIG.CHECK.FIRST;if(!F||!F.on||i!==0||k.strokes<2)return null;const g=idealPts(k,0),n=u.length;   // one-stroke characters are judged against the box
+/** A one-stroke character may sit this many times farther from its KanjiVG place (no later stroke to place it against). */
+const SINGLE_STROKE_DRIFT = 2;
+function firstStrokeFit(k,i,u){const F=CONFIG.CHECK.FIRST;if(!F||!F.on||i!==0||k.isWord&&k.strokes<2)return null;const g=idealPts(k,0),n=u.length;   // one-stroke characters (一): judged at the end against the box, with SINGLE_STROKE_DRIFT room
   const centroid=P=>({x:P.reduce((a,q)=>a+q.x,0)/P.length,y:P.reduce((a,q)=>a+q.y,0)/P.length});
   const cg=dist(g[0],g[g.length-1]),cu=dist(u[0],u[n-1]);let s=cg>F.minChord?cu/cg:1;s=Math.min(F.scale[1],Math.max(F.scale[0],s));
-  return {s,mu:centroid(u),mg:centroid(g),drift:F.drift}}
+  return {s,mu:centroid(u),mg:centroid(g),drift:k.strokes<2?F.drift*SINGLE_STROKE_DRIFT:F.drift}}
 /** Move ideal points g by fit f; total movement is capped at f.drift so the kanji cannot wander out of the box. */
 function applyFit(f,g){let h=g.map(q=>({x:f.mu.x+f.s*(q.x-f.mg.x),y:f.mu.y+f.s*(q.y-f.mg.y)}));
  const d=h.reduce((a,q,j)=>a+dist(q,g[j]),0)/g.length;if(d>f.drift){const r=f.drift/d;h=h.map((q,j)=>({x:g[j].x+(q.x-g[j].x)*r,y:g[j].y+(q.y-g[j].y)*r}))}return h}
@@ -457,6 +743,20 @@ const chordAng=P=>Math.atan2(P[P.length-1].y-P[0].y,P[P.length-1].x-P[0].x);
 function turning(P,st=4){let t=0,pa=null;for(let i=st;i<P.length;i+=st){const a=Math.atan2(P[i].y-P[i-st].y,P[i].x-P[i-st].x);if(pa!==null){let d=a-pa;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;t+=d}pa=a}return t*180/Math.PI}
 /** Max perpendicular distance from the chord, as a fraction of chord length (0 = straight). */
 function bow(P){const a=P[0],b=P[P.length-1],L=Math.hypot(b.x-a.x,b.y-a.y)||1e-6;let m=0;for(const q of P)m=Math.max(m,Math.abs((b.x-a.x)*(a.y-q.y)-(a.x-q.x)*(b.y-a.y))/L);return m/L}
+
+/**
+ * Tremor-proof size of a stroke, measured the way shapeGate measures length: on smoothed points, the chord
+ * (start → end) when the reference stroke is mostly straight, the path length when it bends.
+ * @param {Array<{x:number,y:number}>} points resampled ink or reference points
+ * @param {Array<{x:number,y:number}>} reference the expected stroke (decides chord vs path length)
+ * @returns {number}
+ */
+function strokeSize(points, reference) {
+  const refChord = dist(reference[0], reference[reference.length - 1]);
+  const mostlyStraight = refChord >= 0.6 * plen(reference);
+  const smoothed = smooth(points);
+  return mostlyStraight ? dist(smoothed[0], smoothed[smoothed.length - 1]) : plen(smoothed);
+}
 
 /**
  * Stroke 1 was accepted provisionally, judged only against itself. Once stroke 2 is drawn, judge it again
@@ -473,16 +773,16 @@ function rejudgeFirstStroke(k, i, stroke, prev, mem) {
   const N = CONFIG.CHECK.N;
   const firstInk = resample(prev[0].pts, N);
   const secondInk = resample(stroke.pts, N);
-  const inkRatio = plen(firstInk) / Math.max(plen(secondInk), 1e-6);
-  const refRatio = plen(idealPts(k, 0)) / Math.max(plen(idealPts(k, 1)), 1e-6);
+  const inkRatio = strokeSize(firstInk, idealPts(k, 0)) / Math.max(strokeSize(secondInk, idealPts(k, 1)), 1e-6);
+  const refRatio = strokeSize(idealPts(k, 0), idealPts(k, 0)) / Math.max(strokeSize(idealPts(k, 1), idealPts(k, 1)), 1e-6);
   const factor = inkRatio / refRatio;
-  const redo = (why, m) => ({ ok: false, msg: 'Redo first', redoFirst: true, shape: why, m });
+  const redo = redoFirstVerdict;
   if (factor > FIRST.pairRatio || factor < 1 / FIRST.pairRatio) {
     return redo('firstLength', null);
   }
   const jointFit = fitPlacement(k, [prev[0], { i, pts: stroke.pts }], mem);
   if (!jointFit) {
-    return null;
+    return firstStrokeHookVerdict(k, prev[0], null);
   }
   const base = mem ? CONFIG.CHECK.memory : CONFIG.CHECK.strict;
   const tol = { ...base, ...CONFIG.CHECK.ADAPT.rel };
@@ -492,27 +792,267 @@ function rejudgeFirstStroke(k, i, stroke, prev, mem) {
     return redo('firstPlacement', result);
   }
   const shapeFail = shapeGate(firstInk, expected, resample(prev[0].pts, 96), applyFit(jointFit, idealDense(k, 0)));
-  return shapeFail ? redo(`first:${shapeFail}`, result) : null;
+  return shapeFail ? redo(`first:${shapeFail}`, result) : firstStrokeHookVerdict(k, prev[0], result);
+}
+
+/** Hook-layer reject code for a hook drawn only partly (allowed at stroke 1's re-check, see firstStrokeHookVerdict). */
+const HALF_HOOK_SHAPE = 'hook-partial';
+
+/**
+ * The hook layer for stroke 1 at its re-check. Stroke 1 is accepted provisionally, and hookLayer skips provisional
+ * verdicts, so without this a straight stroke 1 where a hook is required (小) was never hook-checked.
+ * @param {object} k the character
+ * @param {{i:number, pts:object[]}} firstStroke stroke 1 as drawn
+ * @param {object|null} metrics compare() metrics of the re-check, kept on the verdict
+ * @returns {object|null} a redo-first verdict when the hook layer rejects stroke 1, otherwise null
+ */
+function firstStrokeHookVerdict(k, firstStroke, metrics) {
+  const hookVerdict = hookLayer(k, 0, firstStroke, { ok: true, m: metrics });
+  const halfHook = hookVerdict.shape === HALF_HOOK_SHAPE;   // half hooks are allowed; only missing/straight ones fail
+  return hookVerdict.ok || halfHook ? null : { ...redoFirstVerdict(`first:${hookVerdict.shape || 'hook'}`, metrics), firstHook: true };
 }
 
 /** @returns '' if the shape matches, else the failing test name (never shown; used by tests). CONFIG.CHECK.SHAPE tunes it. */
 /** Moving-average smoothing (window 2w+1) so hand tremor doesn't count as bend or extra length. */
 const smooth=(P,w=3)=>P.map((_,i)=>{let x=0,y=0,n=0;for(let j=Math.max(0,i-w);j<=Math.min(P.length-1,i+w);j++){x+=P[j].x;y+=P[j].y;n++}return {x:x/n,y:y/n}});
 /** End-hook angle (deg): heading of the last `f` of the stroke vs its overall chord (hooks ≈ 90–180, straight ≈ 0). */
-function hookAng(P,f){const n=P.length-1,k=Math.max(1,Math.round(n*f)),a=Math.atan2(P[n].y-P[n-k].y,P[n].x-P[n-k].x),c=Math.atan2(P[n-k].y-P[0].y,P[n-k].x-P[0].x);let d=Math.abs(a-c);if(d>Math.PI)d=2*Math.PI-d;return d*180/Math.PI}
-function shapeGate(u,g,ud,gd){const S=CONFIG.CHECK.SHAPE;if(!S||!S.on)return '';ud=ud||u;gd=gd||g;
- if(S.hook&&plen(g)>=S.minLen&&Math.abs(hookAng(smooth(ud,1),S.hookF)-hookAng(gd,S.hookF))>S.hook)return 'hook';   // dense points: hooks are short   // on unsmoothed points: smoothing would erase hooks
- u=smooth(u);g=smooth(g);const Lg=plen(g),Lu=plen(u);
- if(Lg<S.minLen)return '';   // dots/ticks: shape too small to judge, compare() handles them
- const cg=Math.hypot(g[g.length-1].x-g[0].x,g[g.length-1].y-g[0].y),cu0=Math.hypot(u[u.length-1].x-u[0].x,u[u.length-1].y-u[0].y);
- const r=cg>=0.6*Lg?cu0/cg:Lu/Lg;if(r<S.len[0]||r>S.len[1])return 'length';   // mostly-straight reference: chord ratio (tremor-proof); bent ones: path ratio
- if(cg>S.minLen*0.8){let d=Math.abs(chordAng(u)-chordAng(g));if(d>Math.PI)d=2*Math.PI-d;if(d*180/Math.PI>S.angle)return 'direction'}
- if(S.turn&&Math.abs(turning(u)-turning(g))>S.turn)return 'bend';
- if(S.seg){const H=P=>{const n=P.length-1,o=[];for(let q=0;q<S.segN;q++){const a=P[Math.round(n*q/S.segN)],b=P[Math.round(n*(q+1)/S.segN)];o.push(Math.atan2(b.y-a.y,b.x-a.x))}return o},hu=H(u),hg=H(g);
-  for(let q=0;q<S.segN;q++){let d=Math.abs(hu[q]-hg[q]);if(d>Math.PI)d=2*Math.PI-d;if(d*180/Math.PI>S.seg)return 'bend'}}   // coarse heading profile: hook vs straight, curve vs line
- const bg=bow(g),bu=bow(u),cu=Math.hypot(u[u.length-1].x-u[0].x,u[u.length-1].y-u[0].y);   // bow in box units: |Δ| must exceed both bow×chord and bowAbs
- if(Math.abs(bu*cu-bg*cg)>Math.max(S.bow*cg,S.bowAbs))return 'curve';
- return ''}
+/** Shortest tail (box units) a hook is measured over, so pen jitter at the very end cannot read as a hook. */
+const HOOK_MIN_TAIL = 0.045;
+/** A hook must reach at least this far sideways (box units) to count; smaller flicks are pen noise. */
+const HOOK_MIN_SIDEWAYS = 0.03;
+/** A reference hook this wide (box units) and sharp (degrees) is clear: the ink must show a hook too… */
+const HOOK_CLEAR_SIDEWAYS = 0.045;
+const HOOK_CLEAR_ANGLE = 60;
+/** Hooks at least this wide (box units: 力, 刀, 月, 円, 気, 分) must be drawn in full; smaller ones (小, 行, 学) may be rushed. */
+const HOOK_STRICT_SIDEWAYS = 0.06;
+/** …turning at least this much (degrees), or reaching this share of the reference hook's width, however rushed. */
+const HOOK_DRAWN_ANGLE = 35;
+const HOOK_DRAWN_SHARE = 0.4;
+/** A reference end this straight (degrees) and narrow (box units) has no hook… */
+/** A clear reference hook drawn turning under this share of its angle, and not reaching its full width, is flattened or half-drawn. */
+const HOOK_FLAT_SHARE = 0;   // off: half-hooks overlap rushed correct hooks (Bottwo sloppy set); see PROGRESS.md
+const HOOK_FLAT_WIDTH = 0.8;
+const HOOK_NONE_ANGLE = 25;
+const HOOK_NONE_SIDEWAYS = 0.02;
+/** …so an ink flick at least this sharp (degrees) and wide (box units) is an added hook (一 drawn as 乛). */
+const HOOK_ADDED_ANGLE = 45;
+const HOOK_ADDED_SIDEWAYS = 0.055;
+/** Added-hook probe: how far the last FLICK_TAIL (box units) strays from the line of the FLICK_BODY before it. */
+const FLICK_TAIL = 0.1;
+const FLICK_BODY = 0.2;
+/** Ink end straying this far (box units) where the reference strays under FLICK_REF_MAX is an added hook. */
+const FLICK_MIN = 0.05;
+/** A hook whose end flick reaches this share of the reference's flick is drawn, even if its tail angle reads flat. */
+const HOOK_FLICK_SHARE = 0.9;
+const FLICK_REF_MAX = 0.02;
+
+/**
+ * Sideways stray (box units) of a stroke's last FLICK_TAIL from the straight line through the FLICK_BODY before it.
+ * Catches a flick added at the end of a long straight stroke, which a fraction-of-length tail can miss.
+ */
+function endFlick(points) {
+  let walked = 0;
+  let tailIndex = points.length - 1;
+  while (tailIndex > 0 && walked < FLICK_TAIL) {
+    walked += dist(points[tailIndex], points[tailIndex - 1]);
+    tailIndex--;
+  }
+  let bodyIndex = tailIndex;
+  walked = 0;
+  while (bodyIndex > 0 && walked < FLICK_BODY) {
+    walked += dist(points[bodyIndex], points[bodyIndex - 1]);
+    bodyIndex--;
+  }
+  const a = points[bodyIndex];
+  const b = points[tailIndex];
+  const length = dist(a, b);
+  if (length < 1e-6) {
+    return 0;
+  }
+  const off = (q) => Math.abs((b.x - a.x) * (q.y - a.y) - (b.y - a.y) * (q.x - a.x)) / length;
+  return Math.max(...points.slice(tailIndex).map(off));
+}
+
+/**
+ * Hook at the end of a stroke: angle (degrees) between its final tail and the stretch just before it, and how
+ * far the tail reaches sideways (box units). The tail is the last `fraction`
+ * of the points, but never shorter than HOOK_MIN_TAIL of arc length; it is aimed at its farthest point.
+ * @param {Array<{x:number,y:number}>} points evenly resampled stroke
+ * @param {number} fraction
+ */
+function hookShape(points, fraction) {
+  const last = points.length - 1;
+  const spacing = plen(points) / Math.max(last, 1);
+  const tailPoints = Math.max(1, Math.round(last * fraction), Math.ceil(HOOK_MIN_TAIL / Math.max(spacing, 1e-6)));
+  const tailStart = points[Math.max(1, last - Math.min(tailPoints, last - 1))];
+  // aim at the tail point farthest from where the tail starts: a pen wobbling back at lift-off is not a hook
+  const tail = points.slice(points.indexOf(tailStart));
+  const tip = tail.reduce((far, q) => (dist(q, tailStart) > dist(far, tailStart) ? q : far), tail[tail.length - 1]);
+  const tailHeading = Math.atan2(tip.y - tailStart.y, tip.x - tailStart.x);
+  // compare with the stretch just before the tail (twice its length), not the whole stroke: a corner earlier on
+  // (力, 刀) must not look like a hook
+  const tailIndex = points.indexOf(tailStart);
+  const before = points[Math.max(0, tailIndex - 2 * (last - tailIndex))];
+  const bodyHeading = Math.atan2(tailStart.y - before.y, tailStart.x - before.x);
+  const angle = angleGapDegrees(tailHeading, bodyHeading);
+  const sideways = dist(tip, tailStart) * Math.sin((Math.min(angle, 90) * Math.PI) / 180);
+  return { angle, sideways };
+}
+/**
+ * A stroke that both heads off (chord angle beyond veer.angle) and bends well past the reference (signed turning
+ * beyond veer.turn) is a different stroke, e.g. a long curve sweeping down-right where a short straight bar belongs.
+ * Each alone stays lenient (S.angle / S.turn); only the combination fails. u, g = smoothed points, cg = reference chord.
+ * @returns {boolean}
+ */
+function veersAway(u, g, cg, S) {
+  if (!S.veer || cg <= S.minLen * 0.8) {
+    return false;
+  }
+  let headingDiff = Math.abs(chordAng(u) - chordAng(g));
+  if (headingDiff > Math.PI) {
+    headingDiff = 2 * Math.PI - headingDiff;
+  }
+  const turnDiff = Math.abs(turning(u) - turning(g));
+  return headingDiff * 180 / Math.PI > S.veer.angle && turnDiff > S.veer.turn;
+}
+/** Reference strokes whose chord is at least this share of their path length count as mostly straight. */
+const STRAIGHT_CHORD_SHARE = 0.6;
+/** Direction is only judged for references whose chord is at least this share of SHAPE.minLen. */
+const DIRECTION_MIN_CHORD_SHARE = 0.8;
+
+/** Smallest absolute difference between two angles in degrees (radian inputs). */
+function angleGapDegrees(a, b) {
+  let gap = Math.abs(a - b);
+  if (gap > Math.PI) {
+    gap = 2 * Math.PI - gap;
+  }
+  return (gap * 180) / Math.PI;
+}
+
+/** Chord length (start → end) of a point list. */
+const chordLength = (points) => dist(points[0], points[points.length - 1]);
+
+/** Headings (radians) of SHAPE.segN equal sections of a stroke: a coarse bend profile. */
+function sectionHeadings(points, sections) {
+  const last = points.length - 1;
+  const headings = [];
+  for (let q = 0; q < sections; q++) {
+    const a = points[Math.round((last * q) / sections)];
+    const b = points[Math.round((last * (q + 1)) / sections)];
+    headings.push(Math.atan2(b.y - a.y, b.x - a.x));
+  }
+  return headings;
+}
+
+/** 'hook' when the flick at the end differs from the reference's (on dense, unsmoothed points: smoothing erases hooks). */
+function hookMismatch(denseInk, denseRef, refPoints, S) {
+  if (!S.hook || plen(refPoints) < S.minLen) {
+    return '';
+  }
+  const ink = hookShape(smooth(denseInk, 1), S.hookF);
+  const ref = hookShape(denseRef, S.hookF);
+  if (Math.max(ink.sideways, ref.sideways) < HOOK_MIN_SIDEWAYS) {
+    return '';   // neither has a flick big enough to see: pen noise at lift-off is not a hook
+  }
+  const refHasHook = ref.sideways >= HOOK_STRICT_SIDEWAYS && ref.angle >= HOOK_CLEAR_ANGLE;
+  const refFlick = endFlick(denseRef);
+  const refTurn = turning(smooth(refPoints));
+  // a dropped hook turns less than the reference (or the other way): the ink must turn the same way, at least as far
+  const turnsAsMuch = turning(smooth(resample(denseInk, CONFIG.CHECK.N))) * Math.sign(refTurn) >= Math.abs(refTurn);
+  const flickDrawn = ref.angle >= HOOK_CLEAR_ANGLE && turnsAsMuch && refFlick >= HOOK_MIN_SIDEWAYS
+    && endFlick(smooth(denseInk, 1)) >= HOOK_FLICK_SHARE * refFlick;
+  const inkHasHook = flickDrawn || ink.angle >= HOOK_DRAWN_ANGLE || ink.sideways >= HOOK_DRAWN_SHARE * ref.sideways;
+  if (refHasHook && !inkHasHook) {
+    return 'hook-missing';   // a clear hook (力, 刀, 後) written as a plain line
+  }
+  const [flatShare, flatWidth] = S.flat || [HOOK_FLAT_SHARE, HOOK_FLAT_WIDTH];
+  if (refHasHook && ink.angle < flatShare * ref.angle && ink.sideways < flatWidth * ref.sideways) {
+    return 'hook-flat';   // a clear hook flattened or only half drawn (月, 円, 気)
+  }
+  const refIsPlain = ref.angle < HOOK_NONE_ANGLE && ref.sideways < HOOK_NONE_SIDEWAYS;
+  if (refIsPlain && ink.angle >= HOOK_ADDED_ANGLE && ink.sideways >= HOOK_ADDED_SIDEWAYS) {
+    return 'hook-added';   // a plain end written with a clear hook
+  }
+  if (refIsPlain && plen(denseRef) >= FLICK_TAIL + FLICK_BODY && endFlick(denseRef) < FLICK_REF_MAX
+      && endFlick(smooth(denseInk, 1)) >= FLICK_MIN) {
+    return 'hook-flick';   // a flick added to the end of a long straight stroke
+  }
+  return !flickDrawn && Math.abs(ink.angle - ref.angle) > S.hook ? 'hook-angle' : '';
+}
+
+/** Short strokes (ticks, dots) are too small for the full shape check, but their heading still has to match. */
+function shortStrokeTurnedAway(u, g, S) {
+  const refChord = chordLength(g);
+  const isShort = refChord >= S.shortMinChord && (plen(g) < S.minLen || refChord <= S.minLen * DIRECTION_MIN_CHORD_SHARE);
+  if (!isShort || chordLength(u) < S.shortMinChord) {
+    return false;
+  }
+  return angleGapDegrees(chordAng(u), chordAng(g)) > S.shortAngle;
+}
+
+/** Length ratio: chord ratio for mostly straight references (tremor-proof), path ratio for bent ones. */
+function lengthRatioFor(ink, ref) {
+  const refChord = chordLength(ref);
+  const refPath = plen(ref);
+  return refChord >= STRAIGHT_CHORD_SHARE * refPath ? chordLength(ink) / refChord : plen(ink) / refPath;
+}
+
+/**
+ * Shape check for one stroke, independent of its position and size: hook, length, direction, veer, bend,
+ * bend profile and bow must all match the reference. CONFIG.CHECK.SHAPE tunes it.
+ * @param {Array} ink resampled user points (already placed by the fit)
+ * @param {Array} ref expected points
+ * @param {Array} [denseInk] densely resampled ink, for hook detection
+ * @param {Array} [denseRef] densely resampled reference
+ * @returns {string} '' when the shape matches, else the failing check's name (never shown; used by tests)
+ */
+function shapeGate(ink, ref, denseInk, denseRef) {
+  const S = CONFIG.CHECK.SHAPE;
+  if (!S || !S.on) {
+    return '';
+  }
+  const hookFail = hookMismatch(denseInk || ink, denseRef || ref, ref, S);
+  if (hookFail) {
+    return hookFail;   // 'hook-…': which hook test failed (tests only)
+  }
+  const u = smooth(ink);
+  const g = smooth(ref);
+  if (shortStrokeTurnedAway(u, g, S)) {
+    return 'direction';
+  }
+  if (plen(g) < S.minLen) {
+    return '';   // dots and ticks are too small to judge by shape; compare() handles them
+  }
+  const ratio = lengthRatioFor(u, g);
+  const tinyAllowance = plen(g) < TINY_STROKE_UNITS / KANJIVG_UNITS && Math.abs(plen(u) - plen(g)) <= TINY_LENGTH_SLACK / KANJIVG_UNITS;
+  if ((ratio < S.len[0] || ratio > S.len[1]) && !tinyAllowance) {
+    return 'length';   // tiny strokes (under 10 KanjiVG units) may miss by up to 3 units (stroke_tolerance_hints.json)
+  }
+  const refChord = chordLength(g);
+  if (refChord > S.minLen * DIRECTION_MIN_CHORD_SHARE && angleGapDegrees(chordAng(u), chordAng(g)) > S.angle) {
+    return 'direction';
+  }
+  if (veersAway(u, g, refChord, S)) {
+    return 'veer';
+  }
+  // total turning is too noisy to judge on short strokes (a wobble there turns as much as a real bend)
+  if (S.turn && plen(g) >= S.turnMinLen && Math.abs(turning(u) - turning(g)) > S.turn) {
+    return 'bend';
+  }
+  if (S.seg) {
+    const inkHeadings = sectionHeadings(u, S.segN);
+    const refHeadings = sectionHeadings(g, S.segN);
+    if (inkHeadings.some((h, q) => angleGapDegrees(h, refHeadings[q]) > S.seg)) {
+      return 'bend';
+    }
+  }
+  // bow in box units: the difference must exceed both bow × chord and bowAbs
+  const bowGap = Math.abs(bow(u) * chordLength(u) - bow(g) * refChord);
+  if (bowGap > Math.max(S.bow * refChord, S.bowAbs)) {
+    return 'curve';
+  }
+  return '';
+}
 /** Proportion check against strokes already written (look-alikes such as 土/士, 未/末, 日/目): for every earlier stroke j
  *  that is long enough, (this chord / chord j) must be within CONFIG.CHECK.PROP.factor× of the reference ratio. @returns '' or 'proportion' */
 function proportionGate(k,i,u,prev){const P=CONFIG.CHECK.PROP;if(!P||!P.on||!prev.length)return '';
@@ -520,9 +1060,6 @@ function proportionGate(k,i,u,prev){const P=CONFIG.CHECK.PROP;if(!P||!P.on||!pre
  for(const q of prev){const gj=chord(idealPts(k,q.i));if(gj<P.minLen)continue;const uj=chord(resample(q.pts,CONFIG.CHECK.N));if(uj<1e-3)continue;
   const want=gi/gj,got=ui/uj,off=Math.max(got/want,want/got);if(off>P.factor)return 'proportion'}
  return ''}
-/** Look-alike rules (proportion-rules-*.js, window.PROPORTION_RULES): each rule is checked as soon as the strokes it
- *  involves are written. Supported metrics: lengthRatio, angle. Weak pairs (CONFIG.CHECK.RULES.weak) get double tolerance.
- *  @returns '' or 'rule:<id>' */
 /* ==================== LOOK-ALIKE RULES — proportion-rules-*.js, judged by proportion_metrics.js ==================== */
 
 /** KanjiVG viewBox size: proportion_metrics.js takes ink as path strings in this space. */
@@ -536,11 +1073,25 @@ function inkToPath(points) {
   return `M ${coords[0]} L ${coords.slice(1).join(' L ')}`;
 }
 
+/** Rule types that a squashed or stretched but correct glyph shifts, and the extra tolerance they get. */
+const SQUASH_SENSITIVE_METRICS = new Set(['aspectRatio', 'lengthRatio']);
+const SQUASH_TOLERANCE_FACTOR = 2;
+
+/** Pairs written with the same strokes (カ/力, タ/夕, ト/卜): either one is accepted, so their rules are not applied. */
+const SAME_DRAWING_PAIRS = ['カ力', 'タ夕', 'ト卜'];
+
+/** True when the rule only separates its character from a rival that is drawn identically. */
+function drawnTheSame(rule) {
+  return rule.rivals.every((x) => SAME_DRAWING_PAIRS.some((pair) => pair.includes(rule.char) && pair.includes(x)));
+}
+
 /** Copy of rule with doubled tolerance when it separates a weak pair (CONFIG.CHECK.RULES.weak). */
 function withPairTolerance(rule) {
   const weakPairs = CONFIG.CHECK.RULES.weak;
   const weak = rule.rivals.some((x) => weakPairs.includes(rule.char + x) || weakPairs.includes(x + rule.char));
-  return weak ? { ...rule, tolerance: rule.tolerance * 2 } : rule;
+  const squashable = SQUASH_SENSITIVE_METRICS.has(rule.metric.type);   // a squashed but correct glyph changes these
+  const factor = (weak ? 2 : 1) * (squashable ? SQUASH_TOLERANCE_FACTOR : 1);
+  return factor === 1 ? rule : { ...rule, tolerance: rule.tolerance * factor };
 }
 
 /**
@@ -563,7 +1114,8 @@ function ruleGate(k, i, u, prev) {
     return '';
   }
   const paths = drawn.map(inkToPath);
-  const active = rules.filter((rule) => !rule.displayOnly).map(withPairTolerance);
+  // displayOnly rules belong to characters outside the level lists (已, 卜 …); they still judge that character when it is practised
+  const active = rules.filter((rule) => !drawnTheSame(rule)).map(withPairTolerance);
   if (i === k.strokes - 1) {
     const { failed } = metrics.checkChar(k.k, paths, { [k.k]: active });
     return failed.length ? `rule:${failed[0].rule.id}` : '';
@@ -575,24 +1127,175 @@ function ruleGate(k, i, u, prev) {
   const failedRule = dueNow.find((rule) => !metrics.evaluateRule(rule, paths).passes);
   return failedRule ? `rule:${failedRule.id}` : '';
 }
+/**
+ * Lenient contact gate (stroke-topology-*.js): once stroke i is down, fail only on a clear contact violation
+ * between i and an earlier stroke — a crossing that should touch, a missing crossing, or an extra one.
+ * Borderline contacts pass (proportion_metrics.js TOPOLOGY_CHECK). '' = pass.
+ */
+function topologyGate(k, i, u, prev) {
+  const topology = window.STROKE_TOPOLOGY && window.STROKE_TOPOLOGY.chars && window.STROKE_TOPOLOGY.chars[k.k];
+  const metrics = window.ProportionMetrics;
+  if (!CONFIG.CHECK.TOPOLOGY.on || !topology || !metrics || !metrics.topologyViolations) {
+    return '';
+  }
+  const inkByStroke = { [i]: u };
+  prev.forEach((q) => { inkByStroke[q.i] = q.pts; });
+  const drawn = Array.from({ length: i + 1 }, (_, j) => inkByStroke[j]);
+  if (drawn.some((pts) => !pts) || drawn.length < 2) {
+    return '';
+  }
+  const due = topology.filter(([, j]) => j === i);
+  const violation = metrics.topologyViolations(due, drawn.map(inkToPath))[0];
+  return violation ? `topology:${violation.kind}` : '';
+}
 const passes=(r,t)=>r.sd<=t.start&&r.ed<=t.end&&r.mean<=t.mean&&r.dirCos>=t.dirCos&&r.ratio>=t.len[0]&&r.ratio<=t.len[1];
 /** Check stroke i of kanji/word k. level 'L1' = guided (step/trace) tolerances, 'L3' = memory (freehand) tolerances.
  *  First stroke (or first of a character in a word) → absolute tolerances; later strokes → relative to the fit.
  *  Returns {ok, msg, m}: msg is an internal reason code for tests/debugging only — it is never shown to the user. */
-function checkStroke(k,i,stroke,level='L1',prev=[]){const C=CONFIG.CHECK,mem=level==='L3',base=mem?C.memory:C.strict;
+function checkStroke(k, i, stroke, level = 'L1', prev = []) {
+  const mem = level === 'L3';
+  const verdict = judgeStroke(k, i, stroke, mem, prev);
+  const settled = isFirstStrokeRecheckDue(i, prev) && !isTinyStroke(k, 0) ? settleFirstStroke(k, i, stroke, prev, mem, verdict) : verdict;
+  return hookLayer(k, i, stroke, settled);
+}
+
+/** KanjiVG box size: hook_rules.js measures in these units. */
+const KANJIVG_UNITS = 109;
+
+/**
+ * Botthree's hook layer (hook_rules.js, HOOK_RULES.md): runs after the checker and can only turn an accept into a
+ * reject, when the stroke's tail adds a hook the reference lacks or drops one it has. Characters only (not word boxes).
+ */
+function hookLayer(k, i, stroke, verdict) {
+  const rules = window.HOOK_RULES_DATA;
+  if (!verdict.ok || verdict.provisional || !window.HookRules || !rules || k.isWord) {
+    return verdict;
+  }
+  const category = window.HookRules.categoryOf(k.k, i);
+  if (!category) {
+    return verdict;
+  }
+  const toUnits = (points) => points.map((q) => [q.x * KANJIVG_UNITS, q.y * KANJIVG_UNITS]);
+  return window.HookRules.checkAfterApp(verdict, toUnits(stroke.pts), toUnits(idealDense(k, i)), category, rules);
+}
+
+/** True when stroke i is stroke 2 and stroke 1 (accepted provisionally) is due for its re-check. */
+/** True when stroke i's reference is under TINY_STROKE_UNITS long: too small for the first-stroke re-check. */
+function isTinyStroke(k, i) {
+  return plen(idealDense(k, i)) < TINY_STROKE_UNITS / KANJIVG_UNITS;
+}
+
+function isFirstStrokeRecheckDue(i, prev) {
+  return CONFIG.CHECK.FIRST.on && i === 1 && prev.length === 1 && prev[0].i === 0;
+}
+
+/**
+ * Placement fit of stroke i against itself: centroids aligned, scale from its chord (clamped to
+ * CONFIG.CHECK.FIRST.scale). Used to ask "is this the right kind of stroke?" independent of where it sits.
+ * @returns {{s:number, mu:object, mg:object, drift:number}}
+ */
+function selfFit(k, i, ink) {
+  const FIRST = CONFIG.CHECK.FIRST;
+  const ref = idealPts(k, i);
+  const centroid = (points) => ({
+    x: points.reduce((sum, q) => sum + q.x, 0) / points.length,
+    y: points.reduce((sum, q) => sum + q.y, 0) / points.length,
+  });
+  const refChord = dist(ref[0], ref[ref.length - 1]);
+  const inkChord = dist(ink[0], ink[ink.length - 1]);
+  const rawScale = refChord > FIRST.minChord ? inkChord / refChord : 1;
+  const scale = Math.min(FIRST.scale[1], Math.max(FIRST.scale[0], rawScale));
+  return { s: scale, mu: centroid(ink), mg: centroid(ref), drift: FIRST.drift };
+}
+
+/**
+ * Stroke i judged against itself only (selfFit): right shape, direction, bend and hook?
+ * Position and size are free here; they are judged relative to the other strokes elsewhere.
+ * @returns {boolean}
+ */
+function strokeLooksRight(k, i, pts, mem) {
+  const ink = resample(pts, CONFIG.CHECK.N);
+  const fit = selfFit(k, i, ink);
+  const base = mem ? CONFIG.CHECK.memory : CONFIG.CHECK.strict;
+  const tol = { ...base, ...CONFIG.CHECK.ADAPT.rel };
+  const expected = applyFit(fit, idealPts(k, i));
+  if (!passes(compare(ink, expected, tol), tol)) {
+    return false;
+  }
+  return !shapeGate(ink, expected, resample(pts, 96), applyFit(fit, idealDense(k, i)));
+}
+
+/**
+ * Stroke 2 was just drawn after a provisionally accepted stroke 1: decide which stroke a miss belongs to.
+ *  - stroke 1 doesn't look right by itself (and something failed): stroke 1 is asked for again.
+ *  - stroke 2 fails and is the wrong kind of stroke by itself (shape, direction, bend): stroke 2's miss.
+ *  - both look right alone but don't fit together: stroke 1 is redone when the pair's lengths disagree
+ *    with the reference (e.g. strokes written in the wrong order), otherwise it is stroke 2's miss.
+ * @returns {object} checkStroke-style verdict (redoFirst: true = erase both, the miss counts on stroke 1)
+ */
+function settleFirstStroke(k, i, stroke, prev, mem, secondVerdict) {
+  const firstVerdict = rejudgeFirstStroke(k, i, stroke, prev, mem);
+  if (secondVerdict.ok && !firstVerdict) {
+    return secondVerdict;
+  }
+  if (firstVerdict && firstVerdict.firstHook) {
+    return firstVerdict;   // stroke 1 has the wrong hook (straight where 小 hooks): always stroke 1's miss
+  }
+  if (!strokeLooksRight(k, 0, prev[0].pts, mem)) {
+    return firstVerdict || redoFirstVerdict('firstBeforeSecond', secondVerdict.m);
+  }
+  const pairLengthsWrong = Boolean(firstVerdict) && firstVerdict.shape === 'firstLength';
+  if (pairLengthsWrong && strokeLooksRight(k, i, stroke.pts, mem)) {
+    return firstVerdict;
+  }
+  if (!secondVerdict.ok) {
+    return secondVerdict;
+  }
+  // stroke 1 looks right but the pair doesn't fit together: stroke 2 is the odd one out
+  return { ok: false, msg: 'Shape', shape: `pair:${firstVerdict.shape}`, m: secondVerdict.m };
+}
+
+/** Verdict asking for stroke 1 again (why = internal reason code, never shown). */
+function redoFirstVerdict(why, metrics) {
+  return { ok: false, msg: 'Redo first', redoFirst: true, shape: why, m: metrics || null };
+}
+
+/** Strokes shorter than this (KanjiVG units) get TINY_LENGTH_SLACK units of length allowance. */
+const TINY_STROKE_UNITS = 10;
+const TINY_LENGTH_SLACK = 3;
+/** A later stroke must fit this much better (share of the own-reference error) to call it wrong order. */
+const WRONG_ORDER_MARGIN = 0.35;
+/** Reference strokes this close in shape once centred (mean point distance, box units) are twins (dakuten, 三-like bars). */
+const TWIN_SHAPE_EPS = 0.01;
+/** A twin is exempt from the order check only while the own-reference error stays under this many twin spacings. */
+const TWIN_DRIFT = 1.5;
+/** Spacing (box units) between twin references i and j of k (same shape, only shifted), or 0 when they are not twins. */
+function twinSpacing(k, i, j) {
+  const N = CONFIG.CHECK.N;
+  const a = resample(idealPts(k, i), N);
+  const b = resample(idealPts(k, j), N);
+  const centre = (p) => p.reduce((s, q) => ({ x: s.x + q.x / p.length, y: s.y + q.y / p.length }), { x: 0, y: 0 });
+  const ca = centre(a);
+  const cb = centre(b);
+  let total = 0;
+  for (let t = 0; t < N; t++) {
+    total += Math.hypot(a[t].x - ca.x - (b[t].x - cb.x), a[t].y - ca.y - (b[t].y - cb.y));
+  }
+  return total / N < TWIN_SHAPE_EPS ? Math.hypot(ca.x - cb.x, ca.y - cb.y) : 0;
+}
+/** Judge stroke i on its own merits (shape, placement relative to earlier strokes, order). See checkStroke. */
+function judgeStroke(k,i,stroke,mem,prev){const C=CONFIG.CHECK,base=mem?C.memory:C.strict;
  const u=resample(stroke.pts,C.N),f=fitPlacement(k,prev,mem)||firstStrokeFit(k,i,u);
- const firstVerdict=rejudgeFirstStroke(k,i,stroke,prev,mem);
- if(firstVerdict)return firstVerdict;
  const tol=f?{...base,...C.ADAPT.rel}:base,exp=j=>f?applyFit(f,idealPts(k,j)):idealPts(k,j);
  const r=compare(u,exp(i),tol);
  const provisionalFirst=i===0&&k.strokes>1&&!k.isWord&&C.FIRST.on&&!prev.length;
  if(provisionalFirst){return r.dirCos>=0&&!r.rev?{ok:true,m:r,provisional:true}:{ok:false,msg:'Wrong direction',m:r}}   // shape, length and placement are re-judged at stroke 2's scale (rejudgeFirstStroke)
  // a later stroke that matches clearly better → wrong order (stops near-identical neighbours being accepted)
  const last0=k.parts&&k.isWord?k.parts[partOf(k,i)].to:k.strokes-1;
- if(passes(r,tol)){const sg=shapeGate(u,exp(i),resample(stroke.pts,96),f?applyFit(f,idealDense(k,i)):idealDense(k,i))||proportionGate(k,i,u,prev)||ruleGate(k,i,u,prev);if(sg)return {ok:false,msg:'Shape',shape:sg,m:r};for(let j=i+1;j<=last0;j++){const q=compare(u,exp(j),tol);if(passes(q,tol)&&q.mean+q.sd<0.6*(r.mean+r.sd))return {ok:false,msg:'Wrong order',m:r}}return {ok:true,m:r}}
+ if(passes(r,tol)){const sg=shapeGate(u,exp(i),resample(stroke.pts,96),f?applyFit(f,idealDense(k,i)):idealDense(k,i))||proportionGate(k,i,u,prev)||ruleGate(k,i,u,prev)||topologyGate(k,i,u,prev);if(sg)return {ok:false,msg:'Shape',shape:sg,m:r};for(let j=i+1;j<=last0;j++){if(r.mean+r.sd<TWIN_DRIFT*twinSpacing(k,i,j))continue;const q=compare(u,exp(j),tol);if(passes(q,tol)&&q.mean+q.sd<WRONG_ORDER_MARGIN*(r.mean+r.sd))return {ok:false,msg:'Wrong order',m:r}}return {ok:true,m:r}}
  // wrong order? does it match another not-yet-written stroke well
  const last=k.parts&&k.isWord?k.parts[partOf(k,i)].to:k.strokes-1;
- for(let j=i+1;j<=last;j++){const q=compare(u,exp(j),tol);if(q.sd<=tol.start&&q.ed<=tol.end&&q.mean<=tol.mean&&q.dirCos>=tol.dirCos)return {ok:false,msg:'Wrong order',m:r}}
+ for(let j=i+1;j<=last;j++){const q=compare(u,exp(j),tol);if(q.sd<=tol.start&&q.ed<=tol.end&&q.mean<=tol.mean&&q.dirCos>=tol.dirCos&&q.mean+q.sd<WRONG_ORDER_MARGIN*(r.mean+r.sd))return {ok:false,msg:'Wrong order',m:r}}   // only when a later stroke clearly fits better than its own reference
  let msg='Try again';
  if(r.ratio<tol.len[0])msg='Too short';else if(r.ratio>tol.len[1])msg='Too long';
  else if(r.rev||r.dirCos<0)msg='Wrong direction';else if(r.sd>tol.start)msg='Start at the dot';else if(r.ed>tol.end)msg='End is off';
@@ -661,48 +1364,228 @@ function readingTag(word,reading){const R=hira(reading),W=[...word],memo={};
  if(T.every(t=>t==='on'))return ['音','on'];if(T.every(t=>t==='kun'))return ['訓','kun'];
  if(T.length===2)return T[0]==='on'?['重箱','jūbako']:['湯桶','yutō'];return null}
 /** Format a KANJIDIC2 kun reading "a.bc" with the okurigana in a lighter span. */
-/** Kun reading i for display: the data's kunDisplay form (e.g. ふた(つ)) when present, else okuri(). */
-function kunShow(k,r,i){const d=k.kunDisplay&&k.kunDisplay[i];if(!d)return okuri(r);const m=/^(.*?)(\(.*\))$/.exec(d);return m?esc(m[1])+'<span class="ok">'+esc(m[2])+'</span>':esc(d)}
-function okuri(r){r=r.replace(/^-|-$/g,'');const [a,b]=r.split('.');return b?a+'<span class="ok">('+b+')</span>':a}
+/**
+ * Split a kun reading into the part the kanji covers and its okurigana, from any source notation:
+ * ふた(つ) (kunDisplay), ふた.つ (KANJIDIC2), and prefix/suffix hyphens (-うえ, お-) which are dropped.
+ * @param {string} reading
+ * @returns {{stem: string, okurigana: string}}
+ */
+function splitKunReading(reading) {
+  const plain = String(reading || '').trim().replace(/^[-‐]+|[-‐]+$/g, '');
+  const parenthesised = /^(.*?)[(（](.*)[)）]$/.exec(plain);
+  if (parenthesised) {
+    return { stem: parenthesised[1], okurigana: parenthesised[2] };
+  }
+  const dot = plain.indexOf('.');
+  if (dot >= 0) {
+    return { stem: plain.slice(0, dot), okurigana: plain.slice(dot + 1) };
+  }
+  return { stem: plain, okurigana: '' };
+}
+
+/**
+ * A kun reading as HTML: the kanji's part bold in the normal text colour, the okurigana faded and not bold,
+ * with no brackets or dots. A reading with no okurigana is all bold.
+ * @param {string} reading in any notation splitKunReading() understands
+ * @returns {string}
+ */
+function kunReadingHTML(reading) {
+  const { stem, okurigana } = splitKunReading(reading);
+  const tail = okurigana ? `<span class="okuri">${esc(okurigana)}</span>` : '';
+  return `<span class="kunr"><b class="kstem">${esc(stem)}</b>${tail}</span>`;
+}
+
+/** Kun readings of kanji k for display (kunDisplay form when present), without repeats once hyphens are dropped. */
+function kunReadingsHTML(k, limit = Infinity) {
+  const seen = new Set();
+  return k.kun
+    .map((reading, i) => (k.kunDisplay && k.kunDisplay[i]) || reading)
+    .filter((reading) => {
+      const { stem, okurigana } = splitKunReading(reading);
+      const key = stem + okurigana;
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    })
+    .slice(0, limit)
+    .map(kunReadingHTML);
+}
+
+/** Kun reading i of kanji k as HTML (kept for callers that render one reading). */
+function kunShow(k, r, i) {
+  return kunReadingHTML((k.kunDisplay && k.kunDisplay[i]) || r);
+}
 /** Hint rungs for a level. */
 function ladder(k,s){if(s.t==='W')return ['char','outline'];return ['kw','name','outline']}
-/** Bottom card: hint button (L2/L3/word) + equation; info popover. Part labels live on the box (labels()). */
-function renderPanel(){const c=boxes[cur],k=c.k,st=c.s;let main;const anim=c.anim||{};c.anim={};
- const k0=k.src||k;let facts=k.isWord?'':`<button class="ib info" onclick="this.nextElementSibling.classList.toggle('show')" aria-label="Kanji info">${I_INFO}</button><div class="ipop"><div class="facts"><span><i>Meanings</i>${esc(k0.meanings.join(', '))}</span><span><i>音</i>${k0.on.join('、')}</span><span><i>訓</i>${k0.kun.join('、')}</span><span><i>Strokes</i>${k0.strokes}</span><span><i>JLPT</i>${k0.jlpt}</span><span><i>Radical</i>${k0.radical.glyph} ${esc(k0.radical.meaning)} (#${k0.radical.num})</span><a href="https://jisho.org/search/${encodeURIComponent(k0.k)}%23kanji" target="_blank" rel="noopener">View on Jisho ↗</a></div></div>`;
- if(k.isWord)facts=`<button class="ib info" onclick="this.nextElementSibling.classList.toggle('show')" aria-label="Word info">${I_INFO}</button><div class="ipop"><div class="facts"><span><i>Word</i>${esc(k.k)}</span><span><i>Reading</i>${esc(k.reading)}</span><span><i>Meaning</i>${esc(k.keyword)}</span><span><i>Source</i>JMdict #${esc(k.jmdict)}</span><a href="https://jisho.org/search/${encodeURIComponent(k.k)}" target="_blank" rel="noopener">View on Jisho ↗</a></div></div>`;
- const N=k.parts.length,n=c.pad.strokes.length,pi=c.allDone||n>=k.strokes?N:partOf(k,n);
- if(k.isPart){main=`<div class="pmain"><div class="pside">${equation(k.src,pi>=N?k.pi+1:k.pi,'full',anim)}</div></div>`}
- else if(pi>=N){main=`<div class="big">${equation(k,N,'full',anim)}</div>`}
- else{const p=k.parts[pi];
-  const nm=p.name?esc(p.name):'';
-  const kwHTML=p.kw?`<div class="pkw">${esc(p.kw)}</div>`:'';
-  let glyph,text,mode;
-  if(isStep(st)){mode='full';glyph=`<div class="pglyph">${partSVG(k,pi)}</div>`;text=`<div class="pname">${nm}</div>${kwHTML}`}
-  else{const L=ladder(k,st),h=(c.hints||{})[pi]||0,has=t=>L.indexOf(t)>-1&&L.indexOf(t)<h;mode=st.t==='W'?(has('char')?'full':'none'):has('kw')?'kw':'none';glyph=`<div class="pglyph mem">?</div>`;
-   const lab={char:'Hint: show character',kw:'Hint: keyword',name:'Hint: name',outline:'Hint: outline'};
-   text=st.t==='W'?'':`${has('name')?'<div class="pname">'+nm+'</div>':''}${has('kw')?kwHTML:''}
-   `;glyph=`<button class="pglyph mem hintb" onclick="useHint()" aria-label="${h<L.length?lab[L[h]]:'Show outline again'}">${I_BULB}</button>`}
-  if(!k.isWord){text='';if(isStep(st))glyph=''} // part name/keyword now float on the writing box (see labels())
-  main=`<div class="pmain">${glyph}${text.trim()?'<div class="ptext">'+text+'</div>':''}${glyph?'<div class="pdiv"></div>':''}<div class="pside">${equation(k,pi,mode,anim)}</div></div>`}
- // memory link (components → meaning) while the kanji is shown or traced; hidden in freehand/recall boxes so recall stays real
- if(!k.isWord&&!k.isPart&&!isMem(st)&&memLink(k))main+=`<div class="mlink">${esc(memLink(k))}</div>`;
- const kl=k.isWord&&k.cells===1&&(window.KANA_LINKS||{})[k.k];
- if(kl&&!isMem(st))main+=`<div class="mlink">${esc(kl)}</div>`;   // kana memory link (kana-links.js), hidden in memory boxes
- if(k.isPart&&pi>=N&&k.pi===k.src.parts.length-1&&memLink(k.src))main+=`<div class="mlink">${esc(memLink(k.src))}</div>`;
- $('panel').innerHTML=main+facts.replace('</div></div>',lookalikeHTML(k.src||k)+'</div></div>');}
+/** Accessible labels for the next hint on the hint ladder. */
+const HINT_LABELS = {
+  char: 'Hint: show character',
+  kw: 'Hint: keyword',
+  name: 'Hint: name',
+  outline: 'Hint: outline',
+};
+
+/**
+ * Bottom card: hint button (memory boxes) or part glyph (step boxes), the equation, memory links and the info
+ * popover. Part labels live on the box itself (labels()).
+ */
+function renderPanel() {
+  const box = boxes[cur];
+  const k = box.k;
+  const anim = box.anim || {};
+  box.anim = {};
+  const partCount = k.parts.length;
+  const strokesDrawn = box.pad.strokes.length;
+  const partIndex = box.allDone || strokesDrawn >= k.strokes ? partCount : partOf(k, strokesDrawn);
+  let main = panelMain(box, partIndex, anim);
+  main += memoryLinksHTML(box, partIndex);
+  const facts = k.isWord ? wordFactsHTML(k) : kanjiFactsHTML(k.src || k);
+  const extras = lookalikeHTML(k.src || k) + sentenceHTML(k.src || k);
+  $('panel').innerHTML = main + facts.replace('</div></div>', `${extras}</div></div>`);
+}
+
+/** Info button + popover for a kanji: meanings, readings, strokes, level, radical, Jisho link. */
+function kanjiFactsHTML(kanji) {
+  const radical = kanji.radical;
+  return `<button class="ib info" onclick="this.nextElementSibling.classList.toggle('show')" aria-label="Kanji info">${I_INFO}</button>`
+    + '<div class="ipop"><div class="facts">'
+    + `<span><i>Meanings</i>${esc(kanji.meanings.join(', '))}</span>`
+    + `<span><i>音</i>${kanji.on.join('、')}</span>`
+    + `<span><i>訓</i>${kunReadingsHTML(kanji).join('、')}</span>`
+    + `<span><i>Strokes</i>${kanji.strokes}</span>`
+    + `<span><i>JLPT</i>${kanji.jlpt}</span>`
+    + `<span><i>Radical</i>${radical.glyph} ${esc(radical.meaning)} (#${radical.num})</span>`
+    + `<a href="https://jisho.org/search/${encodeURIComponent(kanji.k)}%23kanji" target="_blank" rel="noopener">View on Jisho ↗</a>`
+    + '</div></div>';
+}
+
+/** Info button + popover for a word: spelling, reading, meaning, JMdict source, Jisho link. */
+function wordFactsHTML(word) {
+  return `<button class="ib info" onclick="this.nextElementSibling.classList.toggle('show')" aria-label="Word info">${I_INFO}</button>`
+    + '<div class="ipop"><div class="facts">'
+    + `<span><i>Word</i>${esc(word.k)}</span>`
+    + `<span><i>Reading</i>${esc(word.reading)}</span>`
+    + `<span><i>Meaning</i>${esc(word.keyword)}</span>`
+    + `<span><i>Source</i>JMdict #${esc(word.jmdict)}</span>`
+    + `<a href="https://jisho.org/search/${encodeURIComponent(word.k)}" target="_blank" rel="noopener">View on Jisho ↗</a>`
+    + '</div></div>';
+}
+
+/** Main card content: the equation, plus the hint button or part glyph while a part is being written. */
+function panelMain(box, partIndex, anim) {
+  const k = box.k;
+  const partCount = k.parts.length;
+  if (k.isPart) {
+    const shownParts = partIndex >= partCount ? k.pi + 1 : k.pi;
+    return `<div class="pmain"><div class="pside">${equation(k.src, shownParts, 'full', anim)}</div></div>`;
+  }
+  if (partIndex >= partCount) {
+    return `<div class="big">${equation(k, partCount, 'full', anim)}</div>`;
+  }
+  const { glyph, text, mode } = partPrompt(box, partIndex);
+  const textHTML = text.trim() ? `<div class="ptext">${text}</div>` : '';
+  const divider = glyph ? '<div class="pdiv"></div>' : '';
+  return `<div class="pmain">${glyph}${textHTML}${divider}<div class="pside">${equation(k, partIndex, mode, anim)}</div></div>`;
+}
+
+/**
+ * Glyph, text and equation mode for the part being written. Step boxes show the part; memory boxes show a
+ * hint button whose ladder reveals keyword, name, outline (or the character, in words).
+ * Kanji boxes float the part name/keyword on the writing box instead (labels()), so their text is empty.
+ */
+function partPrompt(box, partIndex) {
+  const k = box.k;
+  const step = box.s;
+  const part = k.parts[partIndex];
+  const name = part.name ? esc(part.name) : '';
+  const keywordHTML = part.kw ? `<div class="pkw">${esc(part.kw)}</div>` : '';
+  let glyph;
+  let text;
+  let mode;
+  if (isStep(step)) {
+    mode = 'full';
+    glyph = `<div class="pglyph">${partSVG(k, partIndex)}</div>`;
+    text = `<div class="pname">${name}</div>${keywordHTML}`;
+  } else {
+    const ladderSteps = ladder(k, step);
+    const hintsUsed = (box.hints || {})[partIndex] || 0;
+    const revealed = (kind) => ladderSteps.indexOf(kind) > -1 && ladderSteps.indexOf(kind) < hintsUsed;
+    if (step.t === 'W') {
+      mode = revealed('char') ? 'full' : 'none';
+      text = '';
+    } else {
+      mode = revealed('kw') ? 'kw' : 'none';
+      const nameHTML = revealed('name') ? `<div class="pname">${name}</div>` : '';
+      text = `${nameHTML}${revealed('kw') ? keywordHTML : ''}\n   `;
+    }
+    const label = hintsUsed < ladderSteps.length ? HINT_LABELS[ladderSteps[hintsUsed]] : 'Show outline again';
+    glyph = `<button class="pglyph mem hintb" onclick="useHint()" aria-label="${label}">${I_BULB}</button>`;
+  }
+  if (!k.isWord) {
+    text = '';
+    if (isStep(step)) {
+      glyph = '';
+    }
+  }
+  return { glyph, text, mode };
+}
+
+/**
+ * Memory links: components → meaning while the kanji is shown or traced, the kana link in kana boxes, and the
+ * kanji's link once its last part box is done. Hidden in memory (freehand/recall) boxes so recall stays real.
+ */
+function memoryLinksHTML(box, partIndex) {
+  const k = box.k;
+  const recall = isMem(box.s);
+  let html = '';
+  if (!k.isWord && !k.isPart && !recall && memLink(k)) {
+    html += `<div class="mlink">${esc(memLink(k))}</div>`;
+  }
+  const kanaLink = k.isWord && k.cells === 1 && (window.KANA_LINKS || {})[k.k];
+  if (kanaLink && !recall) {
+    html += `<div class="mlink">${esc(kanaLink)}</div>`;
+  }
+  const lastPartDone = k.isPart && partIndex >= k.parts.length && k.pi === k.src.parts.length - 1;
+  if (lastPartDone && memLink(k.src)) {
+    html += `<div class="mlink">${esc(memLink(k.src))}</div>`;
+  }
+  return html;
+}
 /** Look-alike notes for character c (confusables.js), shown in the info popover only — never as error feedback. */
+/**
+ * Example sentence for kanji k in the info popover: Tatoeba ones link to the source with authors and licence
+ * (CC BY 2.0 FR requires it); Botthree's hand-written ones are marked app-authored and carry no link.
+ * @param {object} k kanji object
+ * @returns {string} HTML, or '' when there is no sentence
+ */
+function sentenceHTML(k) {
+  const sentence = k && window.SENTENCES && window.SENTENCES[k.k];
+  if (!sentence) {
+    return '';
+  }
+  const text = `<span lang="ja">${esc(sentence.ja)}</span> — ${esc(sentence.en)} `;
+  if (sentence.source === 'original' || !sentence.jaId) {
+    return `<span class="sent">${text}<small>(app-authored example)</small></span>`;
+  }
+  const authors = [sentence.jaAuthor, sentence.enAuthor].filter(Boolean).map(esc).join(' / ');
+  const credit = authors ? `Tatoeba · ${authors} · CC BY 2.0 FR` : 'Tatoeba · CC BY 2.0 FR';
+  const source = `https://tatoeba.org/sentences/show/${sentence.jaId}`;
+  return `<span class="sent">${text}<a href="${source}" target="_blank" rel="noopener">${credit}</a></span>`;
+}
 function lookalikeHTML(k){const c=k&&k.k;if(!c||!window.CONFUSABLES)return '';const P=CONFUSABLES.pairs.filter(p=>p.chars.includes(c)&&p.note);
  return P.slice(0,3).map(p=>`<span><i>Look-alike</i>${esc(p.chars.join(' / '))}: ${esc(p.note)}</span>`).join('')}
 /** Top line (reading + meaning, always visible), progress segments, L3 pips, picker and peek pills. */
 function setInfo(){const bk=boxes[cur]&&boxes[cur].k,k=bk&&(bk.src||bk);if(!k)return;let tg=null;
  if(bk.isWord){$('kun').textContent=bk.reading;$('on').textContent=bk.keyword;tg=readingTag(bk.k,bk.reading)}else{
- $('kun').innerHTML=k.kun.length?k.kun.slice(0,3).map((r,i)=>kunShow(k,r,i)).join('<span class="sep">・</span>'):k.on.join('・');
+ $('kun').innerHTML=k.kun.length?kunReadingsHTML(k,3).join('<span class="sep">・</span>'):k.on.join('・');
  $('on').textContent=k.keyword;tg=k.kun.length?['訓','kun']:['音','on']}
  $('rtag').innerHTML=tg?`<b>${tg[0]}</b><small>${tg[1]}</small>`:'';$('rtag').style.display=tg?'':'none'
  const mine=steps.map((s,i)=>i).filter(i=>steps[i].ki===steps[cur].ki),pos=mine.indexOf(cur);
  $('dots').innerHTML=mine.map((j,i)=>`<div class="seg ${isMem(steps[j])||steps[j].t==='W'||steps[j].t==='P'?'sm':''} ${i<pos?'done':i===pos?'now':''}"></div>`).join('');
  const st=steps[cur];
- $('lvname').innerHTML='';renderPicker();renderPeek();
+ $('lvname').innerHTML='';if($('klist').classList.contains('show'))renderPicker();renderPeek();
  const canDraw=true;$('undo').style.visibility=$('clear').style.visibility=canDraw?'visible':'hidden';renderPanel()}
 /** SVG layer of a box: part-region boxes (showParts), highlight rect, guide strokes ("step" one at a time, "faint" all, "blank" none); word cells. */
 function guide(k,mode,showParts){const s=document.createElementNS(NS,'svg');const n=k.cells||1;s.setAttribute('viewBox',`0 0 ${109*n} 109`);
@@ -775,7 +1658,7 @@ function useHint(){const c=boxes[cur];if(isStep(c.s))return;const pi=partOf(c.k,
  *  completely fresh instead of jumping to its word/trace box. */
 function makeSteps(opts={}){steps.length=0;const drilled=new Set(),F=CONFIG.FLOW;
  D.forEach((it,ki)=>{const w=it.w,ks=[...w.w].filter(c=>DATA.kanji[c]);let fresh=false;const mine=new Set();
-  ks.forEach(c=>{const want=ki===opts.freshKi&&!mine.has(c);if(!want&&(drilled.has(c)||(!opts.force&&!isDue(c))))return;drilled.add(c);mine.add(c);fresh=true;const K=DATA.kanji[c];
+  ks.forEach(c=>{if(opts.recallOnly){steps.push({ki,kc:c,t:'K',si:F.STAGES.length-1,g:'free',parts:false,lines:false,recall:true});return}const want=ki===opts.freshKi&&!mine.has(c);if(!want&&(drilled.has(c)||(!opts.force&&!isDue(c))))return;drilled.add(c);mine.add(c);fresh=true;const K=DATA.kanji[c];
    const lvl=want||opts.force?0:fadeLevel(c);
    if(lvl>=2){steps.push({ki,kc:c,t:'K',si:F.STAGES.length-1,g:'free',parts:false,lines:false,recall:true});return} // recall-first: write from meaning/reading
    if(lvl===1){steps.push({ki,kc:c,t:'K',si:F.STAGES.length-1,g:'free',parts:false,lines:false,recall:true});steps.push({ki,kc:c,t:'K',si:2,g:'trace',parts:true,lines:true});steps.push({ki,kc:c,t:'K',si:5,g:'free',parts:false,lines:false});return}
@@ -792,7 +1675,7 @@ function fadeLevel(c){const r=recGet(c);if(!r||!r.lastPracticed)return 0;const s
  *  its part-alone boxes are then skipped (it still shows, keyword included, in the part boxes and equation). */
 function partKnown(g){if(CONFIG.FLOW.REVIEW_PARTS===false)return false;return Object.values(DATA.kanji).some(K=>(Number((recGet(K.k)||{}).streak)||0)>=1&&(K.k===g||K.parts.some(p=>p.g===g)))}
 /** Create one writing box (guide SVG + canvas Pad) for step s. */
-function makeBox(s){const K=DATA.kanji[s.kc],k=s.t==='W'?wordObj(s.w):s.t==='P'?partObj(K,s.pi):K,b=document.createElement('div');b.className='box'+(k.isWord?' wbox':'')+(s.lines===false?' nolines':'');if(k.isWord){b.style.setProperty('--n',k.cells);b.style.setProperty('--C',`min(var(--B), ${Math.floor(90/k.cells)}vw)`)}
+function makeBox(s){const K=DATA.kanji[s.kc],k=s.t==='W'?wordObj(s.w):s.t==='P'?partObj(K,s.pi):K,b=document.createElement('div');b.className='box'+(k.isWord?' wbox':'')+(s.lines===false?' nolines':'');b.dataset.kanji=k.k;b.dataset.retry='0';if(k.isWord){b.style.setProperty('--n',k.cells);b.style.setProperty('--C',`min(var(--B), ${Math.floor(90/k.cells)}vw)`)}
   b.appendChild(guide(k,{step:'step',trace:'faint',free:'blank'}[s.g],s.parts));const cv=document.createElement('canvas');b.appendChild(cv);
   const pad=new Pad(cv);pad.locked=true;const o={b,pad,k,s};pad.onStroke=p=>onStroke(boxes.indexOf(o),p);return o}
 /** Build the practice sheet: one row (.track) per word, boxes appended to their word's row. */
@@ -818,6 +1701,13 @@ function position(anim){const b=boxes[cur]&&boxes[cur].b;if(!b)return;const row=
  rowEls.forEach((r,i)=>{r.classList.toggle('past',i<ki);r.classList.toggle('future',i>ki);r.classList.remove('leaving')});
  const rows=$('track');rows.classList.toggle('anim',anim);rows.style.transform=`translateY(${-row.offsetTop}px)`}
 /** Make box `cur` active (only it accepts ink), hide guides on finished boxes, reposition. */
+/** Blur the box being left right away (no transition), before the next box is focused, so it never shows unblurred. */
+function veilLeaving(box) {
+  if (box && box.b) {
+    box.b.classList.remove('cur');
+    box.b.classList.add('veil');
+  }
+}
 /** Make box `cur` current. Every other box is veiled (blurred, faint, inert) so finished ink never hints the current write/recall. */
 function focus(anim){boxes.forEach((x,i)=>{x.b.classList.toggle('cur',i===cur);x.b.classList.toggle('veil',i!==cur);x.pad.locked=i!==cur;if(i<cur)x.b.querySelectorAll(':scope>svg path[data-i],:scope>svg rect.hl,:scope>svg rect.pbox,.mk,.mk-h,.plab').forEach(e=>e.style.display='none')});boxes[cur].anim={rev:0};sizePads();position(anim);upd();
  const c=boxes[cur];if(c.k.isWord&&!c.spoken){c.spoken=true;later(()=>{if(boxes[cur]===c)speakWord(c.k)},CONFIG.SLIDE_MS)}
@@ -859,19 +1749,30 @@ function flash(c,pi){const b=pi==null?{x:14,y:14,w:81,h:81}:bbox(c.k,pi),W=c.b.c
 /** Rejected stroke: red ink fades out (no message). Memory boxes are marked failed (→ repeat).
  *  After MISSES_FOR_HINT misses on the same stroke its outline is shown, which counts as a hint. */
 /**
- * Stroke 1 failed its re-check once stroke 2 was drawn: fade both strokes out, then show the trace for stroke 1.
+ * Stroke 1 failed its re-check once stroke 2 was drawn: fade both strokes out; the miss counts on stroke 1.
+ * Like any miss, the trace guide only appears on the MISSES_FOR_HINT-th miss (reject() handles that).
  * @param {object} box
  * @param {object} pad
  */
 function redoFirstStroke(box, pad) {
   pad.strokes.pop();           // stroke 2 fades out quietly
   reject(box, pad, 0);         // stroke 1 fades out and counts as a miss
-  if (box.miss[0] !== CONFIG.CHECK.MISSES_FOR_HINT) {
-    traceGuide(box, 0);      // reject() already showed it on the hint-th miss
-  }
   upd();
 }
-function reject(c,p,n){const s=p.strokes.pop();p.fade={s,t0:performance.now()};const tick=()=>{p.redraw();if(p.fade&&performance.now()-p.fade.t0<360)requestAnimationFrame(tick);else{p.fade=null;p.redraw()}};tick();
+/**
+ * Test hooks on a box (QA_PLAN.md): data-verdict is the last stroke verdict ('accepted' | 'rejected'),
+ * data-retry counts rejected strokes in this box.
+ * @param {object} box  the box record ({b: HTMLElement, …})
+ * @param {'accepted'|'rejected'} verdict
+ */
+function markVerdict(box, verdict) {
+  box.b.dataset.verdict = verdict;
+  if (verdict === 'rejected') {
+    box.b.dataset.retry = String(Number(box.b.dataset.retry || 0) + 1);
+  }
+}
+
+function reject(c,p,n){markVerdict(c,'rejected');const s=p.strokes.pop();p.fade={s,t0:performance.now()};const tick=()=>{p.redraw();if(p.fade&&performance.now()-p.fade.t0<360)requestAnimationFrame(tick);else{p.fade=null;p.redraw()}};tick();
  c.miss=c.miss||{};c.miss[n]=(c.miss[n]||0)+1;if(isMem(c.s))c.failed=true;
  if(c.miss[n]===CONFIG.CHECK.MISSES_FOR_HINT){traceGuide(c,n);if(!isStep(c.s)){c.autoHints=(c.autoHints||0)+1;localStorage.setItem(hintKey(c.k.k),hintCount(c.k.k)+1)}}}
 /** Tracing guide for stroke n after MISSES_FOR_HINT failed attempts (every level, word boxes too): solid outline of the
@@ -884,32 +1785,222 @@ function traceGuide(c,n){const svg=c.b.querySelector(':scope>svg');svg.querySele
  g.insertAdjacentHTML('beforeend',`<path class="sarrow" d="M${m.x-h*Math.cos(ang-0.55)} ${m.y-h*Math.sin(ang-0.55)}L${m.x} ${m.y}L${m.x-h*Math.cos(ang+0.55)} ${m.y-h*Math.sin(ang+0.55)}"/><circle class="sdot tdot" cx="${a.x}" cy="${a.y}" r="2.6"/>`)}
 /** Pad callback for a finished stroke: check it; on part completion flash; on box completion decide clean vs hinted
  *  (hinted/failed → addRepeatBox), after the last part box play combineParts() + starburst, then slide on. */
-function onStroke(i,p){if(i!==cur||!p)return;const c=boxes[i];if(!c||p.strokes.length>c.k.strokes){p.strokes.length=Math.min(p.strokes.length,c?c.k.strokes:0);p.redraw();return} // stray stroke: drop it
- const n=p.strokes.length-1,pi0=partOf(c.k,n);
- const prev=p.strokes.slice(0,n).map((q,j)=>({i:j,pts:q.pts})).filter(q=>!c.k.isWord||partOf(c.k,q.i)===pi0);
- const r=checkStroke(c.k,n,p.strokes[n],isMem(c.s)?'L3':'L1',prev);if(r.redoFirst){redoFirstStroke(c,p);return}if(!r.ok){reject(c,p,n);return}
- const pi=partOf(c.k,n),done=n===c.k.parts[pi].to;
- if(!done){upd();return}
- // part complete: flash, then show next part (or finish the box)
- p.locked=true;flashing=true;flash(c,pi);if(isStep(c.s)){c.b.querySelectorAll(':scope>svg path[data-i]').forEach(q=>q.style.visibility='hidden');c.b.querySelectorAll('.mk').forEach(e=>e.remove())}
- const hl=c.b.querySelector('rect.hl');if(hl)hl.style.display='none';
- // box complete: wait out any slide still running (finishing a box during the previous slide used to unlock the
- // full box instead, leaving it stuck and accepting extra strokes past the last one)
- const after=()=>{flashing=false;if(p.strokes.length>=c.k.strokes&&sliding){later(after,60);return}
-  if(p.strokes.length>=c.k.strokes){sliding=true;c.allDone=true;c.anim={lock:pi,res:true};
-  if(!isStep(c.s)){const S=sess[sessKey(c.s)]=sess[sessKey(c.s)]||{clean:0,hints:0,extra:0};const used=Object.values(c.hints||{}).reduce((a,b)=>a+b,0)+(c.autoHints||0);const clean=used===0&&!c.failed;
-   if(clean){if(isMem(c.s))S.clean++}else{S.hints+=used;S.extra++;addRepeatBox(cur);position(false)}}
-  upd();const fin=()=>later(()=>go(cur+1),CONFIG.SLIDE_DELAY_MS);
-  // (b) after the last part-alone box of a kanji: the parts written so far fly together into the kanji, then a starburst
-  const nx=steps[cur+1];if(c.s.t==='P'&&!(nx&&nx.t==='P'&&nx.kc===c.s.kc))combineParts(c,()=>{flash(c,null);fin()});else fin()}else{p.locked=false;c.anim={lock:pi,rev:pi+1};upd()}};later(after,FLASH_MS)}
+/** While a slide is still running, check again this often (ms) before finishing a box. */
+const SLIDE_POLL_MS = 60;
+
+/**
+ * A stroke just finished in box `boxIndex`: check it, then accept it (maybe finishing a part or the box) or reject it.
+ * @param {number} boxIndex
+ * @param {object} pad the box's drawing pad
+ */
+function onStroke(boxIndex, pad) {
+  if (boxIndex !== cur || !pad) {
+    return;
+  }
+  const box = boxes[boxIndex];
+  if (box && box.sealPending && pad.strokes.length > box.k.strokes) {
+    rejectLookalikeExtension(box, pad);
+    return;
+  }
+  if (box && box.afterSealOpen && pad.strokes.length > box.k.strokes) {
+    rejectStrokeAfterSeal(box, pad);
+    return;
+  }
+  if (!box || pad.strokes.length > box.k.strokes) {
+    dropStrayStroke(box, pad);
+    return;
+  }
+  const strokeIndex = pad.strokes.length - 1;
+  const verdict = checkStroke(box.k, strokeIndex, pad.strokes[strokeIndex], isMem(box.s) ? 'L3' : 'L1',
+    earlierStrokesOfPart(box.k, pad, strokeIndex));
+  if (verdict.redoFirst) {
+    redoFirstStroke(box, pad);
+    if (window.V15UI) V15UI.onReject(box, verdict);   // v15: stroke 1 rejected = clear failure
+    return;
+  }
+  if (!verdict.ok) {
+    reject(box, pad, strokeIndex);
+    if (window.V15UI) V15UI.onReject(box, verdict);   // v15: near-miss retry / clear failure
+    return;
+  }
+  markVerdict(box, 'accepted');
+  const partIndex = partOf(box.k, strokeIndex);
+  if (strokeIndex !== box.k.parts[partIndex].to) {
+    upd();
+    return;
+  }
+  if (strokeIndex === box.k.strokes - 1 && isMem(box.s) && sealPauseNeeded(box.k)) {
+    waitBeforeSeal(box, pad, partIndex);
+    return;
+  }
+  finishPart(box, pad, partIndex);
+}
+
+/**
+ * True when k is the start of a longer look-alike (大 of 犬, 王 of 玉, 木 of 本): finishing k's strokes does not
+ * yet prove it was k, so the seal waits for a pause.
+ */
+function sealPauseNeeded(k) {
+  if (k.isWord || k.isPart) {
+    return false;
+  }
+  const longer = window.PREFIX_LOOKALIKES && PREFIX_LOOKALIKES.prefixOf[k.k];
+  if (longer && longer.length) {
+    return true;   // k's strokes are the start of a longer character (prefix-lookalikes.js): hold the seal
+  }
+  const rivals = (window.CONFUSABLES ? CONFUSABLES.pairs : [])
+    .filter((pair) => pair.chars.includes(k.k))
+    .map((pair) => pair.chars.find((c) => c !== k.k));
+  CONFIG.SEAL_PAUSE.pairs
+    .filter((pair) => pair.includes(k.k))
+    .forEach((pair) => rivals.push([...pair].find((c) => c !== k.k)));
+  return rivals.some((c) => {
+    const rival = DATA.kanji[c];
+    return rival ? rival.strokes > k.strokes : CONFIG.SEAL_PAUSE.pairs.some((pair) => pair.startsWith(k.k));
+  });
+}
+
+/** Last stroke of a look-alike prefix is in: seal after CONFIG.SEAL_PAUSE.ms unless another stroke starts. */
+function waitBeforeSeal(box, pad, partIndex) {
+  box.lookalikePrefix = true;
+  upd();
+  box.sealPending = later(() => {
+    box.sealPending = null;
+    finishPart(box, pad, partIndex);
+  }, CONFIG.SEAL_PAUSE.ms);
+}
+
+/** Another stroke came during the seal pause: that is the longer look-alike, so it fades out and counts as a miss. */
+function rejectLookalikeExtension(box, pad) {
+  clearTimeout(box.sealPending);
+  box.sealPending = null;
+  box.failed = true;
+  if (window.V15UI) V15UI.onWrongKanji(box);   // v15: wrong kanji = clear failure
+  const lastIndex = box.k.strokes - 1;
+  reject(box, pad, lastIndex);
+  const partIndex = partOf(box.k, lastIndex);
+  waitBeforeSeal(box, pad, partIndex);
+}
+
+/**
+ * A stroke came after a look-alike prefix was sealed (大 then the dot of 犬, after the pause): the learner wrote the
+ * longer kanji, so it is a wrong kanji, a clear failure and not a near miss. The stroke fades out and the box
+ * (recorded only when it slides on) gets a repeat box.
+ * @param {object} box the sealed box
+ * @param {object} pad its drawing pad
+ */
+function rejectStrokeAfterSeal(box, pad) {
+  const extraStroke = pad.strokes.length - 1;
+  box.failed = true;
+  if (window.V15UI) V15UI.onWrongKanji(box);   // v15: wrong kanji = clear failure
+  reject(box, pad, extraStroke);
+  pad.strokes.length = Math.min(pad.strokes.length, box.k.strokes);   // nothing else may build on it
+}
+
+/** Extra strokes past the last one (or on a missing box) are dropped. */
+function dropStrayStroke(box, pad) {
+  pad.strokes.length = Math.min(pad.strokes.length, box ? box.k.strokes : 0);
+  pad.redraw();
+}
+
+/** Strokes before `strokeIndex` that belong to the same part (in a word: the same character), as {i, pts}. */
+function earlierStrokesOfPart(k, pad, strokeIndex) {
+  const partIndex = partOf(k, strokeIndex);
+  return pad.strokes.slice(0, strokeIndex)
+    .map((stroke, i) => ({ i, pts: stroke.pts }))
+    .filter((stroke) => !k.isWord || partOf(k, stroke.i) === partIndex);
+}
+
+/** A part is complete: lock the pad, flash it, then reveal the next part or finish the box. */
+function finishPart(box, pad, partIndex) {
+  const boxSealed = pad.strokes.length >= box.k.strokes;
+  box.afterSealOpen = boxSealed && Boolean(box.lookalikePrefix);
+  pad.locked = !box.afterSealOpen;   // a sealed look-alike prefix still listens for the longer kanji's extra stroke
+  flashing = true;
+  flash(box, partIndex);
+  if (isStep(box.s)) {
+    box.b.querySelectorAll(':scope>svg path[data-i]').forEach((path) => { path.style.visibility = 'hidden'; });
+    box.b.querySelectorAll('.mk').forEach((marker) => marker.remove());
+  }
+  const highlight = box.b.querySelector('rect.hl');
+  if (highlight) {
+    highlight.style.display = 'none';
+  }
+  const afterFlash = () => {
+    flashing = false;
+    const boxComplete = pad.strokes.length >= box.k.strokes;
+    if (boxComplete && sliding) {
+      // wait out a slide still running (finishing a box mid-slide used to leave it stuck, accepting extra strokes)
+      later(afterFlash, SLIDE_POLL_MS);
+      return;
+    }
+    if (boxComplete) {
+      finishBox(box, partIndex);
+      return;
+    }
+    pad.locked = false;
+    box.anim = { lock: partIndex, rev: partIndex + 1 };
+    upd();
+  };
+  later(afterFlash, FLASH_MS);
+}
+
+/** Every stroke of the box is in: record the result, then slide on (combining part boxes into their kanji first). */
+function finishBox(box, partIndex) {
+  sliding = true;
+  box.allDone = true;
+  box.anim = { lock: partIndex, res: true };
+  const recordResult = () => {
+    box.afterSealOpen = false;
+    box.pad.locked = true;
+    if (!isStep(box.s)) {
+      recordBoxResult(box);
+    }
+  };
+  if (!box.afterSealOpen) {
+    recordResult();
+  }
+  upd();
+  const nextStep = steps[cur + 1];
+  // a word change already pauses WORD_BREAK_MS in go(): count that pause as part of the slide delay
+  const newWord = Boolean(nextStep) && nextStep.ki !== steps[cur].ki;
+  const slideDelay = newWord ? Math.max(0, CONFIG.SLIDE_DELAY_MS - CONFIG.WORD_BREAK_MS) : CONFIG.SLIDE_DELAY_MS;
+  // a sealed look-alike prefix is recorded only now, so an extra stroke during the slide delay still fails it
+  const slideOn = (delay = slideDelay) => later(() => { if (box.afterSealOpen) recordResult(); go(cur + 1); }, delay);
+  const lastPartBoxOfKanji = box.s.t === 'P' && !(nextStep && nextStep.t === 'P' && nextStep.kc === box.s.kc);
+  if (lastPartBoxOfKanji) {
+    // the parts written so far fly together into the kanji, then a starburst
+    combineParts(box, () => { flash(box, null); slideOn(Math.max(FLASH_MS, slideDelay - COMBINE_OVERLAY_LINGER_MS)); });
+    return;
+  }
+  slideOn();
+}
+
+/** Session tally for a finished practice box: clean memory boxes count, hinted or failed ones get a repeat box. */
+function recordBoxResult(box) {
+  const key = sessKey(box.s);
+  const tally = sess[key] = sess[key] || { clean: 0, hints: 0, extra: 0 };
+  const hintsUsed = Object.values(box.hints || {}).reduce((sum, n) => sum + n, 0) + (box.autoHints || 0);
+  const clean = hintsUsed === 0 && !box.failed;
+  if (clean) {
+    if (isMem(box.s)) {
+      tally.clean++;
+    }
+    return;
+  }
+  tally.hints += hintsUsed;
+  tally.extra++;
+  addRepeatBox(cur);
+  position(false);
+}
 /** Move to step n. Changing word: dim the row, fade the heading, pause WORD_BREAK_MS, show the new heading, drop a row. */
-function go(n){if(n>=steps.length){celebrate(boxes[cur].k.src||boxes[cur].k);wordDone(steps[cur]);sliding=false;later(lessonEnd,1700);return}if(n<0)return;
+function go(n){if(window.V15UI)V15UI.onBoxChange();if(n>=steps.length){celebrate(boxes[cur].k.src||boxes[cur].k);wordDone(steps[cur]);sliding=false;later(lessonEnd,1700);return}if(n<0)return;
  if(n===cur+1&&unitKey(steps[n])!==unitKey(steps[cur]))celebrate(boxes[cur].k.src||boxes[cur].k);
  if(n===cur+1&&steps[n].ki!==steps[cur].ki)wordDone(steps[cur]);
  const k0=steps[cur].ki; // word index we are leaving
  if(steps[n].ki!==k0){ // new word: dim this row, fade the heading, pause, show the new word's heading, then drop to its row
   sliding=true;rowEls[k0].classList.add('leaving');$('kun').parentElement.classList.add('fade');const W=CONFIG.WORD_BREAK_MS;
-  later(()=>{cur=n;setInfo();$('kun').parentElement.classList.remove('fade');later(()=>{focus(true);later(()=>sliding=false,500)},W*0.35)},W);return}
+  later(()=>{veilLeaving(boxes[cur]);cur=n;setInfo();$('kun').parentElement.classList.remove('fade');later(()=>{focus(true);later(()=>sliding=false,CONFIG.SLIDE_MS*0.75)},W*0.35)},W);return}
  cur=n;focus(true);later(()=>sliding=false,CONFIG.SLIDE_MS*0.75)}
 
 /** Word finished (last step of word s.ki done). Words that have a word box are already recorded by celebrate();
@@ -917,20 +2008,100 @@ function go(n){if(n>=steps.length){celebrate(boxes[cur].k.src||boxes[cur].k);wor
 function wordDone(s){if(!s||steps.some(x=>x.ki===s.ki&&x.t==='W'))return;const w=D[s.ki]&&D[s.ki].w;if(!w)return;const S=sess[s.kc]||{clean:0,hints:0};recFinish('w:'+w.w,S.clean,S.hints)}
 
 /* ==================== ANIMATIONS — combine + celebration ==================== */
-/** (b) Parts → kanji: the user's own ink from the part-alone boxes of this kanji (mapped back from each part box to
- *  kanji coordinates) starts spread apart, glides together and settles into the kanji. Single ink colour, no text. Tap to skip. */
-function combineParts(c,done){const K=c.k.src,MS=CONFIG.COMBINE.MS,ki=c.s.ki;c.combining=true;c.b.querySelectorAll('.plab').forEach(e=>e.remove());
- const src=boxes.filter(x=>x.s.t==='P'&&x.s.kc===c.s.kc&&x.s.ki===ki&&x.allDone);const last={};src.forEach(x=>last[x.s.pi]=x); // latest box per part (repeats)
- const ov=document.createElement('div');ov.className='combo';const sv=document.createElementNS(NS,'svg');sv.setAttribute('viewBox','0 0 109 109');ov.appendChild(sv);const anims=[];
- Object.values(last).forEach(x=>{const f=x.k.xf,b=bbox(K,x.s.pi),px=b.x+b.w/2,py=b.y+b.h/2,dx=(px-54.5)*0.5,dy=(py-54.5)*0.5,g=document.createElementNS(NS,'g');
-  x.pad.strokes.forEach(st=>{if(st.pts.length<1)return;const q=document.createElementNS(NS,'path');
-   q.setAttribute('d','M'+st.pts.map(t=>((t.x*109-f.tx)/f.s).toFixed(1)+' '+((t.y*109-f.ty)/f.s).toFixed(1)).join('L')+(st.pts.length<2?'l0 .1':''));
-   q.setAttribute('stroke',CONFIG.INK);q.setAttribute('class','cstroke');g.appendChild(q)});
-  sv.appendChild(g);
-  anims.push(g.animate([{transform:`translate(${dx}px,${dy}px)`,opacity:0},{transform:`translate(${dx}px,${dy}px)`,opacity:1,offset:.25},{transform:`translate(${dx}px,${dy}px)`,offset:.45},{transform:'translate(0px,0px)',offset:.85},{transform:'translate(0px,0px)'}],{duration:MS,easing:'ease-in-out',fill:'forwards'}))});
- c.b.appendChild(ov);c.b.classList.add('combining');let over=false;
- const end=()=>{if(over)return;over=true;anims.forEach(a=>a.finish());c.b.classList.remove('combining');c.combining=false;later(()=>ov.remove(),FLASH_MS+300);done()};
- ov.addEventListener('pointerdown',e=>{e.preventDefault();end()});later(end,MS+200)}
+/** Part ink starts this far (share of its offset from the centre) away from its place in the kanji. */
+const COMBINE_SPREAD = 0.5;
+/** Centre of the 109-unit KanjiVG box. */
+const KANJIVG_CENTRE = 54.5;
+/** Extra wait (ms) past the animation before the combine finishes on its own. */
+const COMBINE_GRACE_MS = 200;
+/** The combine overlay is removed this long (ms) after the final flash starts. */
+const COMBINE_OVERLAY_LINGER_MS = FLASH_MS + 300;
+
+/**
+ * Parts → kanji: the user's own ink from this kanji's part-alone boxes (mapped back from each part box into kanji
+ * coordinates) starts spread apart, glides together and settles into the kanji. Single ink colour, no text. Tap to skip.
+ * @param {object} box the last part box of the kanji
+ * @param {Function} done called once, when the animation ends or is skipped
+ */
+function combineParts(box, done) {
+  box.combining = true;
+  box.b.querySelectorAll('.plab').forEach((label) => label.remove());
+  const overlay = document.createElement('div');
+  overlay.className = 'combo';
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 109 109');
+  overlay.appendChild(svg);
+  const animations = latestPartBoxes(box).map((partBox) => {
+    const group = partInkGroup(partBox);
+    svg.appendChild(group);
+    return glideIntoPlace(group, box.k.src, partBox.s.pi);
+  });
+  box.b.appendChild(overlay);
+  box.b.classList.add('combining');
+  let finished = false;
+  const finish = () => {
+    if (finished) {
+      return;
+    }
+    finished = true;
+    animations.forEach((animation) => animation.finish());
+    box.b.classList.remove('combining');
+    box.combining = false;
+    later(() => overlay.remove(), COMBINE_OVERLAY_LINGER_MS);
+    done();
+  };
+  overlay.addEventListener('pointerdown', (event) => { event.preventDefault(); finish(); });
+  later(finish, CONFIG.COMBINE.MS + COMBINE_GRACE_MS);
+}
+
+/** Finished part boxes of this kanji, the latest one per part (a repeat replaces the first try). */
+function latestPartBoxes(box) {
+  const latest = {};
+  boxes
+    .filter((x) => x.s.t === 'P' && x.s.kc === box.s.kc && x.s.ki === box.s.ki && x.allDone)
+    .forEach((x) => { latest[x.s.pi] = x; });
+  return Object.values(latest);
+}
+
+/** SVG group with a part box's ink, mapped from part-box coordinates back into the kanji's 109 box. */
+function partInkGroup(partBox) {
+  const transform = partBox.k.xf;
+  const toKanji = (point) => {
+    const x = ((point.x * 109 - transform.tx) / transform.s).toFixed(1);
+    const y = ((point.y * 109 - transform.ty) / transform.s).toFixed(1);
+    return `${x} ${y}`;
+  };
+  const group = document.createElementNS(NS, 'g');
+  partBox.pad.strokes.forEach((stroke) => {
+    if (stroke.pts.length < 1) {
+      return;
+    }
+    const path = document.createElementNS(NS, 'path');
+    const dotTail = stroke.pts.length < 2 ? 'l0 .1' : '';   // a single point still draws as a dot
+    path.setAttribute('d', `M${stroke.pts.map(toKanji).join('L')}${dotTail}`);
+    path.setAttribute('stroke', CONFIG.INK);
+    path.setAttribute('class', 'cstroke');
+    group.appendChild(path);
+  });
+  return group;
+}
+
+/** Animate a part's ink group from spread apart into its place in kanji K. */
+function glideIntoPlace(group, K, partIndex) {
+  const bounds = bbox(K, partIndex);
+  const dx = (bounds.x + bounds.w / 2 - KANJIVG_CENTRE) * COMBINE_SPREAD;
+  const dy = (bounds.y + bounds.h / 2 - KANJIVG_CENTRE) * COMBINE_SPREAD;
+  const spread = `translate(${dx}px,${dy}px)`;
+  const home = 'translate(0px,0px)';
+  const keyframes = [
+    { transform: spread, opacity: 0 },
+    { transform: spread, opacity: 1, offset: 0.25 },
+    { transform: spread, offset: 0.45 },
+    { transform: home, offset: 0.85 },
+    { transform: home },
+  ];
+  return group.animate(keyframes, { duration: CONFIG.COMBINE.MS, easing: 'ease-in-out', fill: 'forwards' });
+}
 /* ==================== LESSON END — complete screen (next lesson / repeat / review) ==================== */
 /** Next lesson after the current one in the same tab, or null (custom/search/review lessons have none). */
 /**
@@ -960,6 +2131,9 @@ function endButton(cls, japanese, english, action) {
 
 /** Show the lesson-complete card after the last seal: 次へ (next lesson) or 復習 (when due) first, then 繰り返す (repeat). */
 function lessonEnd() {
+  if (window.V15UI && V15UI.onLessonEnd()) {
+    return;   // a v15 writing item ended; the v15 screen continues
+  }
   const next = nextSet();
   const dueCount = dueWords().length;
   const reviewButton = (cls) => endButton(cls, '復習', `Review ${dueCount}`, 'openReview()');
@@ -974,6 +2148,9 @@ function lessonEnd() {
     buttons += reviewButton('');
   }
   const card = $('lend');
+  if ($('klist').classList.contains('show')) {
+    return;   // never cover an open picker; the learner is already choosing what's next
+  }
   card.innerHTML = `<div class="lcard"><div class="lt">完了<small>Lesson complete</small></div><div class="lb">${buttons}</div></div>`;
   card.classList.add('show');
 }
@@ -983,8 +2160,8 @@ function closeEnd() {
   $('lend').classList.remove('show');
 }
 /** Seal + petals; records the completion and shows the next review interval. */
-function celebrate(k){const key=k.isWord?'w:'+k.k:k.k,S=sess[key]||{clean:0,hints:0},r=recFinish(key,S.clean,S.hints),d=r.intervalDays;
- const s=$('seal');s.innerHTML=`${k.k}<small>完了</small><i>done</i><em>Next review: ${d===1?'tomorrow':'in '+d+' days'}</em>`;s.classList.add('show');setTimeout(()=>s.classList.remove('show'),1600);
+function celebrate(k){if(window.V15UI)V15UI.onCelebrate(k);const key=k.isWord?'w:'+k.k:k.k,S=sess[key]||{clean:0,hints:0},r=recFinish(key,S.clean,S.hints),d=r.intervalDays;
+ const s=$('seal');s.dataset.verdict='correct';s.dataset.kanji=k.k;s.innerHTML=`${k.k}<small>完了</small><i>done</i><em>Next review: ${d===1?'tomorrow':'in '+d+' days'}</em>`;s.classList.add('show');setTimeout(()=>s.classList.remove('show'),1600);
  const cols=['#c7798a','#b5c99a','#8a9e6e','#f4d6dc'];for(let i=0;i<26;i++){const e=document.createElement('div');e.className='petal';const x=innerWidth/2+(Math.random()-.5)*260,y=innerHeight*.42+(Math.random()-.5)*120;
   e.style.cssText=`left:${x}px;top:${y}px;background:${cols[i%4]};--dx:${(Math.random()-.5)*520}px;--dy:${120+Math.random()*320}px;--r:${(Math.random()-.5)*720}deg;--t:${900+Math.random()*700}ms`;document.body.appendChild(e);setTimeout(()=>e.remove(),1700)}}
 
@@ -1175,7 +2352,12 @@ function mergeLevel(level) {
   Object.assign(DATA.kanji, registered.kanji || {});
   Object.assign(DATA.chars, registered.chars || {});
   Object.assign(window.MEMORY_LINKS, registered.links || {});
-  Object.assign(window.COMPONENT_KW, registered.componentKw || {});
+  // links.js is the authority for component keywords: a level file only adds keywords it does not have yet
+  Object.entries(registered.componentKw || {}).forEach(([component, keyword]) => {
+    if (!(component in window.COMPONENT_KW)) {
+      window.COMPONENT_KW[component] = keyword;
+    }
+  });
   const sets = (registered.level && registered.level.sets) || [];
   sets.forEach((set, index) => {
     SETS.push({ ...set, level, n: index + 1 });
@@ -1185,6 +2367,17 @@ function mergeLevel(level) {
       }
     });
   });
+}
+
+/** Script URLs already requested by loadScriptOnce(). */
+const requestedScripts = new Map();
+
+/** Load a script at most once; later calls share the first request. */
+function loadScriptOnce(url) {
+  if (!requestedScripts.has(url)) {
+    requestedScripts.set(url, loadScript(url));
+  }
+  return requestedScripts.get(url);
 }
 
 /**
@@ -1218,10 +2411,149 @@ async function ensureLevel(level) {
   }
   mergeLevel(level);
   const linkFile = (window.KANJI_LINK_FILES || []).find((name) => name === `links-${level}.js`);
+  const sentenceFile = (window.KANJI_SENTENCE_FILES || []).find((name) => name === `sentences-${level}.js`);
+  const topologyFile = (window.STROKE_TOPOLOGY_FILES || []).find((name) => name === `stroke-topology-${level}.js`);
+  if (topologyFile) {
+    loadScriptOnce(topologyFile);   // contact checks join in once it arrives
+  }
+  if (sentenceFile) {
+    loadScript(sentenceFile);   // example sentences are optional: shown once they arrive
+  }
   if (linkFile) {
     await loadScript(linkFile);   // merges into the links.js objects; a missing file is harmless
   }
   return true;
+}
+
+/* ---------- Quiz banks (placement / level / unit tests, reading stages of the rank) ---------- */
+
+/** Most words offered per quiz item. */
+const QUIZ_MAX_WORDS = 4;
+/** Choices shown in a multiple-choice question, the answer included. */
+const QUIZ_CHOICES = 4;
+/** Level order used to keep quiz words at or below the item's level. */
+const QUIZ_LEVEL_ORDER = ['kana', 'N5', 'N4', 'N3', 'N2', 'N1'];
+
+/**
+ * Load the quiz bank of `level` ('kana', 'N5' … 'N1') once.
+ * @param {string} level
+ * @returns {Promise<boolean>} true when the bank is available
+ */
+async function ensureQuizBank(level) {
+  const file = (window.QUIZ_BANK_FILES || []).find((name) => name === `quiz-${level}.js`);
+  if (!file) {
+    return false;
+  }
+  return loadScriptOnce(file);
+}
+
+/** Quiz item of one character, or null until its bank has loaded. */
+function quizItem(char) {
+  return (window.QUIZ_BANKS && window.QUIZ_BANKS[char]) || null;
+}
+
+/** True when a word only uses kanji at or below `level` (the bank lists higher ones in aboveLevel). */
+function quizWordInLevel(word, level) {
+  const limit = QUIZ_LEVEL_ORDER.indexOf(level);
+  return !(word.aboveLevel || []).some((entry) => {
+    const entryLevel = typeof entry === 'string' ? (quizItem(entry) || {}).level : entry.level;
+    return !entryLevel || QUIZ_LEVEL_ORDER.indexOf(entryLevel) > limit;
+  });
+}
+
+/**
+ * Reading words for `char`: JMdict common words (the bank holds only those), in-level words first, bank order kept.
+ * @param {string} char
+ * @param {number} [max]
+ */
+function quizWords(char, max = QUIZ_MAX_WORDS) {
+  const item = quizItem(char);
+  if (!item || !item.words) {
+    return [];
+  }
+  const inLevel = item.words.filter((word) => word.common !== false && quizWordInLevel(word, item.level));
+  const rest = item.words.filter((word) => !inLevel.includes(word));
+  return [...inLevel, ...rest].slice(0, max);
+}
+
+/**
+ * Is `answer` an accepted reading of `char`? Kana answers are compared as hiragana without dots;
+ * a bare kun stem counts only when the okurigana is shown in the prompt.
+ * @param {string} char
+ * @param {string} answer
+ * @param {boolean} [okuriganaShown]
+ */
+function quizReadingAccepted(char, answer, okuriganaShown = false) {
+  const item = quizItem(char);
+  if (!item) {
+    return false;
+  }
+  const typed = normalizeSearchQuery(answer).replace(/[-\s]/g, '');
+  return item.reading.accepted.some((entry) => {
+    if (entry.type === 'kun-stem' && !okuriganaShown) {
+      return false;
+    }
+    return normalizeSearchQuery(entry.r) === typed;
+  });
+}
+
+/** Is `answer` an accepted English meaning of `char` (case-insensitive, surrounding "to " ignored)? */
+function quizMeaningAccepted(char, answer) {
+  const item = quizItem(char);
+  if (!item || !item.meaning) {
+    return false;
+  }
+  const clean = (text) => String(text).normalize('NFKC').trim().toLowerCase().replace(/^to\s+/, '');
+  const typed = clean(answer);
+  return typed.length > 0 && item.meaning.accepted.some((entry) => clean(entry.a) === typed);
+}
+
+/**
+ * Multiple-choice characters for `char`: the answer plus in-level distractors in bank order
+ * (confusables first), then above-level ones; display-only extras are skipped. Shuffled.
+ * @param {string} char
+ * @param {number} [count]
+ */
+function quizChoices(char, count = QUIZ_CHOICES) {
+  const item = quizItem(char);
+  if (!item) {
+    return [char];
+  }
+  const usable = (item.distractors || []).filter((entry) => !entry.notInLevels);
+  const ordered = [...usable.filter((entry) => !entry.aboveLevel), ...usable.filter((entry) => entry.aboveLevel)];
+  const picks = ordered.slice(0, count - 1).map((entry) => entry.c);
+  return shuffle([char, ...picks]);
+}
+
+/* ---------- Practice sets (practice-mode quick picks) ---------- */
+
+/** Display order of practice-set kinds inside a level group, with their headings. */
+const PRACTICE_KIND_LABELS = {
+  'first-lesson': 'Start here', theme: 'Themes', radical: 'By radical', lookalike: 'Look-alikes', 'kana-row': 'Rows',
+};
+/** Display order of level groups. */
+const PRACTICE_LEVEL_ORDER = ['kana', 'N5', 'N4', 'N3', 'N2', 'N1', 'mixed'];
+
+/** Load practice-sets.js once. */
+function ensurePracticeSets() {
+  return window.PRACTICE_SET_FILE ? loadScriptOnce(window.PRACTICE_SET_FILE) : Promise.resolve(false);
+}
+
+/**
+ * Practice sets grouped by level, then by kind: [{level, kinds: [{kind, label, sets}]}].
+ * A set spanning several levels goes under 'mixed'. Empty groups are left out.
+ */
+function groupedPracticeSets() {
+  const sets = (window.PRACTICE_SETS && window.PRACTICE_SETS.sets) || [];
+  const levelOf = (set) => (set.levels && set.levels.length === 1 ? set.levels[0] : 'mixed');
+  const kindOrder = Object.keys(PRACTICE_KIND_LABELS);
+  return PRACTICE_LEVEL_ORDER.map((level) => {
+    const inLevel = sets.filter((set) => levelOf(set) === level);
+    const kinds = [...new Set(inLevel.map((set) => set.kind))]
+      .sort((a, b) => (kindOrder.indexOf(a) + 99) % 99 - (kindOrder.indexOf(b) + 99) % 99)
+      .map((kind) => ({ kind, label: PRACTICE_KIND_LABELS[kind] || kind, sets: inLevel.filter((set) => set.kind === kind) }));
+    return { level, kinds };
+  }).filter((group) => group.kinds.length);
 }
 
 /**
@@ -1233,26 +2565,560 @@ async function setLv(level) {
   await ensureLevel(level);
   renderPicker();
 }
-/** Picker popover: sticky level tabs → lessons (accordion) → word chips. */
-function renderPicker(){if(!curSet)return;const ki=steps[cur]?steps[cur].ki:-1;
- const LV=pickLv(),bar=`<div class="lvbar">${LEVELS.filter(l=>SETS.some(s=>s.level===l)||levelFile(l)).map(l=>`<button class="${l===LV&&!searching?'on':''}" onclick="searching=false;setLv('${l}')">${l}</button>`).join('')}${(n=>n?`<button class="revb" onclick="openReview()" aria-label="Review due"><span>復習</span><b>${n}</b></button>`:'')(dueWords().length)}<button class="srchb ${searching?'on':''}" onclick="openSearch()" aria-label="Search">${I_SRCH}</button></div>`;
- if(searching){$('klist').innerHTML=bar+`<div class="sbox"><input id="sq" type="search" placeholder="漢字 · かな · English" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(sQuery)}" oninput="sQuery=this.value;renderResults()"></div><div id="sres"></div>`;renderResults();return}
- $('klist').innerHTML=bar+(SETS.some(s=>s.level===LV)?'':`<div class="soon">${LV} lessons coming soon</div>`)+SETS.filter(s=>s.level===LV).map(s=>`<div class="setw ${openSets.has(s.id)?'open':''}" data-id="${s.id}"><button class="setb ${s.id===curSet.id?'sel':''}" onclick="toggleSet('${s.id}')"><b class="tier ${setTier(s)}">${s.n}</b><span class="st">${esc(s.title)}</span><span class="sk">${s.words.map(w=>`<span class="nw">${esc(w.w)}</span>`).join('<i>・</i>')}</span><span class="sd"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button>
-  <div class="sdrop"><div><div class="kchips">${s.words.map((w,wi)=>`<button class="jp tier ${tier(w.w)} ${s.id===curSet.id&&wi===ki?'sel':''}" onclick="pickWord('${s.id}',${wi})"><span>${esc(w.w)}</span><small>${esc(w.m.split(';')[0])}</small></button>`).join('')}</div></div></div></div>`).join('')}
+/** Chevron icon on each lesson row. */
+const I_CHEVRON = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" '
+  + 'stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+
+/** Picker popover: sticky level tabs → lessons (accordion) → word chips; or the search box and results. */
+function renderPicker() {
+  if (!curSet) {
+    return;
+  }
+  const level = pickLv();
+  const bar = levelBarHTML(level);
+  if (searching) {
+    $('klist').innerHTML = bar + searchBoxHTML();
+    renderResults();
+    return;
+  }
+  const lessons = SETS.filter((set) => set.level === level);
+  const empty = lessons.length ? '' : `<div class="soon">${level} lessons coming soon</div>`;
+  const wordIndex = steps[cur] ? steps[cur].ki : -1;
+  const v15Menu = window.V15UI ? V15UI.menuHTML() : '';
+  $('klist').innerHTML = bar + v15Menu + empty + lessons.map((set) => lessonRowHTML(set, wordIndex)).join('');
+}
+
+/** Level tabs (only levels with lessons or a data file), the review button when words are due, and search, on a 5-column grid. */
+function levelBarHTML(level) {
+  const isJlpt = (l) => /^N[1-5]$/.test(l);
+  const available = LEVELS.filter((l) => SETS.some((set) => set.level === l) || levelFile(l));
+  // row 1: N5–N1; row 2: kana, 部首, then review and search (grid: LEVEL_BAR_COLUMNS equal columns)
+  const tabs = [...available.filter(isJlpt), ...available.filter((l) => !isJlpt(l))]
+    .map((l) => {
+      const on = l === level && !searching ? 'on' : '';
+      return `<button class="${on}" onclick="searching=false;setLv('${l}')">${l}</button>`;
+    })
+    .join('');
+  const due = dueWords().length;
+  const review = due
+    ? `<button class="revb" onclick="openReview()" aria-label="Review due"><span>復習</span><b>${due}</b></button>`
+    : '<button class="revb" disabled aria-label="Review: nothing due"><span>復習</span></button>';
+  const search = `<button class="srchb ${searching ? 'on' : ''}" onclick="openSearch()" aria-label="Search">${I_SRCH}</button>`;
+  return `<div class="lvbar">${tabs}${review}${search}</div>`;
+}
+
+/** Search input (kanji, kana or English) and the results container. */
+function searchBoxHTML() {
+  return '<div class="sbox"><input id="sq" type="search" placeholder="漢字 · かな · English" autocomplete="off" '
+    + `autocapitalize="off" spellcheck="false" value="${esc(sQuery)}" `
+    + 'oninput="if(!event.isComposing){sQuery=this.value;renderResults()}" '
+    + 'oncompositionend="sQuery=this.value;renderResults()">'
+    + '<button class="sclear" onclick="clearSearch()" aria-label="Clear search">×</button></div>'
+    + '<div id="sres"></div>';
+}
+
+/** One lesson: its header row (number, title, words) and, when open, its word chips. */
+function lessonRowHTML(set, wordIndex) {
+  const isCurrent = set.id === curSet.id;
+  const wordList = set.words.map((w) => `<span class="nw">${esc(w.w)}</span>`).join('<i>・</i>');
+  const chips = set.words.map((w, wi) => {
+    const selected = isCurrent && wi === wordIndex ? 'sel' : '';
+    return `<button class="jp tier ${tier(w.w)} ${selected}" onclick="pickWord('${set.id}',${wi})">`
+      + `<span data-tier="${tier(w.w)||'none'}">${esc(w.w)}</span><small>${esc(w.m.split(';')[0])}</small></button>`;
+  }).join('');
+  return `<div class="setw ${openSets.has(set.id) ? 'open' : ''}" data-id="${set.id}">`
+    + `<button class="setb ${isCurrent ? 'sel' : ''}" onclick="toggleSet('${set.id}')">`
+    + `<b class="tier ${setTier(set)}">${set.n}</b><span class="st">${esc(set.title)}</span>`
+    + `<span class="sk">${wordList}</span><span class="sd">${I_CHEVRON}</span></button>\n`
+    + `  <div class="sdrop"><div><div class="kchips">${chips}</div></div></div></div>`;
+}
 /* ---- search: all bundled words + kanji by kanji, kana reading or English meaning ---- */
 const I_SRCH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
 let searching=false,sQuery='';
-const ALLWORDS=[...new Map(SETS.flatMap(s=>s.words).map(w=>[w.w,w])).values()];
-function openSearch(){searching=!searching;renderPicker();if(searching)setTimeout(()=>$('sq')&&$('sq').focus(),30)}
-/** Matching words (with their kanji) and kanji, at most 30 rows. Kana in the query may be katakana or hiragana. */
-function searchAll(q){q=q.trim().toLowerCase();if(!q)return {words:[],kanji:[]};const h=hira(q);
- const words=ALLWORDS.filter(w=>w.w.includes(q)||hira(w.r).includes(h)||w.m.toLowerCase().includes(q)).slice(0,30);
- const kanji=Object.values(DATA.kanji).filter(k=>k.k===q||q.includes(k.k)||k.on.some(r=>hira(r).replace(/[-.]/g,'')===h)||k.kun.some(r=>hira(r).replace(/[-.]/g,'').startsWith(h))||k.keyword.toLowerCase().includes(q)||k.meanings.some(m=>m.toLowerCase().includes(q))).slice(0,30);
- return {words,kanji}}
-function renderResults(){const el=$('sres');if(!el)return;const {words,kanji}=searchAll(sQuery);
- const kc=k=>`<button class="jp kc" onclick="practiceKanji('${k.k}')"><span>${k.k}</span><small>${esc(k.keyword)}</small></button>`;
- el.innerHTML=!sQuery.trim()?'':(words.map(w=>`<div class="srow"><button class="jp sw tier ${tier(w.w)}" onclick="practiceWord('${esc(w.w)}')"><span>${esc(w.w)}<em>${esc(w.r)}</em></span><small>${esc(w.m.split(';')[0])}</small></button>${[...w.w].filter(c=>DATA.kanji[c]).map(c=>kc(DATA.kanji[c])).join('')}</div>`).join('')+
-  (kanji.length?`<div class="srow kon">${kanji.map(kc).join('')}</div>`:'')||'<div class="soon">No matches</div>')}
+/** Every bundled word once. A word's own lesson entry wins over its 部首 (building-block) entry, which carries a
+ *  kanji reading instead of the word's. */
+const ALLWORDS = (() => {
+  const byText = new Map();
+  const ordered = [...SETS.filter((set) => set.level !== '部首'), ...SETS.filter((set) => set.level === '部首')];
+  ordered.flatMap((set) => set.words).forEach((word) => {
+    if (!byText.has(word.w)) {
+      byText.set(word.w, word);
+    }
+  });
+  return [...byText.values()];
+})();
+/* ---- search index (kanji-data/SEARCH_INDEX.md; ranking mirrors kanji-data/search_reference.py) ---- */
+
+/** Prefix matches count only for queries at least this long, and only when nothing matches exactly. */
+const SEARCH_MIN_PREFIX = 3;
+/** term → [[char, kind, position]], rebuilt when more index files have arrived. */
+let searchLookup = null;
+let searchLookupSize = -1;
+
+/** True when every character is hiragana, katakana or the long-vowel mark. */
+const isAllKana = (text) => text.length > 0 && /^[\u3041-\u3096\u30a1-\u30fa\u30fc]+$/.test(text);
+
+/** Query normalized as the reference does: NFKC, trim, lower-case; all-kana queries lose dots and become hiragana. */
+function normalizeSearchQuery(query) {
+  const text = String(query || '').normalize('NFKC').trim().toLowerCase();
+  const stripped = text.replace(/[.・]/g, '');
+  return isAllKana(stripped) ? hira(stripped) : text;
+}
+
+/**
+ * True when Botthree's index flags a term as a weak match (4th term field, e.g. 'loose' or {loose:true});
+ * such hits are listed under a "Loose matches" label. Absent flag = a normal match.
+ */
+function isLooseQuality(quality) {
+  if (!quality) {
+    return false;
+  }
+  if (typeof quality === 'object') {
+    return Boolean(quality.loose || quality.weak || quality.quality === 'loose' || quality.quality === 'weak');
+  }
+  return /loose|weak/i.test(String(quality));
+}
+
+/** Reviewed stretched senses (query → kanji) listed as loose: SEARCH_INDEX.looseSenses. */
+const LOOSE_SENSES = {};
+/** English-tier score above this is a loose match (SEARCH_INDEX.md, Confidence). */
+const LOOSE_SCORE = 7;
+/** Characters whose best match in the last searchIndex() call was a loose one. */
+let searchLooseChars = new Set();
+/** False when every result of the last searchIndex() call was loose. */
+let searchHasCloseMatch = true;
+/** Characters matched only through a component keyword in the last searchIndex() call. */
+let searchComponentChars = new Set();
+/** Kanji-row slots kept for component matches, so "tree" still lists 本, 来 … after many "tree" meanings. */
+const SEARCH_COMPONENT_SLOTS = 8;
+
+/** The term lookup over every loaded index file. */
+function searchIndexLookup() {
+  const chars = (window.SEARCH_INDEX && window.SEARCH_INDEX.chars) || {};
+  const size = Object.keys(chars).length;
+  if (searchLookup && size === searchLookupSize) {
+    return searchLookup;
+  }
+  searchLookup = new Map();
+  searchLookupSize = size;
+  Object.entries(chars).forEach(([char, entry]) => {
+    const positions = {};
+    entry.terms.forEach(([term, kind, source, quality]) => {
+      const position = positions[kind] || 0;
+      positions[kind] = position + 1;
+      if (!searchLookup.has(term)) {
+        searchLookup.set(term, []);
+      }
+      searchLookup.get(term).push([char, kind, position, source || '', isLooseQuality(quality)]);
+    });
+  });
+  return searchLookup;
+}
+
+/** Rank tier of each term kind (SEARCH_INDEX.md, reference ranking revised 2026-10-22). */
+const SEARCH_TIERS = { char: 0, meaning: 1, keyword: 1, synonym: 1, reading: 2, romaji: 3, component: 4 };
+/** English match quality: lower is better. */
+const MATCH_QUALITY = { primary: 0, firstGloss: 1, variant: 2.5, gloss: 3, bareGloss: 3.5 };
+/** Later KANJIDIC2 meanings are weaker: base + step per position, capped. */
+const MEANING_BASE = 1;
+const MEANING_STEP = 0.3;
+const MEANING_MAX = 2.5;
+/** Extra cost of a sense-restricted KANJIDIC2 meaning, e.g. 'issue (offspring)'. */
+const QUALIFIED_PENALTY = 1;
+/** Reviewed top results for polysemous English queries: SEARCH_INDEX.preferredTops (kanji-data/search_overrides.py). */
+const PREFERRED_TOPS = {};
+/** Bonus per extra okurigana word giving the same first gloss (閉める, 閉じる), capped. */
+const SUPPORT_BONUS = 0.25;
+const SUPPORT_MAX = 0.75;
+/** Commonness weights: per JLPT step, and scaled newspaper frequency up to FREQ_CAP. */
+const LEVEL_WEIGHT = 0.5;
+const FREQ_WEIGHT = 0.5;
+const FREQ_CAP = 2500;
+
+/** 0 for the most common characters, up to about 3.5 for rare N1 kanji. */
+function searchCommonness(entry, levels) {
+  const grade = entry.grade || 0;
+  let penalty = 0.5;
+  if (entry.level === 'kana' || (grade >= 1 && grade <= 6)) {
+    penalty = 0;
+  } else if (grade === 8) {
+    penalty = 0.25;
+  }
+  const freq = Math.min(entry.freq, FREQ_CAP) / FREQ_CAP;
+  return LEVEL_WEIGHT * levels.indexOf(entry.level) + FREQ_WEIGHT * freq + penalty;
+}
+
+/** Best quality among the sources of a synonym term ('JMdict <id> <word> gloss <n>; synonym table (…)'). */
+function glossQuality(source) {
+  let best = 9;
+  let firstGlosses = 0;
+  source.split('; ').forEach((part) => {
+    if (part.startsWith('synonym table')) {
+      best = Math.min(best, MATCH_QUALITY.variant);
+      return;
+    }
+    if (!part.startsWith('JMdict')) {
+      return;
+    }
+    const [, , word, , number] = part.split(' ');
+    if ([...word].length === 1) {
+      best = Math.min(best, MATCH_QUALITY.bareGloss);
+    } else if (number === '1') {
+      firstGlosses += 1;
+      best = Math.min(best, MATCH_QUALITY.firstGloss);
+    } else {
+      best = Math.min(best, MATCH_QUALITY.gloss);
+    }
+  });
+  if (firstGlosses > 1) {
+    best -= Math.min(SUPPORT_BONUS * (firstGlosses - 1), SUPPORT_MAX);
+  }
+  return best;
+}
+
+/** Quality of an English match: primary 0, later KANJIDIC2 meanings 1.0–2.0, synonyms by gloss. */
+function matchQuality(kind, position, source) {
+  const penalty = source.includes('qualified:') ? QUALIFIED_PENALTY : 0;
+  if (kind === 'keyword' || (kind === 'meaning' && position === 0)) {
+    return MATCH_QUALITY.primary + penalty;
+  }
+  if (kind === 'meaning') {
+    return Math.min(MEANING_BASE + MEANING_STEP * (position - 1), MEANING_MAX) + penalty;
+  }
+  return glossQuality(source);
+}
+
+/** Sort key of one match: tier, score (English: quality + commonness; else level), position, frequency, code point. */
+function searchRankKey(char, kind, position, source = '') {
+  const index = window.SEARCH_INDEX;
+  const entry = index.chars[char];
+  const tier = SEARCH_TIERS[kind] ?? 9;
+  let score = index.levels.indexOf(entry.level);
+  if (tier === 1) {
+    const raw = matchQuality(kind, position, source) + searchCommonness(entry, index.levels);
+    score = Math.round(raw * 1e6) / 1e6;
+  }
+  return [tier, score, position, entry.freq, char.codePointAt(0)];
+}
+
+/** Compare two rank keys element by element. */
+function compareRankKeys(a, b) {
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      return a[i] - b[i];
+    }
+  }
+  return 0;
+}
+
+/**
+ * Characters (kanji and kana) for a query from the search index, best first; [] until an index file has loaded.
+ * @param {string} query
+ * @param {number} [limit]
+ * @returns {string[]}
+ */
+function searchIndex(query, limit = SEARCH_RESULT_CAP) {
+  if (!window.SEARCH_INDEX) {
+    return [];
+  }
+  const lookup = searchIndexLookup();
+  const raw = String(query || '').trim();
+  const text = normalizeSearchQuery(query);
+  const best = new Map();
+  const loose = new Map();
+  const consider = (char, kind, position, source, isLoose = false) => {
+    const key = searchRankKey(char, kind, position, source);
+    if (!best.has(char) || compareRankKeys(key, best.get(char)) < 0) {
+      best.set(char, key);
+      loose.set(char, isLoose);
+    }
+  };
+  [...(lookup.get(text) || []), ...(lookup.get(raw) || [])].forEach(([char, kind, position, source, isLoose]) => {
+    if (kind !== 'char' || char === raw) {
+      consider(char, kind, position, source, isLoose);
+    }
+  });
+  const prefixOnly = !best.size && [...text].length >= SEARCH_MIN_PREFIX;
+  if (prefixOnly) {
+    lookup.forEach((hits, term) => {
+      if (term.startsWith(text)) {
+        hits.filter(([, kind]) => kind !== 'char').forEach(([char, kind, position, source, isLoose]) => consider(char, kind, position, source, isLoose));
+      }
+    });
+  }
+  const tops = window.SEARCH_INDEX.preferredTops || PREFERRED_TOPS;
+  const preferredEntry = tops[text];
+  const preferred = Array.isArray(preferredEntry) ? preferredEntry[0] : preferredEntry;
+  if (preferred && best.has(preferred) && best.get(preferred)[0] === SEARCH_TIERS.meaning) {
+    best.set(preferred, [SEARCH_TIERS.meaning, -1, ...best.get(preferred).slice(2)]);
+  }
+  const ordered = [...best.keys()].sort((a, b) => compareRankKeys(best.get(a), best.get(b))).slice(0, limit);
+  const senses = window.SEARCH_INDEX.looseSenses || LOOSE_SENSES;
+  const isLooseResult = (char) => {
+    const [tier, score] = best.get(char);
+    if (prefixOnly || tier === SEARCH_TIERS.component || loose.get(char)) {
+      return true;
+    }
+    const stretched = senses[text];
+    const listed = stretched && (typeof stretched === 'string' || Array.isArray(stretched) ? stretched.includes(char) : char in stretched);
+    const looseScore = window.SEARCH_INDEX.looseScore ?? LOOSE_SCORE;
+    return tier === SEARCH_TIERS.meaning && (score > looseScore || Boolean(listed));
+  };
+  ordered.forEach((char) => loose.set(char, isLooseResult(char)));
+  searchLooseChars = new Set(ordered.filter((char) => loose.get(char)));
+  searchHasCloseMatch = ordered.some((char) => !loose.get(char));
+  searchComponentChars = new Set(ordered.filter((char) => best.get(char)[0] === SEARCH_TIERS.component));
+  // strong matches first, loose ones after them (rendered under their own label)
+  return [...ordered.filter((char) => !loose.get(char)), ...ordered.filter((char) => loose.get(char))];
+}
+
+/** Toggle search. All levels are loaded in the background so search covers N5–N1; results refresh as they arrive. */
+function openSearch() {
+  searching = !searching;
+  renderPicker();
+  if (!searching) {
+    return;
+  }
+  if ($('sq')) {
+    $('sq').focus();   // synchronously inside the tap handler, or iPad Safari won't raise the keyboard
+  }
+  history.pushState({ search: true }, '');   // the browser Back button leaves search, not the app
+  const indexFiles = (window.SEARCH_INDEX_FILES || []).map((file) => loadScriptOnce(file));
+  const levels = LEVELS.filter((level) => levelFile(level)).map((level) => ensureLevel(level));
+  Promise.all([...indexFiles, ...levels]).then(() => {
+    if (searching) {
+      renderResults();
+    }
+  });
+}
+/** Most results shown per list. */
+const SEARCH_RESULT_CAP = 30;
+/** Queries longer than this many characters match nothing (no word or meaning is that long; keeps typing instant on pasted text). */
+const SEARCH_MAX_QUERY = 64;
+/** Match quality, best first: lower ranks are listed first. */
+const RANK = { exact: 0, reading: 1, word: 2, prefix: 3, partial: 4, component: 5 };
+
+/** Romaji → hiragana for latin queries such as "hito" (Hepburn, enough for readings). */
+const ROMAJI = [
+  ['kya', 'きゃ'], ['kyu', 'きゅ'], ['kyo', 'きょ'], ['sha', 'しゃ'], ['shu', 'しゅ'], ['sho', 'しょ'], ['chi', 'ち'],
+  ['cha', 'ちゃ'], ['chu', 'ちゅ'], ['cho', 'ちょ'], ['nya', 'にゃ'], ['nyu', 'にゅ'], ['nyo', 'にょ'], ['hya', 'ひゃ'],
+  ['hyu', 'ひゅ'], ['hyo', 'ひょ'], ['mya', 'みゃ'], ['myu', 'みゅ'], ['myo', 'みょ'], ['rya', 'りゃ'], ['ryu', 'りゅ'],
+  ['ryo', 'りょ'], ['gya', 'ぎゃ'], ['gyu', 'ぎゅ'], ['gyo', 'ぎょ'], ['ja', 'じゃ'], ['ju', 'じゅ'], ['jo', 'じょ'],
+  ['bya', 'びゃ'], ['byu', 'びゅ'], ['byo', 'びょ'], ['pya', 'ぴゃ'], ['pyu', 'ぴゅ'], ['pyo', 'ぴょ'], ['shi', 'し'],
+  ['tsu', 'つ'], ['ji', 'じ'], ['fu', 'ふ'],
+  ...'ka:か ki:き ku:く ke:け ko:こ sa:さ su:す se:せ so:そ ta:た te:て to:と na:な ni:に nu:ぬ ne:ね no:の ha:は hi:ひ he:へ ho:ほ ma:ま mi:み mu:む me:め mo:も ya:や yu:ゆ yo:よ ra:ら ri:り ru:る re:れ ro:ろ wa:わ wo:を ga:が gi:ぎ gu:ぐ ge:げ go:ご za:ざ zu:ず ze:ぜ zo:ぞ da:だ de:で do:ど ba:ば bi:び bu:ぶ be:べ bo:ぼ pa:ぱ pi:ぴ pu:ぷ pe:ぺ po:ぽ a:あ i:い u:う e:え o:お'
+    .split(' ').map((pair) => pair.split(':')),
+];
+
+/** Hiragana for a romaji query, or '' when it is not all romaji. */
+function romajiToHiragana(text) {
+  if (!/^[a-z]+$/.test(text)) {
+    return '';
+  }
+  let out = '';
+  let rest = text;
+  while (rest) {
+    if (rest.length > 1 && rest[0] === rest[1] && rest[0] !== 'n') {
+      out += 'っ';
+      rest = rest.slice(1);
+      continue;
+    }
+    const hit = ROMAJI.find(([latin]) => rest.startsWith(latin));
+    if (hit) {
+      out += hit[1];
+      rest = rest.slice(hit[0].length);
+    } else if (rest[0] === 'n') {
+      out += 'ん';
+      rest = rest.slice(1);
+    } else {
+      return '';
+    }
+  }
+  return out;
+}
+
+/** A reading reduced for comparison: hiragana, without okurigana marks, brackets or hyphens. */
+const plainReading = (reading) => hira(reading).replace(/[.\-‐()（）\s]/g, '');
+
+/** Query forms: lowercase text, its English words, and kana for reading matches (from kana or romaji). */
+function parseQuery(raw) {
+  let text = String(raw || '').replace(/[\s\u3000]+/g, ' ').trim().toLowerCase().slice(0, SEARCH_MAX_QUERY);
+  if (text.length > 1 && /^(.)\1+$/u.test(text)) {
+    text = [...text][0];   // 人人人… (a held key or paste) searches for 人
+  }
+  const kana = plainReading(text);
+  return {
+    text,
+    words: text.split(' ').filter(Boolean),
+    kana: /^[\u3041-\u3096\u30fc]+$/.test(kana) ? kana : romajiToHiragana(text.replace(/[\s']/g, '')),
+  };
+}
+
+/** Best rank of an English gloss list against the query (every query word must appear), or null. */
+function meaningRank(meanings, query) {
+  const glosses = meanings.map((m) => m.toLowerCase());
+  if (glosses.some((g) => g === query.text)) {
+    return RANK.word;
+  }
+  if (query.words.every((w) => glosses.some((g) => g.split(/[\s,;()]+/).some((part) => part.startsWith(w))))) {
+    return RANK.prefix;
+  }
+  if (query.words.every((w) => glosses.some((g) => g.includes(w)))) {
+    return RANK.partial;
+  }
+  return null;
+}
+
+/** Rank of kanji k for the query, or null when it does not match. */
+function kanjiRank(k, query) {
+  if (k.k === query.text) {
+    return RANK.exact;
+  }
+  if ([...query.text].includes(k.k)) {
+    return RANK.prefix;   // a kanji inside a typed compound, e.g. 日本
+  }
+  if (query.kana) {
+    const readings = [...k.on, ...k.kun].map(plainReading);
+    const stems = k.kun.map((r) => plainReading(r.split('.')[0]));
+    if (readings.includes(query.kana) || stems.includes(query.kana)) {
+      return RANK.reading;
+    }
+    if (readings.some((r) => r.startsWith(query.kana)) && query.kana.length > 1) {
+      return RANK.partial;
+    }
+  }
+  const byMeaning = meaningRank([k.keyword, ...k.meanings], query);
+  if (byMeaning !== null) {
+    return byMeaning;
+  }
+  return componentRank(k, query);
+}
+
+/** Matches on the kanji's radical or component keywords (氵, "water" …), or null. */
+function componentRank(k, query) {
+  const radical = k.radical || {};
+  const keywords = (k.parts || []).map((part) => part.kw || (window.COMPONENT_KW || {})[part.g] || '');
+  const glyphs = [radical.glyph, ...(k.parts || []).map((part) => part.g)];
+  if (glyphs.includes(query.text)) {
+    return RANK.component;
+  }
+  const names = [radical.meaning || '', ...keywords].filter(Boolean);
+  return names.length && meaningRank(names, query) !== null ? RANK.component : null;
+}
+
+/** Rank of a word for the query, or null. */
+function wordRank(word, query) {
+  if (word.w === query.text) {
+    return RANK.exact;
+  }
+  const reading = plainReading(word.r);
+  if (query.kana && reading === query.kana) {
+    return RANK.reading;
+  }
+  if (word.w.includes(query.text)) {
+    return RANK.prefix;
+  }
+  if (query.kana && reading.startsWith(query.kana)) {
+    return RANK.partial;
+  }
+  if (query.kana.length > 1 && reading.includes(query.kana)) {
+    return RANK.component;   // e.g. じん inside がいこくじん
+  }
+  return meaningRank(word.m.split(/;/), query);
+}
+
+/** Items that match, best rank first (stable within a rank). */
+function rankedMatches(items, rankOf) {
+  return items
+    .map((item, order) => ({ item, order, rank: rankOf(item) }))
+    .filter((hit) => hit.rank !== null)
+    .sort((a, b) => a.rank - b.rank || a.order - b.order)
+    .map((hit) => hit.item);
+}
+
+/**
+ * Search every loaded word and kanji (N5–N1 and kana once loaded) by kanji, English meaning (partial, any case,
+ * any word order), on/kun reading in hiragana, katakana or romaji with or without okurigana, kana, and radical
+ * or component keyword. Exact matches come first.
+ * @param {string} raw the typed query
+ * @returns {{words: object[], kanji: object[], more: boolean}} more: some matches were cut at SEARCH_RESULT_CAP
+ */
+function searchAll(raw) {
+  const query = parseQuery(raw);
+  if (!query.text) {
+    return { words: [], kanji: [], more: false };
+  }
+  if ([...String(raw).trim()].length > SEARCH_MAX_QUERY) {
+    return { words: [], kanji: [], more: false };   // nothing can equal or contain a query this long
+  }
+  const ranked = searchIndex(raw, SEARCH_RESULT_CAP * 4);
+  const indexedKana = ranked.filter((c) => !DATA.kanji[c])
+    .map((c) => ALLWORDS.find((word) => word.w === c)).filter(Boolean);   // kana practice entries, e.g. "tsu" → つ
+  const words = [...indexedKana, ...rankedMatches(ALLWORDS, (word) => wordRank(word, query))
+    .filter((word) => !indexedKana.includes(word))];
+  const indexed = ranked.filter((c) => DATA.kanji[c]).map((c) => DATA.kanji[c]);
+  // the app's own matcher only fills in when the index has nothing (multi-word AND queries, index not loaded yet)
+  const fallback = indexed.length ? [] : rankedMatches(Object.values(DATA.kanji), (k) => kanjiRank(k, query))
+    .filter((k) => !indexed.includes(k));
+  const merged = [...indexed, ...fallback];   // the index ranking first; the app's own matcher adds multi-word queries
+  const viaComponent = merged.filter((k) => searchComponentChars.has(k.k)).slice(0, SEARCH_COMPONENT_SLOTS);
+  const direct = merged.filter((k) => !viaComponent.includes(k));
+  const keepSlots = merged.length > SEARCH_RESULT_CAP && merged.indexOf(viaComponent[viaComponent.length - 1]) >= SEARCH_RESULT_CAP;
+  const room = SEARCH_RESULT_CAP - viaComponent.length;
+  const kanji = keepSlots ? [...direct.slice(0, room), ...viaComponent, ...direct.slice(room)] : merged;
+  return {
+    words: words.slice(0, SEARCH_RESULT_CAP),
+    kanji: kanji.slice(0, SEARCH_RESULT_CAP),
+    more: words.length > SEARCH_RESULT_CAP || kanji.length > SEARCH_RESULT_CAP,
+  };
+}
+/** Search results: word rows (each with its kanji), then a row of matching kanji; a hint when the list was cut. */
+function renderResults() {
+  const el = $('sres');
+  if (!el) {
+    return;
+  }
+  if (!sQuery.trim()) {
+    el.innerHTML = '';
+    return;
+  }
+  const { words, kanji, more } = searchAll(sQuery);
+  const kanjiChip = (k) => `<button class="jp kc" onclick="practiceKanji('${k.k}')"><span>${k.k}</span>`
+    + `<small>${esc(k.keyword)}</small></button>`;
+  const wordRow = (w) => {
+    const chips = [...w.w].filter((c) => DATA.kanji[c]).map((c) => kanjiChip(DATA.kanji[c])).join('');
+    return `<div class="srow"><button class="jp sw tier ${tier(w.w)}" onclick="openWord('${esc(w.w)}')">`
+      + `<span>${esc(w.w)}<em>${esc(w.r)}</em></span><small>${esc(w.m.split(';')[0])}</small></button>${chips}</div>`;
+  };
+  const strong = kanji.filter((k) => !searchLooseChars.has(k.k));
+  const weak = kanji.filter((k) => searchLooseChars.has(k.k));
+  const kanjiRow = (strong.length ? `<div class="srow kon">${strong.map(kanjiChip).join('')}</div>` : '')
+    + (weak.length ? `<div class="slabel">${strong.length ? 'Loose matches' : 'No close match — loose matches'}</div><div class="srow kon loose">${weak.map(kanjiChip).join('')}</div>` : '');
+  const hint = more ? `<div class="smore">Showing the first ${SEARCH_RESULT_CAP} matches — type more to refine</div>` : '';
+  el.innerHTML = words.map(wordRow).join('') + kanjiRow + hint || '<div class="soon">No matches</div>';
+}
+
+/** Empty the search box and its results, keeping the keyboard up. */
+function clearSearch() {
+  sQuery = '';
+  const input = $('sq');
+  if (input) {
+    input.value = '';
+    input.focus();
+  }
+  renderResults();
+}
+
+/** Open a word from search in its own lesson when it belongs to one, else as a one-word lesson. */
+function openWord(word) {
+  const set = SETS.find((s) => s.words.some((w) => w.w === word));
+  if (!set) {
+    practiceWord(word);
+    return;
+  }
+  searching = false;
+  pickWord(set.id, set.words.findIndex((w) => w.w === word));
+}
 /** Practise one word from search: a one-word lesson (kanji flow for new/due kanji + word box). */
 function practiceWord(w){const W=ALLWORDS.find(x=>x.w===w);loadLesson({id:'q:'+w,title:w,words:[W],level:pickLv(),custom:true})}
 /** Practise only one character's flow (a–h), forced even if it is not due. */
@@ -1265,8 +3131,13 @@ function pickWord(id,wi){$('klist').classList.remove('show');if(!curSet||curSet.
 function peekHTML(it){if(!it)return '';const w=it.w;return `<b>${esc(w.w)}</b><small>${esc(w.r)}<em>${esc(w.m.split(';')[0])}</em></small>`}
 function renderPeek(){const ki=steps[cur]?steps[cur].ki:0,n=D.length;$('peekp').innerHTML=peekHTML(D[ki-1]);$('peekn').innerHTML=peekHTML(D[ki+1]);$('prev').disabled=ki<=0;$('next').disabled=ki>=n-1}
 /** Picker closes on Escape, on a tap outside it, and on rotation/resize. */
-const closePicker=()=>$('klist').classList.remove('show');
-addEventListener('keydown',e=>{if(e.key==='Escape'){closePicker();closeEnd()}});addEventListener('orientationchange',closePicker);
+/** Close the picker; a dismissed search starts empty next time. */
+const closePicker = () => {
+  $('klist').classList.remove('show');
+  sQuery = '';
+};
+addEventListener('keydown',e=>{if(e.key==='Escape'){closePicker();closeEnd()}});
+addEventListener('popstate', () => { closePicker(); searching = false; });addEventListener('orientationchange',closePicker);
 let lastW=innerWidth;addEventListener('resize',()=>{if(innerWidth!==lastW){lastW=innerWidth;closePicker()}});
 document.addEventListener('pointerdown',e=>{const k=$('klist');if(k.classList.contains('show')&&!k.contains(e.target)&&!e.target.closest('#kchip'))closePicker()},true);
 /* hover (mouse or Apple Pencil hover) expands the prev/next pill; touch has no hover → plain tap */
@@ -1287,7 +3158,20 @@ function restartAt(wi){loadLesson(curSet,lessonOpts,wi)}
 function loadSet(id,wi=0){const L=SETS.find(s=>s.id===id)||SETS[0];loadLesson(L,{kana:!!L.kana},wi)}
 
 /* ==================== SERVICE WORKER + INIT ==================== */
+if(window.V15)V15.migrateOnce(localStorage,new Date().toISOString()); // v15: ranks from the old tint (rec:w:<k>.done), once
 {const id=localStorage.getItem('set')||SETS[0].id,lv=(id.match(/^(N[1-4])-/)||[])[1];if(lv&&levelFile(lv))ensureLevel(lv).then(()=>loadSet(id));else loadSet(id)} // saved lesson in a lazy level: load its file first
 $('tspk').innerHTML=I_SPK;$('tspk').addEventListener('click',e=>{e.stopPropagation();speak(curReading())}); // direct gesture → speak
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js'); // offline cache (see sw.js)
-</script></body></html>
+</script>
+<!-- v15 screens: injected after the load event so they do not delay it (every app hook checks window.V15UI) -->
+<script>
+window.addEventListener('load', function loadV15UI() {
+  var inject = function () {
+    var script = document.createElement('script');
+    script.src = 'v15-ui.js';
+    document.body.appendChild(script);
+  };
+  if ('requestIdleCallback' in window) requestIdleCallback(inject, { timeout: 1000 }); else setTimeout(inject, 0);
+}, { once: true });
+</script>
+</body></html>

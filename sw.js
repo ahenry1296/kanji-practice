@@ -3,13 +3,21 @@
 // The lazy per-level data and link files are listed in levels.js and precached too.
 importScripts('levels.js');
 
-const VERSION = 'kanji-v14b';
+const VERSION = 'kanji-v15b';
 
 const FILES = [
-  './', 'index.html', 'data.js', 'links.js', 'kana.js', 'kana-links.js', 'confusables.js', 'proportion_metrics.js', 'levels.js',
+  './', 'index.html', 'favicon.ico', 'fonts/Caladea-Regular.ttf', 'fonts/Caladea-Bold.ttf', 'fonts/Caladea-Italic.ttf', 'data.js', 'links.js', 'kana.js', 'kana-links.js', 'confusables.js', 'proportion_metrics.js', 'levels.js',
   'proportion-rules-kana.js', 'proportion-rules-N5.js', 'proportion-rules-N4.js', 'proportion-rules-N3.js', 'proportion-rules-N2.js', 'proportion-rules-N1.js',
   ...(self.KANJI_LEVEL_FILES || []),
   ...(self.KANJI_LINK_FILES || []),
+  ...(self.QUIZ_BANK_FILES || []),
+  'stroke-topology-kana.js', 'stroke-topology-N5.js', 'hook_rules.js', 'hook-categories.js', 'hook-rules-data.js', 'prefix-lookalikes.js',
+  ...(self.STROKE_TOPOLOGY_FILES || []),
+  ...(self.PRACTICE_SET_FILE ? [self.PRACTICE_SET_FILE] : []),
+  'sentences-N5.js',
+  ...(self.KANJI_SENTENCE_FILES || []),
+  ...(self.SEARCH_INDEX_FILES || []),
+  'reading-words.js', 'reading-tests.js', 'placement-pools.js', 'practice-catalog.js', 'rank-model.js', 'reading-answer.js', 'placement-model.js', 'unit-test-model.js', 'level-check-model.js', 'practice-model.js', 'v15-integration.js', 'v15-ui.js', 'hook-straight.js',
   'manifest.webmanifest',
   'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png',
 ];

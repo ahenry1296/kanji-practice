@@ -7,18 +7,27 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
   "己": [
     {"id": "己-vs-已-1", "char": "己", "rivals": ["已"], "metric": {"type": "position", "strokes": [2], "field": "sy"}, "comparator": ">", "threshold": 0.3111, "tolerance": 0.0403, "reference": 0.3918, "rivalReference": 0.2304, "score": 1.34, "note": "己: stroke 3 starts below 0.31 of the square (unlike 已)."},
     {"id": "己-vs-已-2", "char": "己", "rivals": ["已"], "metric": {"type": "lengthRatio", "strokes": [1, 2]}, "comparator": ">", "threshold": 0.4365, "tolerance": 0.0318, "reference": 0.5, "rivalReference": 0.373, "score": 1.31, "note": "己: stroke 2 is more than 0.44× the length of stroke 3 (unlike 已)."},
+    {"id": "己-vs-巳-1", "char": "己", "rivals": ["巳"], "metric": {"type": "position", "strokes": [2], "field": "sy"}, "comparator": ">", "threshold": 0.2072, "tolerance": 0.0923, "reference": 0.3918, "rivalReference": 0.0227, "score": 3.08, "note": "己: stroke 3 starts below 0.21 of the square (unlike 巳)."},
+    {"id": "己-vs-巳-2", "char": "己", "rivals": ["巳"], "metric": {"type": "lengthRatio", "strokes": [1, 2]}, "comparator": ">", "threshold": 0.426, "tolerance": 0.037, "reference": 0.5, "rivalReference": 0.352, "score": 1.57, "note": "己: stroke 2 is more than 0.43× the length of stroke 3 (unlike 巳)."},
     {"id": "己-vs-已-p3-1", "char": "己", "rivals": ["已"], "metric": {"type": "relativePosition", "strokes": [1, 2], "fields": ["sy", "sy"]}, "comparator": "<", "threshold": 0.0943, "tolerance": 0.0589, "reference": -0.0235, "rivalReference": 0.212, "score": 1.96, "note": "己: stroke 2 sy minus stroke 3 sy is less than 0.09 (unlike 已).", "phase": 3, "strength": "strong"},
     {"id": "己-vs-已-p3-2", "char": "己", "rivals": ["已"], "metric": {"type": "endGap", "strokes": [2, 0]}, "comparator": "<", "threshold": 1.3009, "tolerance": 0.0128, "reference": 1.2754, "rivalReference": 1.3265, "score": 0.64, "note": "己: end of stroke 3 is closer to the start of stroke 1 than 1.30 (unlike 已).", "phase": 3, "strength": "weak"}
   ],
   "已": [
     {"id": "已-vs-己-1", "char": "已", "rivals": ["己"], "metric": {"type": "position", "strokes": [2], "field": "sy"}, "comparator": "<", "threshold": 0.3111, "tolerance": 0.0403, "reference": 0.2304, "rivalReference": 0.3918, "score": 1.34, "note": "已: stroke 3 starts above 0.31 of the square (unlike 己).", "displayOnly": true},
     {"id": "已-vs-己-2", "char": "已", "rivals": ["己"], "metric": {"type": "lengthRatio", "strokes": [1, 0]}, "comparator": "<", "threshold": 0.6551, "tolerance": 0.0406, "reference": 0.5738, "rivalReference": 0.7364, "score": 1.12, "note": "已: stroke 2 is less than 0.66× the length of stroke 1 (unlike 己).", "displayOnly": true},
+    {"id": "已-vs-巳-1", "char": "已", "rivals": ["巳"], "metric": {"type": "position", "strokes": [2], "field": "sy"}, "comparator": ">", "threshold": 0.1265, "tolerance": 0.0519, "reference": 0.2304, "rivalReference": 0.0227, "score": 1.73, "note": "已: stroke 3 starts below 0.13 of the square (unlike 巳).", "displayOnly": true},
     {"id": "已-vs-己-p3-1", "char": "已", "rivals": ["己"], "metric": {"type": "relativePosition", "strokes": [1, 2], "fields": ["sy", "sy"]}, "comparator": ">", "threshold": 0.0943, "tolerance": 0.0589, "reference": 0.212, "rivalReference": -0.0235, "score": 1.96, "note": "已: stroke 2 sy minus stroke 3 sy is more than 0.09 (unlike 己).", "phase": 3, "strength": "strong", "displayOnly": true},
     {"id": "已-vs-己-p3-2", "char": "已", "rivals": ["己"], "metric": {"type": "endGap", "strokes": [2, 1]}, "comparator": "<", "threshold": 1.0711, "tolerance": 0.0235, "reference": 1.0241, "rivalReference": 1.118, "score": 1.17, "note": "已: end of stroke 3 is closer to the start of stroke 2 than 1.07 (unlike 己).", "phase": 3, "strength": "strong", "displayOnly": true}
   ],
+  "巳": [
+    {"id": "巳-vs-己-1", "char": "巳", "rivals": ["己"], "metric": {"type": "position", "strokes": [2], "field": "sy"}, "comparator": "<", "threshold": 0.2072, "tolerance": 0.0923, "reference": 0.0227, "rivalReference": 0.3918, "score": 3.08, "note": "巳: stroke 3 starts above 0.21 of the square (unlike 己)."},
+    {"id": "巳-vs-己-2", "char": "巳", "rivals": ["己"], "metric": {"type": "lengthRatio", "strokes": [2, 1]}, "comparator": ">", "threshold": 2.4205, "tolerance": 0.2102, "reference": 2.8409, "rivalReference": 2.0, "score": 1.57, "note": "巳: stroke 3 is more than 2.42× the length of stroke 2 (unlike 己)."},
+    {"id": "巳-vs-已-1", "char": "巳", "rivals": ["已"], "metric": {"type": "position", "strokes": [2], "field": "sy"}, "comparator": "<", "threshold": 0.1265, "tolerance": 0.0519, "reference": 0.0227, "rivalReference": 0.2304, "score": 1.73, "note": "巳: stroke 3 starts above 0.13 of the square (unlike 已)."}
+  ],
   "刀": [
     {"id": "刀-vs-力-1", "char": "刀", "rivals": ["力"], "metric": {"type": "position", "strokes": [0], "field": "sy"}, "comparator": "<", "threshold": 0.1614, "tolerance": 0.0807, "reference": 0.0, "rivalReference": 0.3228, "score": 2.69, "note": "刀: stroke 1 starts above 0.16 of the square (unlike 力)."},
-    {"id": "刀-vs-力-2", "char": "刀", "rivals": ["力"], "metric": {"type": "aspectRatio"}, "comparator": ">", "threshold": 0.7857, "tolerance": 0.0506, "reference": 0.8713, "rivalReference": 0.7001, "score": 1.2, "note": "刀: wider (width/height more than 0.79) than 力.", "widenedForSamples": true}
+    {"id": "刀-vs-力-2", "char": "刀", "rivals": ["力"], "metric": {"type": "aspectRatio"}, "comparator": ">", "threshold": 0.7857, "tolerance": 0.0506, "reference": 0.8713, "rivalReference": 0.7001, "score": 1.2, "note": "刀: wider (width/height more than 0.79) than 力.", "widenedForSamples": true},
+    {"id": "刀-vs-刃-1", "char": "刀", "rivals": ["刃"], "metric": {"type": "strokeCount"}, "comparator": "<", "threshold": 2.5, "tolerance": 0.25, "reference": 2.0, "rivalReference": 3.0, "score": 1.0, "note": "刀: fewer than 2.5 strokes (unlike 刃)."}
   ],
   "矢": [
     {"id": "矢-vs-失-1", "char": "矢", "rivals": ["失"], "metric": {"type": "position", "strokes": [3], "field": "sy"}, "comparator": ">", "threshold": 0.1229, "tolerance": 0.0614, "reference": 0.2458, "rivalReference": 0.0, "score": 2.05, "note": "矢: stroke 4 starts below 0.12 of the square (unlike 失)."},
@@ -83,6 +92,120 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
   "衷": [
     {"id": "衷-vs-哀-1", "char": "衷", "rivals": ["哀"], "metric": {"type": "lengthRatio", "strokes": [0, 1]}, "comparator": ">", "threshold": 1.93, "tolerance": 0.88, "reference": 3.69, "rivalReference": 0.17, "score": 13.79, "note": "衷: stroke 1 is more than 1.93× the length of stroke 2 (unlike 哀)."},
     {"id": "衷-vs-哀-2", "char": "衷", "rivals": ["哀"], "metric": {"type": "position", "strokes": [1], "field": "ex"}, "comparator": "<", "threshold": 0.5422, "tolerance": 0.1684, "reference": 0.2054, "rivalReference": 0.8789, "score": 5.61, "note": "衷: stroke 2 ends left of 0.54 of the square (unlike 哀)."}
+  ],
+  "侍": [
+    {"id": "侍-vs-待-1", "char": "侍", "rivals": ["待"], "metric": {"type": "lengthRatio", "strokes": [4, 7]}, "comparator": ">", "threshold": 2.634, "tolerance": 1.064, "reference": 4.7619, "rivalReference": 0.506, "score": 10.05, "note": "侍: stroke 5 is more than 2.63× the length of stroke 8 (unlike 待)."},
+    {"id": "侍-vs-待-2", "char": "侍", "rivals": ["待"], "metric": {"type": "position", "strokes": [2], "field": "ey"}, "comparator": "<", "threshold": 0.568, "tolerance": 0.209, "reference": 0.1499, "rivalReference": 0.9861, "score": 6.97, "note": "侍: stroke 3 ends above 0.57 of the square (unlike 待)."},
+    {"id": "侍-vs-持-1", "char": "侍", "rivals": ["持"], "metric": {"type": "lengthRatio", "strokes": [7, 0]}, "comparator": "<", "threshold": 1.1664, "tolerance": 0.4601, "reference": 0.2462, "rivalReference": 2.0865, "score": 9.58, "note": "侍: stroke 8 is less than 1.17× the length of stroke 1 (unlike 持)."},
+    {"id": "侍-vs-持-2", "char": "侍", "rivals": ["持"], "metric": {"type": "position", "strokes": [2], "field": "ex"}, "comparator": ">", "threshold": 0.603, "tolerance": 0.1548, "reference": 0.9126, "rivalReference": 0.2934, "score": 5.16, "note": "侍: stroke 3 ends right of 0.60 of the square (unlike 持)."}
+  ],
+  "刃": [
+    {"id": "刃-vs-刀-1", "char": "刃", "rivals": ["刀"], "metric": {"type": "strokeCount"}, "comparator": ">", "threshold": 2.5, "tolerance": 0.25, "reference": 3.0, "rivalReference": 2.0, "score": 1.0, "note": "刃: more than 2.5 strokes (unlike 刀)."}
+  ],
+  "侯": [
+    {"id": "侯-vs-候-1", "char": "侯", "rivals": ["候"], "metric": {"type": "lengthRatio", "strokes": [4, 6]}, "comparator": "<", "threshold": 1.0886, "tolerance": 0.3386, "reference": 0.4114, "rivalReference": 1.7658, "score": 6.53, "note": "侯: stroke 5 is less than 1.09× the length of stroke 7 (unlike 候)."},
+    {"id": "侯-vs-候-2", "char": "侯", "rivals": ["候"], "metric": {"type": "position", "strokes": [7], "field": "ex"}, "comparator": "<", "threshold": 0.6407, "tolerance": 0.1758, "reference": 0.2891, "rivalReference": 0.9923, "score": 5.86, "note": "侯: stroke 8 ends left of 0.64 of the square (unlike 候)."}
+  ],
+  "栽": [
+    {"id": "栽-vs-裁-1", "char": "栽", "rivals": ["裁"], "metric": {"type": "lengthRatio", "strokes": [8, 9]}, "comparator": ">", "threshold": 1.7756, "tolerance": 0.7678, "reference": 3.3113, "rivalReference": 0.24, "score": 11.76, "note": "栽: stroke 9 is more than 1.78× the length of stroke 10 (unlike 裁)."},
+    {"id": "栽-vs-裁-2", "char": "栽", "rivals": ["裁"], "metric": {"type": "position", "strokes": [9], "field": "ey"}, "comparator": "<", "threshold": 0.5103, "tolerance": 0.1814, "reference": 0.1475, "rivalReference": 0.8732, "score": 6.05, "note": "栽: stroke 10 ends above 0.51 of the square (unlike 裁)."},
+    {"id": "栽-vs-載-1", "char": "栽", "rivals": ["載"], "metric": {"type": "lengthRatio", "strokes": [7, 9]}, "comparator": ">", "threshold": 3.5204, "tolerance": 1.5511, "reference": 6.6225, "rivalReference": 0.4183, "score": 12.38, "note": "栽: stroke 8 is more than 3.52× the length of stroke 10 (unlike 載)."},
+    {"id": "栽-vs-載-2", "char": "栽", "rivals": ["載"], "metric": {"type": "position", "strokes": [9], "field": "ey"}, "comparator": "<", "threshold": 0.5737, "tolerance": 0.2131, "reference": 0.1475, "rivalReference": 1.0, "score": 7.1, "note": "栽: stroke 10 ends above 0.57 of the square (unlike 載)."}
+  ],
+  "裁": [
+    {"id": "裁-vs-栽-1", "char": "裁", "rivals": ["栽"], "metric": {"type": "lengthRatio", "strokes": [8, 9]}, "comparator": "<", "threshold": 1.7756, "tolerance": 0.7678, "reference": 0.24, "rivalReference": 3.3113, "score": 11.76, "note": "裁: stroke 9 is less than 1.78× the length of stroke 10 (unlike 栽)."},
+    {"id": "裁-vs-栽-2", "char": "裁", "rivals": ["栽"], "metric": {"type": "position", "strokes": [9], "field": "ey"}, "comparator": ">", "threshold": 0.5103, "tolerance": 0.1814, "reference": 0.8732, "rivalReference": 0.1475, "score": 6.05, "note": "裁: stroke 10 ends below 0.51 of the square (unlike 栽)."},
+    {"id": "裁-vs-載-1", "char": "裁", "rivals": ["載"], "metric": {"type": "position", "strokes": [11], "field": "ey"}, "comparator": "<", "threshold": 0.5488, "tolerance": 0.1913, "reference": 0.1663, "rivalReference": 0.9313, "score": 6.38, "note": "裁: stroke 12 ends above 0.55 of the square (unlike 載)."},
+    {"id": "裁-vs-載-2", "char": "裁", "rivals": ["載"], "metric": {"type": "angle", "strokes": [7]}, "comparator": ">", "threshold": 60.5, "tolerance": 33.25, "reference": 127.0, "rivalReference": -6.0, "score": 5.32, "note": "裁: stroke 8 points more than 60° (unlike 載)."}
+  ],
+  "載": [
+    {"id": "載-vs-栽-1", "char": "載", "rivals": ["栽"], "metric": {"type": "lengthRatio", "strokes": [7, 9]}, "comparator": "<", "threshold": 3.5204, "tolerance": 1.5511, "reference": 0.4183, "rivalReference": 6.6225, "score": 12.38, "note": "載: stroke 8 is less than 3.52× the length of stroke 10 (unlike 栽)."},
+    {"id": "載-vs-栽-2", "char": "載", "rivals": ["栽"], "metric": {"type": "position", "strokes": [9], "field": "ey"}, "comparator": ">", "threshold": 0.5737, "tolerance": 0.2131, "reference": 1.0, "rivalReference": 0.1475, "score": 7.1, "note": "載: stroke 10 ends below 0.57 of the square (unlike 栽)."},
+    {"id": "載-vs-裁-1", "char": "載", "rivals": ["裁"], "metric": {"type": "position", "strokes": [11], "field": "ey"}, "comparator": ">", "threshold": 0.5488, "tolerance": 0.1913, "reference": 0.9313, "rivalReference": 0.1663, "score": 6.38, "note": "載: stroke 12 ends below 0.55 of the square (unlike 裁)."},
+    {"id": "載-vs-裁-2", "char": "載", "rivals": ["裁"], "metric": {"type": "angle", "strokes": [7]}, "comparator": "<", "threshold": 60.5, "tolerance": 33.25, "reference": -6.0, "rivalReference": 127.0, "score": 5.32, "note": "載: stroke 8 points less than 60° (unlike 裁)."}
+  ],
+  "慕": [
+    {"id": "慕-vs-募-1", "char": "慕", "rivals": ["募"], "metric": {"type": "lengthRatio", "strokes": [8, 11]}, "comparator": ">", "threshold": 2.3962, "tolerance": 0.6542, "reference": 3.7045, "rivalReference": 1.0878, "score": 5.49, "note": "慕: stroke 9 is more than 2.40× the length of stroke 12 (unlike 募)."},
+    {"id": "慕-vs-募-2", "char": "慕", "rivals": ["募"], "metric": {"type": "angle", "strokes": [10]}, "comparator": ">", "threshold": 71.0, "tolerance": 15.5, "reference": 102.0, "rivalReference": 40.0, "score": 2.48, "note": "慕: stroke 11 points more than 71° (unlike 募)."},
+    {"id": "慕-vs-墓-1", "char": "慕", "rivals": ["墓"], "metric": {"type": "lengthRatio", "strokes": [12, 10]}, "comparator": "<", "threshold": 1.1397, "tolerance": 0.3739, "reference": 0.3918, "rivalReference": 1.8875, "score": 7.05, "note": "慕: stroke 13 is less than 1.14× the length of stroke 11 (unlike 墓)."},
+    {"id": "慕-vs-墓-2", "char": "慕", "rivals": ["墓"], "metric": {"type": "angle", "strokes": [10]}, "comparator": ">", "threshold": 49.0, "tolerance": 26.5, "reference": 102.0, "rivalReference": -4.0, "score": 4.24, "note": "慕: stroke 11 points more than 49° (unlike 墓)."},
+    {"id": "慕-vs-幕-1", "char": "慕", "rivals": ["幕"], "metric": {"type": "lengthRatio", "strokes": [10, 11]}, "comparator": ">", "threshold": 1.4821, "tolerance": 0.5715, "reference": 2.625, "rivalReference": 0.3391, "score": 9.17, "note": "慕: stroke 11 is more than 1.48× the length of stroke 12 (unlike 幕)."},
+    {"id": "慕-vs-幕-2", "char": "慕", "rivals": ["幕"], "metric": {"type": "angle", "strokes": [11]}, "comparator": ">", "threshold": 72.5, "tolerance": 21.75, "reference": 116.0, "rivalReference": 29.0, "score": 3.48, "note": "慕: stroke 12 points more than 72° (unlike 幕)."},
+    {"id": "慕-vs-暮-1", "char": "慕", "rivals": ["暮"], "metric": {"type": "lengthRatio", "strokes": [10, 11]}, "comparator": ">", "threshold": 1.54, "tolerance": 0.5425, "reference": 2.625, "rivalReference": 0.455, "score": 7.85, "note": "慕: stroke 11 is more than 1.54× the length of stroke 12 (unlike 暮).", "phase": 2},
+    {"id": "慕-vs-暮-2", "char": "慕", "rivals": ["暮"], "metric": {"type": "position", "strokes": [11], "field": "ex"}, "comparator": "<", "threshold": 0.403, "tolerance": 0.1054, "reference": 0.1921, "rivalReference": 0.6138, "score": 3.51, "note": "慕: stroke 12 ends left of 0.40 of the square (unlike 暮).", "phase": 2}
+  ],
+  "墓": [
+    {"id": "墓-vs-募-1", "char": "墓", "rivals": ["募"], "metric": {"type": "lengthRatio", "strokes": [10, 9]}, "comparator": "<", "threshold": 1.1444, "tolerance": 0.2115, "reference": 0.7213, "rivalReference": 1.5674, "score": 3.48, "note": "墓: stroke 11 is less than 1.14× the length of stroke 10 (unlike 募)."},
+    {"id": "墓-vs-慕-1", "char": "墓", "rivals": ["慕"], "metric": {"type": "lengthRatio", "strokes": [10, 12]}, "comparator": "<", "threshold": 1.5411, "tolerance": 0.5057, "reference": 0.5298, "rivalReference": 2.5525, "score": 7.05, "note": "墓: stroke 11 is less than 1.54× the length of stroke 13 (unlike 慕)."},
+    {"id": "墓-vs-慕-2", "char": "墓", "rivals": ["慕"], "metric": {"type": "angle", "strokes": [10]}, "comparator": "<", "threshold": 49.0, "tolerance": 26.5, "reference": -4.0, "rivalReference": 102.0, "score": 4.24, "note": "墓: stroke 11 points less than 49° (unlike 慕)."},
+    {"id": "墓-vs-幕-1", "char": "墓", "rivals": ["幕"], "metric": {"type": "lengthRatio", "strokes": [11, 12]}, "comparator": "<", "threshold": 0.9864, "tolerance": 0.3021, "reference": 0.3821, "rivalReference": 1.5906, "score": 6.39, "note": "墓: stroke 12 is less than 0.99× the length of stroke 13 (unlike 幕)."},
+    {"id": "墓-vs-幕-2", "char": "墓", "rivals": ["幕"], "metric": {"type": "angle", "strokes": [10]}, "comparator": "<", "threshold": 42.0, "tolerance": 23.0, "reference": -4.0, "rivalReference": 88.0, "score": 3.68, "note": "墓: stroke 11 points less than 42° (unlike 幕)."}
+  ],
+  "幕": [
+    {"id": "幕-vs-募-1", "char": "幕", "rivals": ["募"], "metric": {"type": "lengthRatio", "strokes": [10, 11]}, "comparator": "<", "threshold": 0.9645, "tolerance": 0.3127, "reference": 0.3391, "rivalReference": 1.5898, "score": 6.92, "note": "幕: stroke 11 is less than 0.96× the length of stroke 12 (unlike 募)."},
+    {"id": "幕-vs-募-2", "char": "幕", "rivals": ["募"], "metric": {"type": "angle", "strokes": [11]}, "comparator": "<", "threshold": 78.5, "tolerance": 24.75, "reference": 29.0, "rivalReference": 128.0, "score": 3.96, "note": "幕: stroke 12 points less than 78° (unlike 募)."},
+    {"id": "幕-vs-慕-1", "char": "幕", "rivals": ["慕"], "metric": {"type": "lengthRatio", "strokes": [10, 11]}, "comparator": "<", "threshold": 1.4821, "tolerance": 0.5715, "reference": 0.3391, "rivalReference": 2.625, "score": 9.17, "note": "幕: stroke 11 is less than 1.48× the length of stroke 12 (unlike 慕)."},
+    {"id": "幕-vs-慕-2", "char": "幕", "rivals": ["慕"], "metric": {"type": "angle", "strokes": [11]}, "comparator": "<", "threshold": 72.5, "tolerance": 21.75, "reference": 29.0, "rivalReference": 116.0, "score": 3.48, "note": "幕: stroke 12 points less than 72° (unlike 慕)."},
+    {"id": "幕-vs-墓-1", "char": "幕", "rivals": ["墓"], "metric": {"type": "lengthRatio", "strokes": [11, 12]}, "comparator": ">", "threshold": 0.9864, "tolerance": 0.3021, "reference": 1.5906, "rivalReference": 0.3821, "score": 6.39, "note": "幕: stroke 12 is more than 0.99× the length of stroke 13 (unlike 墓)."},
+    {"id": "幕-vs-墓-2", "char": "幕", "rivals": ["墓"], "metric": {"type": "angle", "strokes": [10]}, "comparator": ">", "threshold": 42.0, "tolerance": 23.0, "reference": 88.0, "rivalReference": -4.0, "score": 3.68, "note": "幕: stroke 11 points more than 42° (unlike 墓)."}
+  ],
+  "析": [
+    {"id": "析-vs-折-1", "char": "析", "rivals": ["折"], "metric": {"type": "position", "strokes": [4], "field": "ey"}, "comparator": "<", "threshold": 0.5484, "tolerance": 0.1855, "reference": 0.1774, "rivalReference": 0.9195, "score": 6.18, "note": "析: stroke 5 ends above 0.55 of the square (unlike 折)."},
+    {"id": "析-vs-折-2", "char": "析", "rivals": ["折"], "metric": {"type": "angle", "strokes": [2]}, "comparator": ">", "threshold": 46.0, "tolerance": 36.0, "reference": 118.0, "rivalReference": -26.0, "score": 5.76, "note": "析: stroke 3 points more than 46° (unlike 折)."},
+    {"id": "析-vs-枠-1", "char": "析", "rivals": ["枠"], "metric": {"type": "position", "strokes": [5], "field": "ex"}, "comparator": "<", "threshold": 0.6672, "tolerance": 0.1575, "reference": 0.3522, "rivalReference": 0.9822, "score": 5.25, "note": "析: stroke 6 ends left of 0.67 of the square (unlike 枠).", "phase": 2},
+    {"id": "析-vs-枠-2", "char": "析", "rivals": ["枠"], "metric": {"type": "bend", "strokes": [5]}, "comparator": "<", "threshold": 166.5, "tolerance": 57.75, "reference": 51.0, "rivalReference": 282.0, "score": 3.85, "note": "析: stroke 6 turns less than 166° in total (unlike 枠).", "phase": 2},
+    {"id": "析-vs-祈-1", "char": "析", "rivals": ["祈"], "metric": {"type": "lengthRatio", "strokes": [0, 3]}, "comparator": ">", "threshold": 1.7391, "tolerance": 0.4367, "reference": 2.6125, "rivalReference": 0.8657, "score": 4.95, "note": "析: stroke 1 is more than 1.74× the length of stroke 4 (unlike 祈).", "phase": 2},
+    {"id": "析-vs-祈-2", "char": "析", "rivals": ["祈"], "metric": {"type": "position", "strokes": [1], "field": "ey"}, "comparator": ">", "threshold": 0.8111, "tolerance": 0.0854, "reference": 0.982, "rivalReference": 0.6402, "score": 2.85, "note": "析: stroke 2 ends below 0.81 of the square (unlike 祈).", "phase": 2}
+  ],
+  "李": [
+    {"id": "李-vs-季-1", "char": "李", "rivals": ["季"], "metric": {"type": "position", "strokes": [3], "field": "ex"}, "comparator": ">", "threshold": 0.4712, "tolerance": 0.2356, "reference": 0.9424, "rivalReference": 0.0, "score": 7.85, "note": "李: stroke 4 ends right of 0.47 of the square (unlike 季)."},
+    {"id": "李-vs-季-2", "char": "李", "rivals": ["季"], "metric": {"type": "angle", "strokes": [0]}, "comparator": "<", "threshold": 80.0, "tolerance": 41.5, "reference": -3.0, "rivalReference": 163.0, "score": 6.64, "note": "李: stroke 1 points less than 80° (unlike 季)."}
+  ],
+  "撤": [
+    {"id": "撤-vs-徹-1", "char": "撤", "rivals": ["徹"], "metric": {"type": "lengthRatio", "strokes": [1, 2]}, "comparator": ">", "threshold": 2.0235, "tolerance": 0.6011, "reference": 3.2258, "rivalReference": 0.8213, "score": 6.13, "note": "撤: stroke 2 is more than 2.02× the length of stroke 3 (unlike 徹)."},
+    {"id": "撤-vs-徹-2", "char": "撤", "rivals": ["徹"], "metric": {"type": "angle", "strokes": [0]}, "comparator": "<", "threshold": 61.5, "tolerance": 33.75, "reference": -6.0, "rivalReference": 129.0, "score": 5.4, "note": "撤: stroke 1 points less than 62° (unlike 徹)."}
+  ],
+  "徹": [
+    {"id": "徹-vs-撤-1", "char": "徹", "rivals": ["撤"], "metric": {"type": "lengthRatio", "strokes": [1, 2]}, "comparator": "<", "threshold": 2.0235, "tolerance": 0.6011, "reference": 0.8213, "rivalReference": 3.2258, "score": 6.13, "note": "徹: stroke 2 is less than 2.02× the length of stroke 3 (unlike 撤)."},
+    {"id": "徹-vs-撤-2", "char": "徹", "rivals": ["撤"], "metric": {"type": "angle", "strokes": [0]}, "comparator": ">", "threshold": 61.5, "tolerance": 33.75, "reference": 129.0, "rivalReference": -6.0, "score": 5.4, "note": "徹: stroke 1 points more than 62° (unlike 撤)."}
+  ],
+  "吏": [
+    {"id": "吏-vs-史-1", "char": "吏", "rivals": ["史"], "metric": {"type": "lengthRatio", "strokes": [0, 1]}, "comparator": ">", "threshold": 1.6259, "tolerance": 0.6402, "reference": 2.9064, "rivalReference": 0.3454, "score": 9.55, "note": "吏: stroke 1 is more than 1.63× the length of stroke 2 (unlike 史)."},
+    {"id": "吏-vs-史-2", "char": "吏", "rivals": ["史"], "metric": {"type": "position", "strokes": [4], "field": "ex"}, "comparator": "<", "threshold": 0.4446, "tolerance": 0.2223, "reference": 0.0, "rivalReference": 0.8892, "score": 7.41, "note": "吏: stroke 5 ends left of 0.44 of the square (unlike 史)."}
+  ],
+  "斤": [
+    {"id": "斤-vs-斥-1", "char": "斤", "rivals": ["斥"], "metric": {"type": "strokeCount"}, "comparator": "<", "threshold": 4.5, "tolerance": 0.25, "reference": 4.0, "rivalReference": 5.0, "score": 1.0, "note": "斤: fewer than 4.5 strokes (unlike 斥)."}
+  ],
+  "斥": [
+    {"id": "斥-vs-斤-1", "char": "斥", "rivals": ["斤"], "metric": {"type": "strokeCount"}, "comparator": ">", "threshold": 4.5, "tolerance": 0.25, "reference": 5.0, "rivalReference": 4.0, "score": 1.0, "note": "斥: more than 4.5 strokes (unlike 斤)."}
+  ],
+  "熊": [
+    {"id": "熊-vs-態-1", "char": "熊", "rivals": ["態"], "metric": {"type": "lengthRatio", "strokes": [13, 11]}, "comparator": ">", "threshold": 0.73, "tolerance": 0.259, "reference": 1.248, "rivalReference": 0.212, "score": 7.94, "note": "熊: stroke 14 is more than 0.73× the length of stroke 12 (unlike 態)."},
+    {"id": "熊-vs-態-2", "char": "熊", "rivals": ["態"], "metric": {"type": "position", "strokes": [11], "field": "ex"}, "comparator": "<", "threshold": 0.5598, "tolerance": 0.1046, "reference": 0.3506, "rivalReference": 0.769, "score": 3.49, "note": "熊: stroke 12 ends left of 0.56 of the square (unlike 態)."}
+  ],
+  "態": [
+    {"id": "態-vs-熊-1", "char": "態", "rivals": ["熊"], "metric": {"type": "lengthRatio", "strokes": [11, 13]}, "comparator": ">", "threshold": 2.7591, "tolerance": 0.9789, "reference": 4.717, "rivalReference": 0.8013, "score": 7.94, "note": "態: stroke 12 is more than 2.76× the length of stroke 14 (unlike 熊)."},
+    {"id": "態-vs-熊-2", "char": "態", "rivals": ["熊"], "metric": {"type": "position", "strokes": [11], "field": "ex"}, "comparator": ">", "threshold": 0.5598, "tolerance": 0.1046, "reference": 0.769, "rivalReference": 0.3506, "score": 3.49, "note": "態: stroke 12 ends right of 0.56 of the square (unlike 熊)."}
+  ],
+  "壊": [
+    {"id": "壊-vs-懐-1", "char": "壊", "rivals": ["懐"], "metric": {"type": "position", "strokes": [2], "field": "sy"}, "comparator": ">", "threshold": 0.4215, "tolerance": 0.1869, "reference": 0.7953, "rivalReference": 0.0478, "score": 6.23, "note": "壊: stroke 3 starts below 0.42 of the square (unlike 懐)."},
+    {"id": "壊-vs-懐-2", "char": "壊", "rivals": ["懐"], "metric": {"type": "lengthRatio", "strokes": [0, 2]}, "comparator": ">", "threshold": 0.5531, "tolerance": 0.1625, "reference": 0.8782, "rivalReference": 0.228, "score": 6.04, "note": "壊: stroke 1 is more than 0.55× the length of stroke 3 (unlike 懐)."}
+  ],
+  "懐": [
+    {"id": "懐-vs-壊-1", "char": "懐", "rivals": ["壊"], "metric": {"type": "position", "strokes": [2], "field": "sy"}, "comparator": "<", "threshold": 0.4215, "tolerance": 0.1869, "reference": 0.0478, "rivalReference": 0.7953, "score": 6.23, "note": "懐: stroke 3 starts above 0.42 of the square (unlike 壊)."},
+    {"id": "懐-vs-壊-2", "char": "懐", "rivals": ["壊"], "metric": {"type": "lengthRatio", "strokes": [0, 2]}, "comparator": "<", "threshold": 0.5531, "tolerance": 0.1625, "reference": 0.228, "rivalReference": 0.8782, "score": 6.04, "note": "懐: stroke 1 is less than 0.55× the length of stroke 3 (unlike 壊)."}
+  ],
+  "崎": [
+    {"id": "崎-vs-埼-1", "char": "崎", "rivals": ["埼"], "metric": {"type": "angle", "strokes": [2]}, "comparator": ">", "threshold": 31.5, "tolerance": 29.75, "reference": 91.0, "rivalReference": -28.0, "score": 4.76, "note": "崎: stroke 3 points more than 32° (unlike 埼)."},
+    {"id": "崎-vs-埼-2", "char": "崎", "rivals": ["埼"], "metric": {"type": "position", "strokes": [2], "field": "sy"}, "comparator": "<", "threshold": 0.5127, "tolerance": 0.1101, "reference": 0.2925, "rivalReference": 0.7328, "score": 3.67, "note": "崎: stroke 3 starts above 0.51 of the square (unlike 埼)."}
+  ],
+  "埼": [
+    {"id": "埼-vs-崎-1", "char": "埼", "rivals": ["崎"], "metric": {"type": "angle", "strokes": [2]}, "comparator": "<", "threshold": 31.5, "tolerance": 29.75, "reference": -28.0, "rivalReference": 91.0, "score": 4.76, "note": "埼: stroke 3 points less than 32° (unlike 崎).", "displayOnly": true},
+    {"id": "埼-vs-崎-2", "char": "埼", "rivals": ["崎"], "metric": {"type": "position", "strokes": [2], "field": "sy"}, "comparator": ">", "threshold": 0.5127, "tolerance": 0.1101, "reference": 0.7328, "rivalReference": 0.2925, "score": 3.67, "note": "埼: stroke 3 starts below 0.51 of the square (unlike 崎).", "displayOnly": true}
+  ],
+  "往": [
+    {"id": "往-vs-住-1", "char": "往", "rivals": ["住"], "metric": {"type": "lengthRatio", "strokes": [2, 3]}, "comparator": ">", "threshold": 1.6893, "tolerance": 0.6599, "reference": 3.0091, "rivalReference": 0.3695, "score": 9.4, "note": "往: stroke 3 is more than 1.69× the length of stroke 4 (unlike 住)."},
+    {"id": "往-vs-住-2", "char": "往", "rivals": ["住"], "metric": {"type": "position", "strokes": [2], "field": "ey"}, "comparator": ">", "threshold": 0.5202, "tolerance": 0.1924, "reference": 0.905, "rivalReference": 0.1353, "score": 6.41, "note": "往: stroke 3 ends below 0.52 of the square (unlike 住)."}
   ],
   "旦": [
     {"id": "旦-vs-且-1", "char": "旦", "rivals": ["且"], "metric": {"type": "position", "strokes": [0], "field": "ey"}, "comparator": "<", "threshold": 0.7822, "tolerance": 0.0437, "reference": 0.6948, "rivalReference": 0.8696, "score": 1.46, "note": "旦: stroke 1 ends above 0.78 of the square (unlike 且)."},
@@ -157,7 +280,7 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
     {"id": "閑-vs-開-2", "char": "閑", "rivals": ["開"], "metric": {"type": "position", "strokes": [9], "field": "ey"}, "comparator": ">", "threshold": 0.7828, "tolerance": 0.0817, "reference": 0.9461, "rivalReference": 0.6194, "score": 2.72, "note": "閑: stroke 10 ends below 0.78 of the square (unlike 開)."},
     {"id": "閑-vs-間-1", "char": "閑", "rivals": ["間"], "metric": {"type": "angle", "strokes": [10]}, "comparator": ">", "threshold": 63.0, "tolerance": 34.0, "reference": 131.0, "rivalReference": -5.0, "score": 5.44, "note": "閑: stroke 11 points more than 63° (unlike 間).", "phase": 2},
     {"id": "閑-vs-間-2", "char": "閑", "rivals": ["間"], "metric": {"type": "position", "strokes": [10], "field": "ex"}, "comparator": "<", "threshold": 0.3342, "tolerance": 0.1092, "reference": 0.1158, "rivalReference": 0.5525, "score": 3.64, "note": "閑: stroke 11 ends left of 0.33 of the square (unlike 間).", "phase": 2},
-    {"id": "閑-vs-閉-1", "char": "閑", "rivals": ["閉"], "metric": {"type": "bend", "strokes": [9]}, "comparator": "<", "threshold": 80.0, "tolerance": 31.5, "reference": 17.0, "rivalReference": 143.0, "score": 2.1, "note": "閑: stroke 10 turns less than 80° in total (unlike 閉).", "phase": 2},
+    {"id": "閑-vs-閉-1", "char": "閑", "rivals": ["閉"], "metric": {"type": "bend", "strokes": [9]}, "comparator": "<", "threshold": 80.0, "tolerance": 40.0, "reference": 17.0, "rivalReference": 143.0, "score": 2.1, "note": "閑: stroke 10 turns less than 80° in total (unlike 閉).", "phase": 2, "adjusted": true},
     {"id": "閑-vs-閉-2", "char": "閑", "rivals": ["閉"], "metric": {"type": "lengthRatio", "strokes": [3, 10]}, "comparator": ">", "threshold": 0.5526, "tolerance": 0.0314, "reference": 0.6154, "rivalReference": 0.4899, "score": 1.02, "note": "閑: stroke 4 is more than 0.55× the length of stroke 11 (unlike 閉).", "phase": 2}
   ],
   "唆": [
@@ -182,8 +305,7 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
     {"id": "漠-vs-嘆-1", "char": "漠", "rivals": ["嘆"], "metric": {"type": "lengthRatio", "strokes": [1, 2]}, "comparator": "<", "threshold": 1.689, "tolerance": 0.5434, "reference": 0.6021, "rivalReference": 2.7759, "score": 6.85, "note": "漠: stroke 2 is less than 1.69× the length of stroke 3 (unlike 嘆).", "phase": 2},
     {"id": "漠-vs-嘆-2", "char": "漠", "rivals": ["嘆"], "metric": {"type": "position", "strokes": [0], "field": "ey"}, "comparator": "<", "threshold": 0.3917, "tolerance": 0.1167, "reference": 0.1582, "rivalReference": 0.6252, "score": 3.89, "note": "漠: stroke 1 ends above 0.39 of the square (unlike 嘆).", "phase": 2},
     {"id": "漠-vs-漢-p3-1", "char": "漠", "rivals": ["漢"], "metric": {"type": "endGap", "strokes": [5, 11]}, "comparator": ">", "threshold": 0.2614, "tolerance": 0.0663, "reference": 0.3939, "rivalReference": 0.1288, "score": 3.31, "note": "漠: end of stroke 6 is farther from the start of stroke 12 than 0.26 (unlike 漢).", "phase": 3, "strength": "strong"},
-    {"id": "漠-vs-漢-p3-2", "char": "漠", "rivals": ["漢"], "metric": {"type": "relativePosition", "strokes": [1, 11], "fields": ["sy", "sy"]}, "comparator": "<", "threshold": -0.0793, "tolerance": 0.0937, "reference": -0.2667, "rivalReference": 0.1081, "score": 3.12, "note": "漠: stroke 2 sy minus stroke 12 sy is less than -0.08 (unlike 漢).", "phase": 3, "strength": "strong"},
-    {"id": "漠-vs-漢-p3-3", "char": "漠", "rivals": ["漢"], "metric": {"type": "contact", "strokes": [9, 6], "field": "touch"}, "comparator": ">", "threshold": 0.5, "tolerance": 0.25, "reference": 1.0, "rivalReference": 0.0, "score": 1.0, "note": "漠: stroke 10 touches stroke 7 (unlike 漢).", "phase": 3, "strength": "strong"}
+    {"id": "漠-vs-漢-p3-2", "char": "漠", "rivals": ["漢"], "metric": {"type": "relativePosition", "strokes": [1, 11], "fields": ["sy", "sy"]}, "comparator": "<", "threshold": -0.0793, "tolerance": 0.0937, "reference": -0.2667, "rivalReference": 0.1081, "score": 3.12, "note": "漠: stroke 2 sy minus stroke 12 sy is less than -0.08 (unlike 漢).", "phase": 3, "strength": "strong"}
   ],
   "訂": [
     {"id": "訂-vs-計-1", "char": "訂", "rivals": ["計"], "metric": {"type": "bend", "strokes": [8]}, "comparator": ">", "threshold": 81.0, "tolerance": 33.0, "reference": 147.0, "rivalReference": 15.0, "score": 2.2, "note": "訂: stroke 9 turns more than 81° in total (unlike 計)."},
@@ -195,8 +317,7 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
     {"id": "壱-vs-売-1", "char": "壱", "rivals": ["売"], "metric": {"type": "position", "strokes": [5], "field": "sx"}, "comparator": ">", "threshold": 0.5511, "tolerance": 0.1202, "reference": 0.7915, "rivalReference": 0.3107, "score": 4.01, "note": "壱: stroke 6 starts right of 0.55 of the square (unlike 売)."},
     {"id": "壱-vs-売-2", "char": "壱", "rivals": ["売"], "metric": {"type": "lengthRatio", "strokes": [6, 5]}, "comparator": ">", "threshold": 2.1937, "tolerance": 0.2259, "reference": 2.6455, "rivalReference": 1.7419, "score": 1.87, "note": "壱: stroke 7 is more than 2.19× the length of stroke 6 (unlike 売)."},
     {"id": "壱-vs-売-p3-1", "char": "壱", "rivals": ["売"], "metric": {"type": "endGap", "strokes": [3, 5]}, "comparator": ">", "threshold": 0.5593, "tolerance": 0.1197, "reference": 0.7986, "rivalReference": 0.32, "score": 5.98, "note": "壱: end of stroke 4 is farther from the start of stroke 6 than 0.56 (unlike 売).", "phase": 3, "strength": "strong"},
-    {"id": "壱-vs-売-p3-2", "char": "壱", "rivals": ["売"], "metric": {"type": "relativePosition", "strokes": [5, 6], "fields": ["sx", "sx"]}, "comparator": ">", "threshold": 0.1179, "tolerance": 0.1626, "reference": 0.4431, "rivalReference": -0.2072, "score": 5.42, "note": "壱: stroke 6 sx minus stroke 7 sx is more than 0.12 (unlike 売).", "phase": 3, "strength": "strong"},
-    {"id": "壱-vs-売-p3-3", "char": "壱", "rivals": ["売"], "metric": {"type": "contact", "strokes": [6, 5], "field": "touch"}, "comparator": ">", "threshold": 0.5, "tolerance": 0.25, "reference": 1.0, "rivalReference": 0.0, "score": 1.0, "note": "壱: stroke 7 touches stroke 6 (unlike 売).", "phase": 3, "strength": "strong"}
+    {"id": "壱-vs-売-p3-2", "char": "壱", "rivals": ["売"], "metric": {"type": "relativePosition", "strokes": [5, 6], "fields": ["sx", "sx"]}, "comparator": ">", "threshold": 0.1179, "tolerance": 0.1626, "reference": 0.4431, "rivalReference": -0.2072, "score": 5.42, "note": "壱: stroke 6 sx minus stroke 7 sx is more than 0.12 (unlike 売).", "phase": 3, "strength": "strong"}
   ],
   "殖": [
     {"id": "殖-vs-植-1", "char": "殖", "rivals": ["植"], "metric": {"type": "lengthRatio", "strokes": [1, 2]}, "comparator": "<", "threshold": 1.2157, "tolerance": 0.3808, "reference": 0.454, "rivalReference": 1.9773, "score": 6.59, "note": "殖: stroke 2 is less than 1.22× the length of stroke 3 (unlike 植)."},
@@ -231,8 +352,7 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
     {"id": "抗-vs-坑-2", "char": "抗", "rivals": ["坑"], "metric": {"type": "bend", "strokes": [1]}, "comparator": ">", "threshold": 81.0, "tolerance": 31.5, "reference": 144.0, "rivalReference": 18.0, "score": 2.1, "note": "抗: stroke 2 turns more than 81° in total (unlike 坑)."}
   ],
   "坑": [
-    {"id": "坑-vs-抗-1", "char": "坑", "rivals": ["抗"], "metric": {"type": "lengthRatio", "strokes": [1, 2]}, "comparator": "<", "threshold": 2.223, "tolerance": 0.4025, "reference": 1.418, "rivalReference": 3.028, "score": 3.4, "note": "坑: stroke 2 is less than 2.22× the length of stroke 3 (unlike 抗)."},
-    {"id": "坑-vs-抗-2", "char": "坑", "rivals": ["抗"], "metric": {"type": "bend", "strokes": [1]}, "comparator": "<", "threshold": 81.0, "tolerance": 31.5, "reference": 18.0, "rivalReference": 144.0, "score": 2.1, "note": "坑: stroke 2 turns less than 81° in total (unlike 抗)."}
+    {"id": "坑-vs-抗-1", "char": "坑", "rivals": ["抗"], "metric": {"type": "lengthRatio", "strokes": [1, 2]}, "comparator": "<", "threshold": 2.223, "tolerance": 0.4025, "reference": 1.418, "rivalReference": 3.028, "score": 3.4, "note": "坑: stroke 2 is less than 2.22× the length of stroke 3 (unlike 抗)."}
   ],
   "掲": [
     {"id": "掲-vs-喝-1", "char": "掲", "rivals": ["喝"], "metric": {"type": "angle", "strokes": [0]}, "comparator": "<", "threshold": 37.0, "tolerance": 22.0, "reference": -7.0, "rivalReference": 81.0, "score": 3.52, "note": "掲: stroke 1 points less than 37° (unlike 喝)."},
@@ -390,14 +510,6 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
     {"id": "殊-vs-珠-1", "char": "殊", "rivals": ["珠"], "metric": {"type": "lengthRatio", "strokes": [2, 3]}, "comparator": ">", "threshold": 3.0898, "tolerance": 1.0747, "reference": 5.2393, "rivalReference": 0.9404, "score": 7.7, "note": "殊: stroke 3 is more than 3.09× the length of stroke 4 (unlike 珠).", "phase": 2},
     {"id": "殊-vs-珠-2", "char": "殊", "rivals": ["珠"], "metric": {"type": "angle", "strokes": [2]}, "comparator": ">", "threshold": 52.0, "tolerance": 29.5, "reference": 111.0, "rivalReference": -7.0, "score": 4.72, "note": "殊: stroke 3 points more than 52° (unlike 珠).", "phase": 2}
   ],
-  "態": [
-    {"id": "態-vs-熊-1", "char": "態", "rivals": ["熊"], "metric": {"type": "lengthRatio", "strokes": [11, 13]}, "comparator": ">", "threshold": 2.7591, "tolerance": 0.9789, "reference": 4.717, "rivalReference": 0.8013, "score": 7.94, "note": "態: stroke 12 is more than 2.76× the length of stroke 14 (unlike 熊).", "phase": 2},
-    {"id": "態-vs-熊-2", "char": "態", "rivals": ["熊"], "metric": {"type": "position", "strokes": [11], "field": "ex"}, "comparator": ">", "threshold": 0.5598, "tolerance": 0.1046, "reference": 0.769, "rivalReference": 0.3506, "score": 3.49, "note": "態: stroke 12 ends right of 0.56 of the square (unlike 熊).", "phase": 2}
-  ],
-  "熊": [
-    {"id": "熊-vs-態-1", "char": "熊", "rivals": ["態"], "metric": {"type": "lengthRatio", "strokes": [13, 11]}, "comparator": ">", "threshold": 0.73, "tolerance": 0.259, "reference": 1.248, "rivalReference": 0.212, "score": 7.94, "note": "熊: stroke 14 is more than 0.73× the length of stroke 12 (unlike 態).", "phase": 2},
-    {"id": "熊-vs-態-2", "char": "熊", "rivals": ["態"], "metric": {"type": "position", "strokes": [11], "field": "ex"}, "comparator": "<", "threshold": 0.5598, "tolerance": 0.1046, "reference": 0.3506, "rivalReference": 0.769, "score": 3.49, "note": "熊: stroke 12 ends left of 0.56 of the square (unlike 態).", "phase": 2}
-  ],
   "慮": [
     {"id": "慮-vs-膚-1", "char": "慮", "rivals": ["膚"], "metric": {"type": "lengthRatio", "strokes": [8, 14]}, "comparator": ">", "threshold": 0.7159, "tolerance": 0.1708, "reference": 1.0575, "rivalReference": 0.3742, "score": 4.66, "note": "慮: stroke 9 is more than 0.72× the length of stroke 15 (unlike 膚).", "phase": 2},
     {"id": "慮-vs-膚-2", "char": "慮", "rivals": ["膚"], "metric": {"type": "position", "strokes": [14], "field": "sx"}, "comparator": ">", "threshold": 0.592, "tolerance": 0.1218, "reference": 0.8357, "rivalReference": 0.3483, "score": 4.06, "note": "慮: stroke 15 starts right of 0.59 of the square (unlike 膚).", "phase": 2}
@@ -504,10 +616,6 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
     {"id": "紺-vs-組-1", "char": "紺", "rivals": ["組"], "metric": {"type": "lengthRatio", "strokes": [8, 10]}, "comparator": ">", "threshold": 1.9281, "tolerance": 0.7194, "reference": 3.367, "rivalReference": 0.4893, "score": 8.64, "note": "紺: stroke 9 is more than 1.93× the length of stroke 11 (unlike 組).", "phase": 2},
     {"id": "紺-vs-組-2", "char": "紺", "rivals": ["組"], "metric": {"type": "position", "strokes": [6], "field": "ey"}, "comparator": "<", "threshold": 0.5611, "tolerance": 0.1536, "reference": 0.2538, "rivalReference": 0.8683, "score": 5.12, "note": "紺: stroke 7 ends above 0.56 of the square (unlike 組).", "phase": 2}
   ],
-  "慕": [
-    {"id": "慕-vs-暮-1", "char": "慕", "rivals": ["暮"], "metric": {"type": "lengthRatio", "strokes": [10, 11]}, "comparator": ">", "threshold": 1.54, "tolerance": 0.5425, "reference": 2.625, "rivalReference": 0.455, "score": 7.85, "note": "慕: stroke 11 is more than 1.54× the length of stroke 12 (unlike 暮).", "phase": 2},
-    {"id": "慕-vs-暮-2", "char": "慕", "rivals": ["暮"], "metric": {"type": "position", "strokes": [11], "field": "ex"}, "comparator": "<", "threshold": 0.403, "tolerance": 0.1054, "reference": 0.1921, "rivalReference": 0.6138, "score": 3.51, "note": "慕: stroke 12 ends left of 0.40 of the square (unlike 暮).", "phase": 2}
-  ],
   "描": [
     {"id": "描-vs-猫-1", "char": "描", "rivals": ["猫"], "metric": {"type": "angle", "strokes": [2]}, "comparator": "<", "threshold": 49.5, "tolerance": 38.75, "reference": -28.0, "rivalReference": 127.0, "score": 6.2, "note": "描: stroke 3 points less than 50° (unlike 猫).", "phase": 2},
     {"id": "描-vs-猫-2", "char": "描", "rivals": ["猫"], "metric": {"type": "position", "strokes": [0], "field": "ex"}, "comparator": ">", "threshold": 0.1889, "tolerance": 0.0945, "reference": 0.3778, "rivalReference": 0.0, "score": 3.15, "note": "描: stroke 1 ends right of 0.19 of the square (unlike 猫).", "phase": 2},
@@ -537,14 +645,6 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
   "帳": [
     {"id": "帳-vs-張-1", "char": "帳", "rivals": ["張"], "metric": {"type": "bend", "strokes": [2]}, "comparator": "<", "threshold": 185.0, "tolerance": 86.0, "reference": 13.0, "rivalReference": 357.0, "score": 5.73, "note": "帳: stroke 3 turns less than 185° in total (unlike 張).", "phase": 2},
     {"id": "帳-vs-張-2", "char": "帳", "rivals": ["張"], "metric": {"type": "lengthRatio", "strokes": [1, 9]}, "comparator": ">", "threshold": 2.8244, "tolerance": 0.7685, "reference": 4.3614, "rivalReference": 1.2873, "score": 5.47, "note": "帳: stroke 2 is more than 2.82× the length of stroke 10 (unlike 張).", "phase": 2}
-  ],
-  "撤": [
-    {"id": "撤-vs-徹-1", "char": "撤", "rivals": ["徹"], "metric": {"type": "lengthRatio", "strokes": [1, 2]}, "comparator": ">", "threshold": 2.0235, "tolerance": 0.6011, "reference": 3.2258, "rivalReference": 0.8213, "score": 6.13, "note": "撤: stroke 2 is more than 2.02× the length of stroke 3 (unlike 徹).", "phase": 2},
-    {"id": "撤-vs-徹-2", "char": "撤", "rivals": ["徹"], "metric": {"type": "angle", "strokes": [0]}, "comparator": "<", "threshold": 61.5, "tolerance": 33.75, "reference": -6.0, "rivalReference": 129.0, "score": 5.4, "note": "撤: stroke 1 points less than 62° (unlike 徹).", "phase": 2}
-  ],
-  "徹": [
-    {"id": "徹-vs-撤-1", "char": "徹", "rivals": ["撤"], "metric": {"type": "lengthRatio", "strokes": [1, 2]}, "comparator": "<", "threshold": 2.0235, "tolerance": 0.6011, "reference": 0.8213, "rivalReference": 3.2258, "score": 6.13, "note": "徹: stroke 2 is less than 2.02× the length of stroke 3 (unlike 撤).", "phase": 2},
-    {"id": "徹-vs-撤-2", "char": "徹", "rivals": ["撤"], "metric": {"type": "angle", "strokes": [0]}, "comparator": ">", "threshold": 61.5, "tolerance": 33.75, "reference": 129.0, "rivalReference": -6.0, "score": 5.4, "note": "徹: stroke 1 points more than 62° (unlike 撤).", "phase": 2}
   ],
   "浩": [
     {"id": "浩-vs-浴-1", "char": "浩", "rivals": ["浴"], "metric": {"type": "lengthRatio", "strokes": [4, 2]}, "comparator": ">", "threshold": 1.169, "tolerance": 0.2061, "reference": 1.5812, "rivalReference": 0.7567, "score": 3.3, "note": "浩: stroke 5 is more than 1.17× the length of stroke 3 (unlike 浴).", "phase": 2},
@@ -658,14 +758,6 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
     {"id": "笙-vs-笛-1", "char": "笙", "rivals": ["笛"], "metric": {"type": "lengthRatio", "strokes": [7, 10]}, "comparator": "<", "threshold": 1.3952, "tolerance": 0.3731, "reference": 0.649, "rivalReference": 2.1413, "score": 5.35, "note": "笙: stroke 8 is less than 1.40× the length of stroke 11 (unlike 笛).", "phase": 2},
     {"id": "笙-vs-笛-2", "char": "笙", "rivals": ["笛"], "metric": {"type": "position", "strokes": [7], "field": "ey"}, "comparator": "<", "threshold": 0.7227, "tolerance": 0.1166, "reference": 0.4894, "rivalReference": 0.956, "score": 3.89, "note": "笙: stroke 8 ends above 0.72 of the square (unlike 笛).", "phase": 2}
   ],
-  "壊": [
-    {"id": "壊-vs-懐-1", "char": "壊", "rivals": ["懐"], "metric": {"type": "position", "strokes": [2], "field": "sy"}, "comparator": ">", "threshold": 0.4215, "tolerance": 0.1869, "reference": 0.7953, "rivalReference": 0.0478, "score": 6.23, "note": "壊: stroke 3 starts below 0.42 of the square (unlike 懐).", "phase": 2},
-    {"id": "壊-vs-懐-2", "char": "壊", "rivals": ["懐"], "metric": {"type": "lengthRatio", "strokes": [0, 2]}, "comparator": ">", "threshold": 0.5531, "tolerance": 0.1625, "reference": 0.8782, "rivalReference": 0.228, "score": 6.04, "note": "壊: stroke 1 is more than 0.55× the length of stroke 3 (unlike 懐).", "phase": 2}
-  ],
-  "懐": [
-    {"id": "懐-vs-壊-1", "char": "懐", "rivals": ["壊"], "metric": {"type": "position", "strokes": [2], "field": "sy"}, "comparator": "<", "threshold": 0.4215, "tolerance": 0.1869, "reference": 0.0478, "rivalReference": 0.7953, "score": 6.23, "note": "懐: stroke 3 starts above 0.42 of the square (unlike 壊).", "phase": 2},
-    {"id": "懐-vs-壊-2", "char": "懐", "rivals": ["壊"], "metric": {"type": "lengthRatio", "strokes": [0, 2]}, "comparator": "<", "threshold": 0.5531, "tolerance": 0.1625, "reference": 0.228, "rivalReference": 0.8782, "score": 6.04, "note": "懐: stroke 1 is less than 0.55× the length of stroke 3 (unlike 壊).", "phase": 2}
-  ],
   "諄": [
     {"id": "諄-vs-諒-1", "char": "諄", "rivals": ["諒"], "metric": {"type": "lengthRatio", "strokes": [7, 14]}, "comparator": "<", "threshold": 0.4114, "tolerance": 0.1142, "reference": 0.183, "rivalReference": 0.6398, "score": 5.61, "note": "諄: stroke 8 is less than 0.41× the length of stroke 15 (unlike 諒).", "phase": 2},
     {"id": "諄-vs-諒-2", "char": "諄", "rivals": ["諒"], "metric": {"type": "position", "strokes": [14], "field": "sx"}, "comparator": "<", "threshold": 0.6085, "tolerance": 0.1152, "reference": 0.378, "rivalReference": 0.839, "score": 3.84, "note": "諄: stroke 15 starts left of 0.61 of the square (unlike 諒).", "phase": 2}
@@ -773,16 +865,6 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
   "怪": [
     {"id": "怪-vs-径-1", "char": "怪", "rivals": ["径"], "metric": {"type": "lengthRatio", "strokes": [1, 2]}, "comparator": "<", "threshold": 0.4755, "tolerance": 0.1503, "reference": 0.1748, "rivalReference": 0.7762, "score": 6.68, "note": "怪: stroke 2 is less than 0.48× the length of stroke 3 (unlike 径).", "phase": 2},
     {"id": "怪-vs-径-2", "char": "怪", "rivals": ["径"], "metric": {"type": "position", "strokes": [2], "field": "sy"}, "comparator": "<", "threshold": 0.2176, "tolerance": 0.1088, "reference": 0.0, "rivalReference": 0.4352, "score": 3.63, "note": "怪: stroke 3 starts above 0.22 of the square (unlike 径).", "phase": 2}
-  ],
-  "幕": [
-    {"id": "幕-vs-墓-1", "char": "幕", "rivals": ["墓"], "metric": {"type": "lengthRatio", "strokes": [11, 12]}, "comparator": ">", "threshold": 0.9864, "tolerance": 0.3021, "reference": 1.5906, "rivalReference": 0.3821, "score": 6.39, "note": "幕: stroke 12 is more than 0.99× the length of stroke 13 (unlike 墓).", "phase": 2},
-    {"id": "幕-vs-墓-2", "char": "幕", "rivals": ["墓"], "metric": {"type": "angle", "strokes": [10]}, "comparator": ">", "threshold": 42.0, "tolerance": 23.0, "reference": 88.0, "rivalReference": -4.0, "score": 3.68, "note": "幕: stroke 11 points more than 42° (unlike 墓).", "phase": 2},
-    {"id": "幕-vs-募-1", "char": "幕", "rivals": ["募"], "metric": {"type": "lengthRatio", "strokes": [10, 11]}, "comparator": "<", "threshold": 0.9645, "tolerance": 0.3127, "reference": 0.3391, "rivalReference": 1.5898, "score": 6.92, "note": "幕: stroke 11 is less than 0.96× the length of stroke 12 (unlike 募).", "phase": 2},
-    {"id": "幕-vs-募-2", "char": "幕", "rivals": ["募"], "metric": {"type": "angle", "strokes": [11]}, "comparator": "<", "threshold": 78.5, "tolerance": 24.75, "reference": 29.0, "rivalReference": 128.0, "score": 3.96, "note": "幕: stroke 12 points less than 78° (unlike 募).", "phase": 2}
-  ],
-  "墓": [
-    {"id": "墓-vs-幕-1", "char": "墓", "rivals": ["幕"], "metric": {"type": "lengthRatio", "strokes": [11, 12]}, "comparator": "<", "threshold": 0.9864, "tolerance": 0.3021, "reference": 0.3821, "rivalReference": 1.5906, "score": 6.39, "note": "墓: stroke 12 is less than 0.99× the length of stroke 13 (unlike 幕).", "phase": 2},
-    {"id": "墓-vs-幕-2", "char": "墓", "rivals": ["幕"], "metric": {"type": "angle", "strokes": [10]}, "comparator": "<", "threshold": 42.0, "tolerance": 23.0, "reference": -4.0, "rivalReference": 88.0, "score": 3.68, "note": "墓: stroke 11 points less than 42° (unlike 幕).", "phase": 2}
   ],
   "旋": [
     {"id": "旋-vs-族-1", "char": "旋", "rivals": ["族"], "metric": {"type": "lengthRatio", "strokes": [6, 8]}, "comparator": ">", "threshold": 1.8766, "tolerance": 0.6942, "reference": 3.265, "rivalReference": 0.4883, "score": 8.52, "note": "旋: stroke 7 is more than 1.88× the length of stroke 9 (unlike 族).", "phase": 2},
@@ -962,12 +1044,6 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
     {"id": "枠-vs-析-1", "char": "枠", "rivals": ["析"], "metric": {"type": "position", "strokes": [5], "field": "ex"}, "comparator": ">", "threshold": 0.6672, "tolerance": 0.1575, "reference": 0.9822, "rivalReference": 0.3522, "score": 5.25, "note": "枠: stroke 6 ends right of 0.67 of the square (unlike 析).", "phase": 2},
     {"id": "枠-vs-析-2", "char": "枠", "rivals": ["析"], "metric": {"type": "bend", "strokes": [5]}, "comparator": ">", "threshold": 166.5, "tolerance": 57.75, "reference": 282.0, "rivalReference": 51.0, "score": 3.85, "note": "枠: stroke 6 turns more than 166° in total (unlike 析).", "phase": 2}
   ],
-  "析": [
-    {"id": "析-vs-枠-1", "char": "析", "rivals": ["枠"], "metric": {"type": "position", "strokes": [5], "field": "ex"}, "comparator": "<", "threshold": 0.6672, "tolerance": 0.1575, "reference": 0.3522, "rivalReference": 0.9822, "score": 5.25, "note": "析: stroke 6 ends left of 0.67 of the square (unlike 枠).", "phase": 2},
-    {"id": "析-vs-枠-2", "char": "析", "rivals": ["枠"], "metric": {"type": "bend", "strokes": [5]}, "comparator": "<", "threshold": 166.5, "tolerance": 57.75, "reference": 51.0, "rivalReference": 282.0, "score": 3.85, "note": "析: stroke 6 turns less than 166° in total (unlike 枠).", "phase": 2},
-    {"id": "析-vs-祈-1", "char": "析", "rivals": ["祈"], "metric": {"type": "lengthRatio", "strokes": [0, 3]}, "comparator": ">", "threshold": 1.7391, "tolerance": 0.4367, "reference": 2.6125, "rivalReference": 0.8657, "score": 4.95, "note": "析: stroke 1 is more than 1.74× the length of stroke 4 (unlike 祈).", "phase": 2},
-    {"id": "析-vs-祈-2", "char": "析", "rivals": ["祈"], "metric": {"type": "position", "strokes": [1], "field": "ey"}, "comparator": ">", "threshold": 0.8111, "tolerance": 0.0854, "reference": 0.982, "rivalReference": 0.6402, "score": 2.85, "note": "析: stroke 2 ends below 0.81 of the square (unlike 祈).", "phase": 2}
-  ],
   "渚": [
     {"id": "渚-vs-清-1", "char": "渚", "rivals": ["清"], "metric": {"type": "position", "strokes": [6], "field": "ex"}, "comparator": "<", "threshold": 0.5772, "tolerance": 0.1797, "reference": 0.2178, "rivalReference": 0.9366, "score": 5.99, "note": "渚: stroke 7 ends left of 0.58 of the square (unlike 清).", "phase": 2},
     {"id": "渚-vs-清-2", "char": "渚", "rivals": ["清"], "metric": {"type": "angle", "strokes": [6]}, "comparator": ">", "threshold": 65.0, "tolerance": 35.0, "reference": 135.0, "rivalReference": -5.0, "score": 5.6, "note": "渚: stroke 7 points more than 65° (unlike 清).", "phase": 2}
@@ -1035,19 +1111,9 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
     {"id": "帥-vs-師-1", "char": "帥", "rivals": ["師"], "metric": {"type": "position", "strokes": [6], "field": "ey"}, "comparator": ">", "threshold": 0.374, "tolerance": 0.1596, "reference": 0.6932, "rivalReference": 0.0549, "score": 5.32, "note": "帥: stroke 7 ends below 0.37 of the square (unlike 師).", "phase": 2},
     {"id": "帥-vs-師-2", "char": "帥", "rivals": ["師"], "metric": {"type": "lengthRatio", "strokes": [6, 7]}, "comparator": "<", "threshold": 0.8782, "tolerance": 0.2302, "reference": 0.4177, "rivalReference": 1.3387, "score": 5.22, "note": "帥: stroke 7 is less than 0.88× the length of stroke 8 (unlike 師).", "phase": 2}
   ],
-  "侍": [
-    {"id": "侍-vs-待-1", "char": "侍", "rivals": ["待"], "metric": {"type": "lengthRatio", "strokes": [4, 7]}, "comparator": ">", "threshold": 2.634, "tolerance": 1.064, "reference": 4.7619, "rivalReference": 0.506, "score": 10.05, "note": "侍: stroke 5 is more than 2.63× the length of stroke 8 (unlike 待).", "phase": 2},
-    {"id": "侍-vs-待-2", "char": "侍", "rivals": ["待"], "metric": {"type": "position", "strokes": [2], "field": "ey"}, "comparator": "<", "threshold": 0.568, "tolerance": 0.209, "reference": 0.1499, "rivalReference": 0.9861, "score": 6.97, "note": "侍: stroke 3 ends above 0.57 of the square (unlike 待).", "phase": 2}
-  ],
   "伐": [
     {"id": "伐-vs-代-1", "char": "伐", "rivals": ["代"], "metric": {"type": "position", "strokes": [4], "field": "ey"}, "comparator": ">", "threshold": 0.5009, "tolerance": 0.1977, "reference": 0.8963, "rivalReference": 0.1055, "score": 6.59, "note": "伐: stroke 5 ends below 0.50 of the square (unlike 代).", "phase": 2},
     {"id": "伐-vs-代-2", "char": "伐", "rivals": ["代"], "metric": {"type": "angle", "strokes": [4]}, "comparator": ">", "threshold": 85.0, "tolerance": 25.0, "reference": 135.0, "rivalReference": 35.0, "score": 4.0, "note": "伐: stroke 5 points more than 85° (unlike 代).", "phase": 2}
-  ],
-  "斤": [
-    {"id": "斤-vs-斥-1", "char": "斤", "rivals": ["斥"], "metric": {"type": "strokeCount"}, "comparator": "<", "threshold": 4.5, "tolerance": 0.25, "reference": 4.0, "rivalReference": 5.0, "score": 1.0, "note": "斤: fewer than 4.5 strokes (unlike 斥).", "phase": 2}
-  ],
-  "斥": [
-    {"id": "斥-vs-斤-1", "char": "斥", "rivals": ["斤"], "metric": {"type": "strokeCount"}, "comparator": ">", "threshold": 4.5, "tolerance": 0.25, "reference": 5.0, "rivalReference": 4.0, "score": 1.0, "note": "斥: more than 4.5 strokes (unlike 斤).", "phase": 2}
   ],
   "庄": [
     {"id": "庄-vs-圧-1", "char": "庄", "rivals": ["圧"], "metric": {"type": "position", "strokes": [1], "field": "ex"}, "comparator": ">", "threshold": 0.4804, "tolerance": 0.2402, "reference": 0.9609, "rivalReference": 0.0, "score": 8.01, "note": "庄: stroke 2 ends right of 0.48 of the square (unlike 圧).", "phase": 2},
@@ -1056,10 +1122,6 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
   "幻": [
     {"id": "幻-vs-幼-1", "char": "幻", "rivals": ["幼"], "metric": {"type": "position", "strokes": [2], "field": "ey"}, "comparator": ">", "threshold": 0.8671, "tolerance": 0.0472, "reference": 0.9614, "rivalReference": 0.7727, "score": 1.57, "note": "幻: stroke 3 ends below 0.87 of the square (unlike 幼).", "phase": 2},
     {"id": "幻-vs-幼-2", "char": "幻", "rivals": ["幼"], "metric": {"type": "aspectRatio"}, "comparator": ">", "threshold": 0.8387, "tolerance": 0.0447, "reference": 0.9281, "rivalReference": 0.7493, "score": 1.17, "note": "幻: wider (width/height more than 0.84) than 幼.", "phase": 2}
-  ],
-  "侯": [
-    {"id": "侯-vs-候-1", "char": "侯", "rivals": ["候"], "metric": {"type": "lengthRatio", "strokes": [4, 6]}, "comparator": "<", "threshold": 1.0886, "tolerance": 0.3386, "reference": 0.4114, "rivalReference": 1.7658, "score": 6.53, "note": "侯: stroke 5 is less than 1.09× the length of stroke 7 (unlike 候).", "phase": 2},
-    {"id": "侯-vs-候-2", "char": "侯", "rivals": ["候"], "metric": {"type": "position", "strokes": [7], "field": "ex"}, "comparator": "<", "threshold": 0.6407, "tolerance": 0.1758, "reference": 0.2891, "rivalReference": 0.9923, "score": 5.86, "note": "侯: stroke 8 ends left of 0.64 of the square (unlike 候).", "phase": 2}
   ],
   "討": [
     {"id": "討-vs-訂-1", "char": "討", "rivals": ["訂"], "metric": {"type": "position", "strokes": [7], "field": "sy"}, "comparator": ">", "threshold": 0.2529, "tolerance": 0.0467, "reference": 0.3462, "rivalReference": 0.1595, "score": 1.56, "note": "討: stroke 8 starts below 0.25 of the square (unlike 訂).", "phase": 2},
@@ -1093,17 +1155,9 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
     {"id": "叶-vs-吐-1", "char": "叶", "rivals": ["吐"], "metric": {"type": "position", "strokes": [4], "field": "ey"}, "comparator": ">", "threshold": 0.8871, "tolerance": 0.0526, "reference": 0.9923, "rivalReference": 0.7819, "score": 1.75, "note": "叶: stroke 5 ends below 0.89 of the square (unlike 吐).", "phase": 2},
     {"id": "叶-vs-吐-2", "char": "叶", "rivals": ["吐"], "metric": {"type": "lengthRatio", "strokes": [2, 3]}, "comparator": "<", "threshold": 0.4376, "tolerance": 0.0328, "reference": 0.372, "rivalReference": 0.5033, "score": 1.35, "note": "叶: stroke 3 is less than 0.44× the length of stroke 4 (unlike 吐).", "phase": 2}
   ],
-  "李": [
-    {"id": "李-vs-季-1", "char": "李", "rivals": ["季"], "metric": {"type": "position", "strokes": [3], "field": "ex"}, "comparator": ">", "threshold": 0.4712, "tolerance": 0.2356, "reference": 0.9424, "rivalReference": 0.0, "score": 7.85, "note": "李: stroke 4 ends right of 0.47 of the square (unlike 季).", "phase": 2},
-    {"id": "李-vs-季-2", "char": "李", "rivals": ["季"], "metric": {"type": "angle", "strokes": [0]}, "comparator": "<", "threshold": 80.0, "tolerance": 41.5, "reference": -3.0, "rivalReference": 163.0, "score": 6.64, "note": "李: stroke 1 points less than 80° (unlike 季).", "phase": 2}
-  ],
   "瑚": [
     {"id": "瑚-vs-湖-1", "char": "瑚", "rivals": ["湖"], "metric": {"type": "lengthRatio", "strokes": [8, 10]}, "comparator": "<", "threshold": 2.2801, "tolerance": 1.0396, "reference": 0.201, "rivalReference": 4.3593, "score": 13.79, "note": "瑚: stroke 9 is less than 2.28× the length of stroke 11 (unlike 湖).", "phase": 2},
     {"id": "瑚-vs-湖-2", "char": "瑚", "rivals": ["湖"], "metric": {"type": "position", "strokes": [8], "field": "sy"}, "comparator": ">", "threshold": 0.4034, "tolerance": 0.1731, "reference": 0.7497, "rivalReference": 0.0571, "score": 5.77, "note": "瑚: stroke 9 starts below 0.40 of the square (unlike 湖).", "phase": 2}
-  ],
-  "往": [
-    {"id": "往-vs-住-1", "char": "往", "rivals": ["住"], "metric": {"type": "lengthRatio", "strokes": [2, 3]}, "comparator": ">", "threshold": 1.6893, "tolerance": 0.6599, "reference": 3.0091, "rivalReference": 0.3695, "score": 9.4, "note": "往: stroke 3 is more than 1.69× the length of stroke 4 (unlike 住).", "phase": 2},
-    {"id": "往-vs-住-2", "char": "往", "rivals": ["住"], "metric": {"type": "position", "strokes": [2], "field": "ey"}, "comparator": ">", "threshold": 0.5202, "tolerance": 0.1924, "reference": 0.905, "rivalReference": 0.1353, "score": 6.41, "note": "往: stroke 3 ends below 0.52 of the square (unlike 住).", "phase": 2}
   ],
   "句": [
     {"id": "句-vs-旬-1", "char": "句", "rivals": ["旬"], "metric": {"type": "lengthRatio", "strokes": [2, 1]}, "comparator": "<", "threshold": 0.227, "tolerance": 0.0165, "reference": 0.194, "rivalReference": 0.26, "score": 1.31, "note": "句: stroke 3 is less than 0.23× the length of stroke 2 (unlike 旬).", "phase": 2},
@@ -1112,10 +1166,6 @@ window.PROPORTION_RULES = Object.assign(window.PROPORTION_RULES || {}, {
   "旬": [
     {"id": "旬-vs-句-1", "char": "旬", "rivals": ["句"], "metric": {"type": "lengthRatio", "strokes": [1, 2]}, "comparator": "<", "threshold": 4.5004, "tolerance": 0.3271, "reference": 3.8462, "rivalReference": 5.1546, "score": 1.31, "note": "旬: stroke 2 is less than 4.50× the length of stroke 3 (unlike 句).", "phase": 2},
     {"id": "旬-vs-句-2", "char": "旬", "rivals": ["句"], "metric": {"type": "position", "strokes": [3], "field": "ey"}, "comparator": ">", "threshold": 0.8005, "tolerance": 0.0363, "reference": 0.8731, "rivalReference": 0.7279, "score": 1.21, "note": "旬: stroke 4 ends below 0.80 of the square (unlike 句).", "phase": 2}
-  ],
-  "吏": [
-    {"id": "吏-vs-史-1", "char": "吏", "rivals": ["史"], "metric": {"type": "lengthRatio", "strokes": [0, 1]}, "comparator": ">", "threshold": 1.6259, "tolerance": 0.6402, "reference": 2.9064, "rivalReference": 0.3454, "score": 9.55, "note": "吏: stroke 1 is more than 1.63× the length of stroke 2 (unlike 史).", "phase": 2},
-    {"id": "吏-vs-史-2", "char": "吏", "rivals": ["史"], "metric": {"type": "position", "strokes": [4], "field": "ex"}, "comparator": "<", "threshold": 0.4446, "tolerance": 0.2223, "reference": 0.0, "rivalReference": 0.8892, "score": 7.41, "note": "吏: stroke 5 ends left of 0.44 of the square (unlike 史).", "phase": 2}
   ],
   "操": [
     {"id": "操-vs-燥-1", "char": "操", "rivals": ["燥"], "metric": {"type": "lengthRatio", "strokes": [1, 2]}, "comparator": ">", "threshold": 1.4702, "tolerance": 0.6236, "reference": 2.7174, "rivalReference": 0.223, "score": 11.2, "note": "操: stroke 2 is more than 1.47× the length of stroke 3 (unlike 燥).", "phase": 2},

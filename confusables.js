@@ -839,6 +839,103 @@ window.CONFUSABLES={
   },
   {
    "chars": [
+    "う",
+    "ラ"
+   ],
+   "levels": [
+    "kana",
+    "kana"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "bend",
+     "stroke": 0,
+     "values": [
+      168,
+      52
+     ],
+     "score": 1.93
+    }
+   ],
+   "source": "kana",
+   "group": "うラ",
+   "note": "う starts with a short slanted dash, ラ with a flat bar; う's lower stroke is a deep curve that bends round and falls down to the left; ラ's is a sharp fold with a straight drop."
+  },
+  {
+   "chars": [
+    "シ",
+    "ン"
+   ],
+   "levels": [
+    "kana",
+    "kana"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "len",
+     "stroke": 1,
+     "values": [
+      0.2,
+      1.0
+     ],
+     "score": 5.33
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      2
+     ],
+     "values": [
+      3,
+      2
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kana",
+   "group": "シン",
+   "note": "シ has three strokes: two dots and a long rising stroke; ン has one dot and its long stroke is the second."
+  },
+  {
+   "chars": [
+    "ツ",
+    "ソ"
+   ],
+   "levels": [
+    "kana",
+    "kana"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "len",
+     "stroke": 1,
+     "values": [
+      0.21,
+      1.0
+     ],
+     "score": 5.27
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      2
+     ],
+     "values": [
+      3,
+      2
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kana",
+   "group": "ツソ",
+   "note": "ツ has three strokes: two short dots and a long falling stroke; ソ has one dot before the long stroke."
+  },
+  {
+   "chars": [
     "ロ",
     "口"
    ],
@@ -860,7 +957,9 @@ window.CONFUSABLES={
    ],
    "source": "cross",
    "group": "ロ口",
-   "note": "Practically the same strokes; the katakana ロ is usually written a little smaller."
+   "note": "Practically the same strokes; the katakana ロ is usually written a little smaller.",
+   "acceptEither": true,
+   "acceptEitherReason": "katakana ro and kanji 口 are drawn alike (3 strokes in KanjiVG); 口 is just larger in text"
   },
   {
    "chars": [
@@ -910,7 +1009,9 @@ window.CONFUSABLES={
    ],
    "source": "cross",
    "group": "エ工",
-   "note": "Almost the same; the katakana エ's bottom bar curves very slightly, 工's is straight."
+   "note": "Almost the same; the katakana エ's bottom bar curves very slightly, 工's is straight.",
+   "acceptEither": true,
+   "acceptEitherReason": "katakana e and kanji 工 differ only in size in print (KanjiVG proportions within ~20%)"
   },
   {
    "chars": [
@@ -935,7 +1036,9 @@ window.CONFUSABLES={
    ],
    "source": "cross",
    "group": "ニ二",
-   "note": "Almost the same; the katakana ニ's lower bar curves very slightly, 二's is straight."
+   "note": "Almost the same; the katakana ニ's lower bar curves very slightly, 二's is straight.",
+   "acceptEither": true,
+   "acceptEitherReason": "katakana ni and kanji 二 differ only in size in print; the KanjiVG ニ curve is a font detail"
   },
   {
    "chars": [
@@ -1010,7 +1113,9 @@ window.CONFUSABLES={
    ],
    "source": "cross",
    "group": "へヘ",
-   "note": "The same single stroke; hiragana or katakana only by context."
+   "note": "The same single stroke; hiragana or katakana only by context.",
+   "acceptEither": true,
+   "acceptEitherReason": "hiragana and katakana he are the same stroke; only context tells them apart"
   },
   {
    "chars": [
@@ -1109,8 +1214,58 @@ window.CONFUSABLES={
     }
    ],
    "source": "kanji",
-   "group": "己已",
+   "group": "己已巳",
    "note": "Measured almost the same: 已's middle stroke starts a little higher, half closing the top. 已 is display-only."
+  },
+  {
+   "chars": [
+    "己",
+    "巳"
+   ],
+   "levels": [
+    "N1",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "sy",
+     "stroke": 2,
+     "values": [
+      0.432,
+      0.206
+     ],
+     "score": 1.88
+    }
+   ],
+   "source": "kanji",
+   "group": "己已巳",
+   "note": "己's left side stays open at the top (the last stroke starts halfway down); 巳's last stroke starts at the very top, closing the box."
+  },
+  {
+   "chars": [
+    "已",
+    "巳"
+   ],
+   "levels": [
+    "extra",
+    "N1"
+   ],
+   "kind": "sameShape",
+   "distinguish": [
+    {
+     "feature": "sy",
+     "stroke": 2,
+     "values": [
+      0.32,
+      0.206
+     ],
+     "score": 0.95
+    }
+   ],
+   "source": "kanji",
+   "group": "己已巳",
+   "note": "Almost identical: 已's last stroke starts about halfway up the left side, 巳's at the top and 己's lowest. Tell 已 apart by context (it is rare)."
   },
   {
    "chars": [
@@ -2031,6 +2186,990 @@ window.CONFUSABLES={
    "source": "kanji",
    "group": "哀衷",
    "note": "哀's first stroke is a short dot; 衷 starts with a long line through the middle."
+  },
+  {
+   "chars": [
+    "待",
+    "侍"
+   ],
+   "levels": [
+    "N4",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "ey",
+     "stroke": 2,
+     "values": [
+      0.89,
+      0.226
+     ],
+     "score": 5.53
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      8
+     ],
+     "values": [
+      9,
+      8
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "待侍",
+   "note": "待 has the 'going' radical 彳 on the left (9 strokes); 侍 has the 'person' radical 亻 (8 strokes)."
+  },
+  {
+   "chars": [
+    "持",
+    "侍"
+   ],
+   "levels": [
+    "N4",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 0,
+     "values": [
+      -6,
+      116
+     ],
+     "score": 4.88
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      8
+     ],
+     "values": [
+      9,
+      8
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "持侍",
+   "note": "持 has the 'hand' radical 扌, whose first stroke is a flat bar; 侍's 'person' radical 亻 starts with a falling stroke."
+  },
+  {
+   "chars": [
+    "刀",
+    "刃"
+   ],
+   "levels": [
+    "N1",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "len",
+     "stroke": 1,
+     "values": [
+      0.478,
+      0.54
+     ],
+     "score": 0.41
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      2
+     ],
+     "values": [
+      2,
+      3
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "刀刃",
+   "note": "刃 is 刀 plus a short extra dot (the blade edge) on the left; 刀 has two strokes, 刃 three."
+  },
+  {
+   "chars": [
+    "白",
+    "自"
+   ],
+   "levels": [
+    "N5",
+    "N4"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "ey",
+     "stroke": 4,
+     "values": [
+      0.839,
+      0.608
+     ],
+     "score": 1.92
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      5
+     ],
+     "values": [
+      5,
+      6
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "白自",
+   "note": "自 has one more stroke than 白: two bars inside the box instead of one, so it is taller and narrower."
+  },
+  {
+   "chars": [
+    "宇",
+    "字"
+   ],
+   "levels": [
+    "N2",
+    "N4"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 4,
+     "values": [
+      -3,
+      99
+     ],
+     "score": 4.08
+    }
+   ],
+   "source": "kanji",
+   "group": "宇字",
+   "note": "宇's bottom is 于, ending in a long vertical hook; 字's bottom is 子, with a flat bar across last."
+  },
+  {
+   "chars": [
+    "爪",
+    "瓜"
+   ],
+   "levels": [
+    "extra",
+    "extra"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "sy",
+     "stroke": 3,
+     "values": [
+      0.255,
+      0.804
+     ],
+     "score": 4.58
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      4,
+      5
+     ],
+     "values": [
+      4,
+      6
+     ],
+     "score": 2.0
+    }
+   ],
+   "source": "kanji",
+   "group": "爪瓜",
+   "note": "瓜 has two more strokes than 爪: a small hooked stroke and a dot in the middle (both are outside the JLPT lists)."
+  },
+  {
+   "chars": [
+    "侯",
+    "候"
+   ],
+   "levels": [
+    "N1",
+    "N3"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 7,
+     "values": [
+      122,
+      -4
+     ],
+     "score": 5.04
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      9
+     ],
+     "values": [
+      9,
+      10
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "侯候",
+   "note": "候 has an extra short vertical stroke between 亻 and the right side; 侯 does not."
+  },
+  {
+   "chars": [
+    "貨",
+    "貸"
+   ],
+   "levels": [
+    "N2",
+    "N4"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 2,
+     "values": [
+      149,
+      -8
+     ],
+     "score": 6.28
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      11
+     ],
+     "values": [
+      11,
+      12
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "貨貸",
+   "note": "貨's top is 化 (person and spoon); 貸's top is 代 (person and 弋 'stake', with its long sweep and dot); 貸 has one more stroke."
+  },
+  {
+   "chars": [
+    "復",
+    "複"
+   ],
+   "levels": [
+    "N2",
+    "N2"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 9,
+     "values": [
+      129,
+      -6
+     ],
+     "score": 5.4
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      12,
+      13
+     ],
+     "values": [
+      12,
+      14
+     ],
+     "score": 2.0
+    }
+   ],
+   "source": "kanji",
+   "group": "復複",
+   "note": "復 has the 'going' radical 彳; 複 has the 'clothing' radical 衤, two strokes more."
+  },
+  {
+   "chars": [
+    "栽",
+    "裁"
+   ],
+   "levels": [
+    "N1",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "len",
+     "stroke": 7,
+     "values": [
+      1.0,
+      0.107
+     ],
+     "score": 5.95
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      10,
+      11
+     ],
+     "values": [
+      10,
+      12
+     ],
+     "score": 2.0
+    }
+   ],
+   "source": "kanji",
+   "group": "栽裁載",
+   "note": "Both share the 𢦏 frame; 栽 has 木 'tree' inside, 裁 has 衣 'clothing'."
+  },
+  {
+   "chars": [
+    "栽",
+    "載"
+   ],
+   "levels": [
+    "N1",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "ey",
+     "stroke": 9,
+     "values": [
+      0.225,
+      0.888
+     ],
+     "score": 5.53
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      10,
+      11,
+      12
+     ],
+     "values": [
+      10,
+      13
+     ],
+     "score": 3.0
+    }
+   ],
+   "source": "kanji",
+   "group": "栽裁載",
+   "note": "栽 has 木 'tree' inside the 𢦏 frame; 載 has 車 'vehicle', three strokes more."
+  },
+  {
+   "chars": [
+    "裁",
+    "載"
+   ],
+   "levels": [
+    "N1",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 7,
+     "values": [
+      127,
+      -6
+     ],
+     "score": 5.32
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      12
+     ],
+     "values": [
+      12,
+      13
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "栽裁載",
+   "note": "裁 has 衣 'clothing' inside the 𢦏 frame; 載 has 車 'vehicle'."
+  },
+  {
+   "chars": [
+    "募",
+    "慕"
+   ],
+   "levels": [
+    "N2",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 10,
+     "values": [
+      40,
+      102
+     ],
+     "score": 2.48
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      12,
+      13
+     ],
+     "values": [
+      12,
+      14
+     ],
+     "score": 2.0
+    }
+   ],
+   "source": "kanji",
+   "group": "募慕墓幕",
+   "note": "Same top 莫; 募 ends in 力 'power', 慕 in a small heart ⺗."
+  },
+  {
+   "chars": [
+    "募",
+    "墓"
+   ],
+   "levels": [
+    "N2",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "bend",
+     "stroke": 10,
+     "values": [
+      214,
+      23
+     ],
+     "score": 3.18
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      12
+     ],
+     "values": [
+      12,
+      13
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "募慕墓幕",
+   "note": "Same top 莫; 募 ends in 力 'power', 墓 in 土 'earth'."
+  },
+  {
+   "chars": [
+    "募",
+    "幕"
+   ],
+   "levels": [
+    "N2",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 11,
+     "values": [
+      128,
+      29
+     ],
+     "score": 3.96
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      12
+     ],
+     "values": [
+      12,
+      13
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "募慕墓幕",
+   "note": "Same top 莫; 募 ends in 力 'power', 幕 in 巾 'cloth'."
+  },
+  {
+   "chars": [
+    "慕",
+    "墓"
+   ],
+   "levels": [
+    "N1",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 10,
+     "values": [
+      102,
+      -4
+     ],
+     "score": 4.24
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      13
+     ],
+     "values": [
+      14,
+      13
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "募慕墓幕",
+   "note": "Same top 莫; 慕 ends in a small heart ⺗, 墓 in 土 'earth'."
+  },
+  {
+   "chars": [
+    "慕",
+    "幕"
+   ],
+   "levels": [
+    "N1",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "len",
+     "stroke": 11,
+     "values": [
+      0.176,
+      0.746
+     ],
+     "score": 3.8
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      13
+     ],
+     "values": [
+      14,
+      13
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "募慕墓幕",
+   "note": "Same top 莫; 慕 ends in a small heart ⺗, 幕 in 巾 'cloth' with its long central stroke."
+  },
+  {
+   "chars": [
+    "墓",
+    "幕"
+   ],
+   "levels": [
+    "N1",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 10,
+     "values": [
+      -4,
+      88
+     ],
+     "score": 3.68
+    }
+   ],
+   "source": "kanji",
+   "group": "募慕墓幕",
+   "note": "Same top 莫; 墓 ends in 土 'earth' (flat bars), 幕 in 巾 'cloth' (a long vertical through a frame)."
+  },
+  {
+   "chars": [
+    "析",
+    "折"
+   ],
+   "levels": [
+    "N1",
+    "N3"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 2,
+     "values": [
+      118,
+      -26
+     ],
+     "score": 5.76
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      7
+     ],
+     "values": [
+      8,
+      7
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "析折",
+   "note": "析 has 木 'tree' on the left; 折 has 扌 'hand', one stroke less."
+  },
+  {
+   "chars": [
+    "季",
+    "李"
+   ],
+   "levels": [
+    "N2",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 0,
+     "values": [
+      163,
+      -3
+     ],
+     "score": 6.64
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      7
+     ],
+     "values": [
+      8,
+      7
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "季李",
+   "note": "季 starts with a short falling stroke over 禾; 李 has 木 with no stroke on top, one stroke less."
+  },
+  {
+   "chars": [
+    "撤",
+    "徹"
+   ],
+   "levels": [
+    "N1",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 0,
+     "values": [
+      -6,
+      129
+     ],
+     "score": 5.4
+    }
+   ],
+   "source": "kanji",
+   "group": "撤徹",
+   "note": "撤 has the 'hand' radical 扌 (flat first stroke); 徹 has the 'going' radical 彳 (falling first stroke)."
+  },
+  {
+   "chars": [
+    "史",
+    "吏"
+   ],
+   "levels": [
+    "N2",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "ex",
+     "stroke": 4,
+     "values": [
+      0.842,
+      0.179
+     ],
+     "score": 5.53
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      5
+     ],
+     "values": [
+      5,
+      6
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "史吏",
+   "note": "吏 has one more stroke: a flat bar across the very top of 史."
+  },
+  {
+   "chars": [
+    "母",
+    "毋"
+   ],
+   "levels": [
+    "N5",
+    "extra"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "len",
+     "stroke": 3,
+     "values": [
+      0.117,
+      0.594
+     ],
+     "score": 3.18
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      4
+     ],
+     "values": [
+      5,
+      4
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "母毋",
+   "note": "母 has two dots inside; 毋 has a single stroke straight through instead (毋 is outside the JLPT lists)."
+  },
+  {
+   "chars": [
+    "斤",
+    "斥"
+   ],
+   "levels": [
+    "N1",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "len",
+     "stroke": 0,
+     "values": [
+      0.656,
+      0.58
+     ],
+     "score": 0.51
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      4
+     ],
+     "values": [
+      4,
+      5
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "斤斥",
+   "note": "斥 is 斤 plus one small dot at the bottom."
+  },
+  {
+   "chars": [
+    "熊",
+    "態"
+   ],
+   "levels": [
+    "N1",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "len",
+     "stroke": 11,
+     "values": [
+      0.246,
+      1.0
+     ],
+     "score": 5.03
+    }
+   ],
+   "source": "kanji",
+   "group": "熊態",
+   "note": "Same top 能; 熊 ends in four dots 灬, 態 in a heart 心 with a long curved stroke."
+  },
+  {
+   "chars": [
+    "壊",
+    "懐"
+   ],
+   "levels": [
+    "N1",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "len",
+     "stroke": 1,
+     "values": [
+      0.908,
+      0.147
+     ],
+     "score": 5.07
+    }
+   ],
+   "source": "kanji",
+   "group": "壊懐",
+   "note": "壊 has 土 'earth' on the left; 懐 has 忄 'heart', whose second stroke is a short dot."
+  },
+  {
+   "chars": [
+    "鳥",
+    "島"
+   ],
+   "levels": [
+    "N4",
+    "N2"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "len",
+     "stroke": 8,
+     "values": [
+      0.126,
+      0.564
+     ],
+     "score": 2.92
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      10
+     ],
+     "values": [
+      11,
+      10
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "鳥島",
+   "note": "島 replaces 鳥's four dots 灬 with 山 'mountain' and has one stroke less."
+  },
+  {
+   "chars": [
+    "崎",
+    "埼"
+   ],
+   "levels": [
+    "N1",
+    "extra"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 2,
+     "values": [
+      91,
+      -28
+     ],
+     "score": 4.76
+    }
+   ],
+   "source": "kanji",
+   "group": "崎埼",
+   "note": "崎 has 山 'mountain' on the left; 埼 has 土 'earth', whose last stroke rises to the right (埼 is outside the JLPT lists)."
+  },
+  {
+   "chars": [
+    "住",
+    "往"
+   ],
+   "levels": [
+    "N4",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "ey",
+     "stroke": 2,
+     "values": [
+      0.253,
+      0.867
+     ],
+     "score": 5.12
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      7
+     ],
+     "values": [
+      7,
+      8
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "住往",
+   "note": "住 has 亻 'person' on the left; 往 has 彳 'going', one stroke more."
   },
   {
    "chars": [
@@ -3079,6 +4218,439 @@ window.CONFUSABLES={
      0.742,
      0.765,
      [],
+     []
+    ]
+   ]
+  },
+  "爪": {
+   "displayOnly": true,
+   "source": "KanjiVG r20260714 (kanjivg-20260714-main.zip)",
+   "strokes": [
+    [
+     154,
+     1,
+     41,
+     "cw",
+     0.552,
+     0.649,
+     0.133,
+     0.326,
+     0.289,
+     0.498,
+     0.226,
+     [],
+     []
+    ],
+    [
+     107,
+     1,
+     65,
+     "cw",
+     0.969,
+     0.286,
+     0.282,
+     0.106,
+     0.869,
+     0.248,
+     0.592,
+     [
+      0
+     ],
+     []
+    ],
+    [
+     88,
+     0,
+     26,
+     "cw",
+     0.911,
+     0.469,
+     0.273,
+     0.489,
+     0.874,
+     0.489,
+     0.57,
+     [
+      0
+     ],
+     []
+    ],
+    [
+     62,
+     1,
+     35,
+     "ccw",
+     1.0,
+     0.587,
+     0.255,
+     0.901,
+     0.835,
+     0.731,
+     0.554,
+     [],
+     []
+    ]
+   ]
+  },
+  "瓜": {
+   "displayOnly": true,
+   "source": "KanjiVG r20260714 (kanjivg-20260714-main.zip)",
+   "strokes": [
+    [
+     155,
+     1,
+     37,
+     "cw",
+     0.546,
+     0.651,
+     0.142,
+     0.33,
+     0.289,
+     0.499,
+     0.229,
+     [],
+     []
+    ],
+    [
+     108,
+     1,
+     61,
+     "cw",
+     0.959,
+     0.292,
+     0.296,
+     0.106,
+     0.869,
+     0.248,
+     0.601,
+     [],
+     []
+    ],
+    [
+     89,
+     0,
+     17,
+     "cw",
+     0.749,
+     0.478,
+     0.282,
+     0.489,
+     0.773,
+     0.49,
+     0.526,
+     [
+      0
+     ],
+     []
+    ],
+    [
+     -12,
+     1,
+     39,
+     "ccw",
+     0.468,
+     0.339,
+     0.804,
+     0.635,
+     0.741,
+     0.487,
+     0.782,
+     [
+      2
+     ],
+     []
+    ],
+    [
+     63,
+     0,
+     28,
+     "cw",
+     0.297,
+     0.599,
+     0.645,
+     0.686,
+     0.818,
+     0.649,
+     0.729,
+     [
+      3
+     ],
+     []
+    ],
+    [
+     65,
+     1,
+     39,
+     "ccw",
+     1.0,
+     0.614,
+     0.258,
+     0.892,
+     0.844,
+     0.728,
+     0.565,
+     [],
+     []
+    ]
+   ]
+  },
+  "毋": {
+   "displayOnly": true,
+   "source": "KanjiVG r20260714 (kanjivg-20260714-main.zip)",
+   "strokes": [
+    [
+     56,
+     1,
+     130,
+     "ccw",
+     0.881,
+     0.324,
+     0.174,
+     0.757,
+     0.819,
+     0.4,
+     0.597,
+     [],
+     []
+    ],
+    [
+     77,
+     2,
+     195,
+     "cw",
+     1.0,
+     0.35,
+     0.195,
+     0.507,
+     0.853,
+     0.628,
+     0.442,
+     [],
+     [
+      0
+     ]
+    ],
+    [
+     97,
+     0,
+     29,
+     "cw",
+     0.441,
+     0.509,
+     0.209,
+     0.441,
+     0.74,
+     0.49,
+     0.475,
+     [
+      0,
+      1
+     ],
+     []
+    ],
+    [
+     -1,
+     0,
+     15,
+     "",
+     0.594,
+     0.139,
+     0.466,
+     0.864,
+     0.449,
+     0.501,
+     0.456,
+     [],
+     [
+      0,
+      1,
+      2
+     ]
+    ]
+   ]
+  },
+  "埼": {
+   "displayOnly": true,
+   "source": "KanjiVG r20260714 (kanjivg-20260714-main.zip)",
+   "strokes": [
+    [
+     -6,
+     1,
+     31,
+     "",
+     0.47,
+     0.106,
+     0.354,
+     0.36,
+     0.328,
+     0.233,
+     0.344,
+     [],
+     []
+    ],
+    [
+     89,
+     0,
+     14,
+     "cw",
+     0.843,
+     0.233,
+     0.14,
+     0.244,
+     0.599,
+     0.244,
+     0.368,
+     [],
+     [
+      0
+     ]
+    ],
+    [
+     -28,
+     1,
+     45,
+     "ccw",
+     0.49,
+     0.108,
+     0.672,
+     0.337,
+     0.548,
+     0.225,
+     0.62,
+     [
+      1
+     ],
+     []
+    ],
+    [
+     -4,
+     0,
+     26,
+     "",
+     0.628,
+     0.443,
+     0.205,
+     0.784,
+     0.181,
+     0.614,
+     0.193,
+     [],
+     []
+    ],
+    [
+     115,
+     1,
+     67,
+     "cw",
+     0.67,
+     0.603,
+     0.085,
+     0.454,
+     0.397,
+     0.558,
+     0.255,
+     [],
+     [
+      3
+     ]
+    ],
+    [
+     34,
+     0,
+     23,
+     "cw",
+     0.365,
+     0.622,
+     0.243,
+     0.787,
+     0.353,
+     0.708,
+     0.293,
+     [
+      4
+     ],
+     []
+    ],
+    [
+     -4,
+     0,
+     29,
+     "",
+     1.0,
+     0.364,
+     0.458,
+     0.907,
+     0.42,
+     0.635,
+     0.437,
+     [],
+     []
+    ],
+    [
+     78,
+     0,
+     19,
+     "cw",
+     0.319,
+     0.454,
+     0.567,
+     0.491,
+     0.737,
+     0.475,
+     0.651,
+     [],
+     []
+    ],
+    [
+     36,
+     1,
+     118,
+     "cw",
+     0.588,
+     0.471,
+     0.579,
+     0.625,
+     0.691,
+     0.594,
+     0.59,
+     [
+      7
+     ],
+     []
+    ],
+    [
+     -8,
+     0,
+     2,
+     "",
+     0.275,
+     0.497,
+     0.716,
+     0.646,
+     0.695,
+     0.571,
+     0.706,
+     [
+      7,
+      8
+     ],
+     []
+    ],
+    [
+     97,
+     2,
+     153,
+     "cw",
+     0.996,
+     0.765,
+     0.445,
+     0.711,
+     0.871,
+     0.77,
+     0.706,
+     [
+      6
+     ],
      []
     ]
    ]
