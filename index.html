@@ -1774,11 +1774,11 @@ function markVerdict(box, verdict) {
 
 function reject(c,p,n){markVerdict(c,'rejected');const s=p.strokes.pop();p.fade={s,t0:performance.now()};const tick=()=>{p.redraw();if(p.fade&&performance.now()-p.fade.t0<360)requestAnimationFrame(tick);else{p.fade=null;p.redraw()}};tick();
  c.miss=c.miss||{};c.miss[n]=(c.miss[n]||0)+1;if(isMem(c.s))c.failed=true;
- if(c.miss[n]===CONFIG.CHECK.MISSES_FOR_HINT){traceGuide(c,n);if(!isStep(c.s)){c.autoHints=(c.autoHints||0)+1;localStorage.setItem(hintKey(c.k.k),hintCount(c.k.k)+1)}}}
+ if(c.miss[n]===CONFIG.CHECK.MISSES_FOR_HINT&&c.k.paths[n]){traceGuide(c,n);if(!isStep(c.s)){c.autoHints=(c.autoHints||0)+1;localStorage.setItem(hintKey(c.k.k),hintCount(c.k.k)+1)}}}
 /** Tracing guide for stroke n after MISSES_FOR_HINT failed attempts (every level, word boxes too): solid outline of the
  *  stroke + start dot + direction arrow, drawn from k.paths so it renders even when the box has no guide strokes.
  *  Removed by upd() once stroke n is accepted. Outside step-by-step boxes it counts as a hint (→ repeat box). */
-function traceGuide(c,n){const svg=c.b.querySelector(':scope>svg');svg.querySelectorAll('.trace').forEach(e=>e.remove());
+function traceGuide(c,n){if(!c.k.paths[n])return;const svg=c.b.querySelector(':scope>svg');svg.querySelectorAll('.trace').forEach(e=>e.remove());
  const g=document.createElementNS(NS,'g');g.setAttribute('class','trace');g.dataset.n=n;
  const q=document.createElementNS(NS,'path');q.setAttribute('d',c.k.paths[n]);q.setAttribute('class','tline');g.appendChild(q);svg.appendChild(g);
  const L=q.getTotalLength(),a=q.getPointAtLength(0),m=q.getPointAtLength(L*.5),m2=q.getPointAtLength(Math.min(L,L*.5+1)),ang=Math.atan2(m2.y-m.y,m2.x-m.x),h=4.2;
