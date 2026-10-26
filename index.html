@@ -285,6 +285,17 @@ details summary::before{content:"ⓘ ";color:var(--indigo2)}
  .tspk{order:4;position:static;transform:none;display:inline-flex}
 }
 .ib.nb:disabled{opacity:.3;pointer-events:none} /* first/last word: prev/next stop instead of wrapping */
+/* HOTFIX-landscape-pad: phone landscape (short viewport). The panel moves to a right-hand column so the stage gets the
+   full height; layout() lets the pad drop under its 200px floor here so the pad never sits under the header or panel. */
+@media (orientation:landscape) and (max-height:500px){
+ body{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,38%);grid-template-rows:auto minmax(0,1fr);grid-auto-rows:0;padding-left:env(safe-area-inset-left);padding-right:calc(10px + env(safe-area-inset-right))}
+ body>.top{grid-column:1/-1;grid-row:1}
+ body>#stage{grid-column:1;grid-row:2;overflow:hidden;contain:paint}   /* boxes beyond the stage column are clipped, never under the panel */
+ body>#panel{grid-column:2;grid-row:2;width:auto;height:auto;min-height:0;margin:0;align-self:stretch;overflow:auto}
+}
+/* HOTFIX-landscape-pad: the controls row spans the stage width; only its buttons take taps, so a picker/search row under the
+   gap between undo and clear (375x500) still gets the click. */
+.controls{pointer-events:none}.controls>*{pointer-events:auto}
 </style><link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" href="icons/icon-192.png" type="image/png">
 <style id="v15-ui-css">
 /*
@@ -431,6 +442,11 @@ button.v15-row { cursor: pointer; }
   white-space: nowrap;
 }
 #v15ovr[hidden] { display: none; }
+/* HOTFIX-pill-reflow v2: in a lesson the pill sits in the controls row, over the progress dots (between undo and
+   clear), instead of growing the panel. Showing or hiding it never changes layout, so the pad rect never moves. */
+#v15ovr.v15-ovr-inrow { left: var(--v15-ovr-x); top: var(--v15-ovr-y); right: auto; bottom: auto; transform: translate(-50%, -50%);
+  max-width: var(--v15-ovr-w); overflow: hidden; text-overflow: ellipsis; z-index: 32; }
+body:has(#v15ovr.v15-ovr-inrow:not([hidden])) .controls .prog { visibility: hidden; }
 /* top is set by toast() to just below the writing box; it never takes pointer input (drawing goes through) */
 #v15toast { position: fixed; left: 50%; top: 96px; transform: translateX(-50%); z-index: 53; max-width: min(72vw, 280px); pointer-events: none; text-align: center; font: 400 15px var(--ui); color: var(--ink); background: #fdf0f2; border-radius: 12px; padding: 10px 14px; box-shadow: 0 4px 14px rgba(60, 50, 30, .12); }
 #v15toast:not(.on) { opacity: 0; }   /* stays in the accessibility tree as a live region */
@@ -499,7 +515,7 @@ body:has(#klist.show) .plab { visibility: hidden; }
 .klist .lvbar { box-shadow: none; }
 
 /* U3: the override pill gets its own row at the bottom of the panel */
-body:has(#v15ovr:not([hidden])) #panel {
+body:has(#v15ovr:not([hidden]):not(.v15-ovr-inrow)) #panel {
   height: calc(var(--PH, 150px) + 56px);
   padding-bottom: 66px;
 }
@@ -770,23 +786,58 @@ function strokeSize(points, reference) {
  */
 /** First strokes shorter than this (KanjiVG units) are dots: every first stroke under 16 units is one (6-15). */
 const FIRST_DOT_UNITS = 16;
+/**
+ * Stroke 1's size relative to stroke 2, divided by the same ratio in the reference (1 = same proportions).
+ * @param {object} k kanji
+ * @param {Array<{x:number,y:number}>} firstPts stroke 1 ink (judge points)
+ * @param {Array<{x:number,y:number}>} secondPts stroke 2 ink (judge points)
+ * @returns {number}
+ */
+function firstPairFactor(k, firstPts, secondPts) {
+  const N = CONFIG.CHECK.N;
+  const firstInk = resample(firstPts, N);
+  const secondInk = resample(secondPts, N);
+  const inkRatio = strokeSize(firstInk, idealPts(k, 0)) / Math.max(strokeSize(secondInk, idealPts(k, 1)), 1e-6);
+  const refRatio = strokeSize(idealPts(k, 0), idealPts(k, 0)) / Math.max(strokeSize(idealPts(k, 1), idealPts(k, 1)), 1e-6);
+  return inkRatio / refRatio;
+}
+
+/**
+ * HOTFIX-v15d.7: true when stroke 2 is a dot whose pair-length re-check HOTFIX-v15d.5 skips, and that check would
+ * have failed. Before d.5 the failure made the curl retry cut the pen-lift curls of strokes 1 and 2 (常 s1-s2);
+ * without the cut the curls stay in the ink and later proportion checks (常 s3) reject a correct stroke.
+ * @returns {boolean}
+ */
+function dotPairLengthOff(k, i, stroke, prev) {
+  const FIRST = CONFIG.CHECK.FIRST;
+  if (!FIRST.on || i !== 1 || prev.length !== 1 || prev[0].i !== 0) {
+    return false;
+  }
+  const isDot = (j) => plen(idealDense(k, j)) < FIRST_DOT_UNITS / KANJIVG_UNITS;
+  if (isDot(0) || !isDot(1)) {
+    return false;
+  }
+  const factor = firstPairFactor(k, steadyPoints(prev[0].pts), steadyPoints(stroke.pts));
+  return factor > FIRST.pairRatio || factor < 1 / FIRST.pairRatio;
+}
+
 function rejudgeFirstStroke(k, i, stroke, prev, mem) {
   const FIRST = CONFIG.CHECK.FIRST;
   const isSecondStroke = i === 1 && prev.length === 1 && prev[0].i === 0;
   if (!FIRST.on || !isSecondStroke) {
     return null;
   }
-  const N = CONFIG.CHECK.N;
-  const firstInk = resample(prev[0].pts, N);
-  const secondInk = resample(stroke.pts, N);
-  const inkRatio = strokeSize(firstInk, idealPts(k, 0)) / Math.max(strokeSize(secondInk, idealPts(k, 1)), 1e-6);
-  const refRatio = strokeSize(idealPts(k, 0), idealPts(k, 0)) / Math.max(strokeSize(idealPts(k, 1), idealPts(k, 1)), 1e-6);
-  const factor = inkRatio / refRatio;
+  const firstInk = resample(prev[0].pts, CONFIG.CHECK.N);
+  const factor = firstPairFactor(k, prev[0].pts, stroke.pts);
   const redo = redoFirstVerdict;
   // HOTFIX-v15c: a dot (氵 s1, 言 s1, 宀 s1) has a noise-dominated length and direction; skip those two re-checks
   // for it, as settleFirstStroke exempts tiny strokes (placement and the other shape checks still apply)
   const tinyFirst = plen(idealDense(k, 0)) < FIRST_DOT_UNITS / KANJIVG_UNITS;
-  if (!tinyFirst && (factor > FIRST.pairRatio || factor < 1 / FIRST.pairRatio)) {
+  // HOTFIX-v15d.5: the length ratio is just as noise-dominated when stroke 2 is the dot (ぞ/び dakuten, 歌 s2,
+  // 翌/習 s2, 忄 s2): pencil jitter on a 10-14 unit stroke swings it past pairRatio. Skip only the length re-check
+  // then; placement, shape and hook re-checks of stroke 1 still apply.
+  const tinySecond = plen(idealDense(k, 1)) < FIRST_DOT_UNITS / KANJIVG_UNITS;
+  if (!tinyFirst && !tinySecond && (factor > FIRST.pairRatio || factor < 1 / FIRST.pairRatio)) {
     return redo('firstLength', null);
   }
   const jointFit = fitPlacement(k, [prev[0], { i, pts: stroke.pts }], mem);
@@ -1211,28 +1262,79 @@ function ruleGate(k, i, u, prev) {
   if (drawn.some((pts) => !pts)) {
     return '';
   }
+  // displayOnly rules belong to characters outside the level lists (已, 卜 …); they still judge that character when it is practised
+  const active = rules.filter((rule) => !drawnTheSame(rule)).map(withPairTolerance);
+  const lastStroke = i === k.strokes - 1;
+  const due = lastStroke ? active : active.filter((rule) => {
+    const strokes = rule.metric.strokes || [];
+    return EARLY_METRICS.has(rule.metric.type) && strokes.length && Math.max(...strokes) === i;
+  });
+  if (!due.length) {
+    return '';
+  }
+  // v15d.2: a bend rule fails only when it fails both on the ink as drawn and on the ink with each stroke's
+  // pen-down / lift-off curl trimmed (curlTrimmedInk): device curls broke 貝-vs-見-2 (bend of the short stroke 7)
+  const asDrawn = ruleFailures(due, drawn, lastStroke, metrics, k.k);
+  if (!asDrawn.length) {
+    return '';
+  }
+  const trimmed = new Set(ruleFailures(due, drawn.map((pts, j) => curlTrimmedInk(k, j, pts)), lastStroke, metrics, k.k)
+    .map((rule) => rule.id));
+  // Curl trimming only excuses bend rules: for position/length rules it would move a rival's start toward the target
+  // reference (已 drawn for 己 sealed when every rule could use the trimmed ink).
+  const failed = asDrawn.find((rule) => rule.metric.type !== 'bend' || trimmed.has(rule.id));
+  return failed ? `rule:${failed.id}` : '';
+}
+
+
+/**
+ * The look-alike rules among `due` that the ink fails.
+ * @param {object[]} due rules to evaluate
+ * @param {object[][]} drawn ink per stroke so far (box units)
+ * @param {boolean} wholeChar true at the last stroke (checkChar), false for early metrics (evaluateRule)
+ * @param {object} metrics window.ProportionMetrics
+ * @param {string} ch the character
+ * @returns {object[]} the failed rules, in rule order
+ */
+function ruleFailures(due, drawn, wholeChar, metrics, ch) {
   const paths = drawn.map(inkToPath);
   // v15d: 'bend' adds up every turn of the ink, so hand tremor on a short stroke (ウ#2) reads as a large bend; those
   // rules see the ink smoothed over RULE_BEND_SMOOTH (the turn of a real hook or corner survives it)
   const smoothPaths = drawn.map((pts) => inkToPath(smoothInk(pts, RULE_BEND_SMOOTH)));
-  const pathsFor = (rule) => (rule.metric.type === 'bend' ? smoothPaths : paths);
-  // displayOnly rules belong to characters outside the level lists (已, 卜 …); they still judge that character when it is practised
-  const active = rules.filter((rule) => !drawnTheSame(rule)).map(withPairTolerance);
-  if (i === k.strokes - 1) {
-    const plain = active.filter((rule) => rule.metric.type !== 'bend');
-    const bend = active.filter((rule) => rule.metric.type === 'bend');
-    const failed = [
-      ...metrics.checkChar(k.k, paths, { [k.k]: plain }).failed,
-      ...(bend.length ? metrics.checkChar(k.k, smoothPaths, { [k.k]: bend }).failed : []),
-    ];
-    return failed.length ? `rule:${failed[0].rule.id}` : '';
+  const isBend = (rule) => rule.metric.type === 'bend';
+  if (wholeChar) {
+    const plain = due.filter((rule) => !isBend(rule));
+    const bend = due.filter(isBend);
+    const failed = new Set([
+      ...(plain.length ? metrics.checkChar(ch, paths, { [ch]: plain }).failed : []),
+      ...(bend.length ? metrics.checkChar(ch, smoothPaths, { [ch]: bend }).failed : []),
+    ].map((f) => f.rule.id));
+    return due.filter((rule) => failed.has(rule.id));
   }
-  const dueNow = active.filter((rule) => {
-    const strokes = rule.metric.strokes || [];
-    return EARLY_METRICS.has(rule.metric.type) && strokes.length && Math.max(...strokes) === i;
-  });
-  const failedRule = dueNow.find((rule) => !metrics.evaluateRule(rule, pathsFor(rule)).passes);
-  return failedRule ? `rule:${failedRule.id}` : '';
+  return due.filter((rule) => !metrics.evaluateRule(rule, isBend(rule) ? smoothPaths : paths).passes);
+}
+
+/**
+ * v15d.1: stroke j's ink with a pen-down / lift-off curl or rest trimmed: of the ink as drawn, without its
+ * hook-curl.js curl, and the best end-curl fit to the reference, whichever chord matches the reference best.
+ * @param {object} k the character
+ * @param {number} j stroke index
+ * @param {{x:number,y:number}[]} pts ink in box units
+ * @returns {{x:number,y:number}[]} the chosen points
+ */
+function curlTrimmedInk(k, j, pts) {
+  const ref = idealDense(k, j);
+  if (pts.length < 4) {
+    return pts;
+  }
+  const cost = (p) => angleGapDegrees(chordAng(p), chordAng(ref)) / 25
+    + Math.abs(Math.log(Math.max(chordLength(p), 1e-6) / Math.max(chordLength(ref), 1e-6)));
+  // only the pen-down curl and rest may go: a lift-off cut would remove a rival's short real hook as well
+  // (討 stroke 9 written for 計 passed 計-vs-討-1 with its 寸 hook trimmed; rival_sweep.py)
+  const cut = inkWithoutCurl(pts);
+  const start = cut && cut.length ? pts.indexOf(cut[0]) : 0;
+  const options = [pts, start > 0 ? pts.slice(start) : null].filter((p) => p && p.length >= 2);
+  return options.reduce((best, p) => (cost(p) < cost(best) - 1e-9 ? p : best));
 }
 
 /**
@@ -1368,6 +1470,64 @@ function restStart(points) {
   return start;
 }
 
+/** HOTFIX-v15d.7: a pencil resting at pen-down / pen-up jitters up to about this far (box units, ~1.3 of 109) around
+ *  the endpoint, wider than STILL_RADIUS, so restStart() stops at the first wide sample and leaves the
+ *  rest of the cluster in the ink as fake curl and length (d.7 triage: 45 of 78 replay rejects). */
+const PEN_REST_RADIUS = 0.012;
+
+/** Three samples in a row moving steadily away from the endpoint are ink (a curl, a slow approach), not rest jitter. */
+const PEN_REST_LEAVING_RUN = 3;
+
+/**
+ * Number of points, counted from the end of `points`, in the pencil-rest cluster at the endpoint: they stay within
+ * PEN_REST_RADIUS of it, and the walk stops before the first PEN_REST_LEAVING_RUN samples that each lie farther from
+ * the endpoint than the one after them (and outside STILL_RADIUS). Jitter goes back and forth; ink moves steadily.
+ * @param {Array<{x:number,y:number}>} points
+ * @returns {number}
+ */
+function penRestLength(points) {
+  const end = points[points.length - 1];
+  let n = 0;
+  let run = 0;
+  let previous = 0;
+  while (n < points.length - 2) {
+    const d = dist(points[points.length - 1 - n], end);
+    if (d > PEN_REST_RADIUS) {
+      break;
+    }
+    run = d > STILL_RADIUS && d > previous ? run + 1 : 0;
+    if (run >= PEN_REST_LEAVING_RUN) {
+      return n - (run - 1);
+    }
+    previous = d;
+    n++;
+  }
+  return n;
+}
+
+/**
+ * Replace a pencil-rest cluster at either end by its endpoint. HOTFIX-v15d.7: used only by the curl retry after a
+ * hook-layer reject (retryWithoutPenLiftCurl), never in steadyPoints for every stroke: there it changed the judged size of every
+ * stroke of a look-alike and let 幼 through in 幻's box (rival_sweep seed 2, pencil-240), a new
+ * accept versus d.6. A retry can only re-judge a rejected stroke, so first verdicts stay d.6's. Only clusters of at least MIN_REST_POINTS
+ * samples count (a hold); shorter ones are slow ink and stay. A cluster is at most PEN_REST_RADIUS across,
+ * well under any hook or stroke the judge measures, so no real shape is removed.
+ * @param {Array<{x:number,y:number,p:number}>} points raw ink, box units
+ * @returns {Array<{x:number,y:number,p:number}>}
+ */
+function withoutPenRest(points) {
+  let out = points;
+  const tail = penRestLength(out);
+  if (tail >= MIN_REST_POINTS) {
+    out = [...out.slice(0, out.length - tail), out[out.length - 1]];
+  }
+  const head = penRestLength([...out].reverse());
+  if (head >= MIN_REST_POINTS) {
+    out = [out[0], ...out.slice(head)];
+  }
+  return out;
+}
+
 /**
  * Points of a stroke as the judge should see them. A finger resting still at the start or end sends hundreds of
  * jittering 120 Hz samples; they add fake path length and a fake curl to the stroke's tail. Each resting cluster
@@ -1404,7 +1564,16 @@ function steadyPoints(points) {
 
 function checkStroke(k, i, stroke, level = 'L1', prev = []) {
   const verdict = checkStrokeAsDrawn(k, i, stroke, level, prev);
-  return verdict.ok ? verdict : retryWithoutPenLiftCurl(k, i, stroke, level, prev, verdict);
+  if (!verdict.ok) {
+    return retryWithoutPenLiftCurl(k, i, stroke, level, prev, verdict);
+  }
+  // HOTFIX-v15d.7: stroke 2 is accepted either way; this only keeps the curl-cut ink of strokes 1 and 2 when the
+  // cut pair passes, as before HOTFIX-v15d.5, so the curls don't skew the proportions of the later strokes.
+  if (dotPairLengthOff(k, i, stroke, prev)) {
+    const cut = retryWithoutPenLiftCurl(k, i, stroke, level, prev, redoFirstVerdict('firstLength', null));
+    return cut.ok ? cut : verdict;
+  }
+  return verdict;
 }
 
 /**
@@ -1418,21 +1587,28 @@ function checkStroke(k, i, stroke, level = 'L1', prev = []) {
 // seal the look-alike (已 for 己 sealed in the regressions until this was added).
 const CURL_RETRY_NEVER = /^(rule|topology|pair:rule):/;
 
+/** HOTFIX-v15d.5: rejects where a pen-lift curl after a real hook hides the hook (see curlRetry). */
+const HOOK_HIDDEN_BY_CURL = new Set(['hook-dropped', 'first:hook-dropped']);
+
+/** HOTFIX-v15d.7: hook-layer rejects (hook_rules.js), the only ones whose curl retry cuts the rest-free ink. */
+const HOOK_REJECT = /^(first:)?hook-/;
+
 function retryWithoutPenLiftCurl(k, i, stroke, level, prev, verdict) {
   const guard = window.HookRules && window.HookRules.curlGuard;
   if (!guard || CURL_RETRY_NEVER.test(verdict.shape || '')) {
     return verdict;
   }
-  const strokeCut = guard.withoutCurl(stroke.pts);
-  const firstCut = verdict.redoFirst && prev[0] && prev[0].i === 0 ? guard.withoutCurl(prev[0].pts) : null;
-  if (!strokeCut && !firstCut) {
+  let attempt = curlRetry(guard, k, i, stroke, level, prev, verdict, false);
+  if (!attempt && HOOK_HIDDEN_BY_CURL.has(verdict.shape)) {
+    attempt = curlRetry(guard, k, i, stroke, level, prev, verdict, true);
+  }
+  if (!attempt && HOOK_HIDDEN_BY_CURL.has(verdict.shape) && guard.thinJitter) {
+    attempt = curlRetry(guard, k, i, stroke, level, prev, verdict, true, true);
+  }
+  if (!attempt) {
     return verdict;
   }
-  const retryPrev = firstCut ? [{ ...prev[0], pts: firstCut }, ...prev.slice(1)] : prev;
-  const retry = checkStrokeAsDrawn(k, i, { ...stroke, pts: strokeCut || stroke.pts }, level, retryPrev);
-  if (!retry.ok) {
-    return verdict;
-  }
+  const { retry, strokeCut, firstCut } = attempt;
   if (strokeCut) {
     stroke.pts.splice(0, stroke.pts.length, ...strokeCut);
   }
@@ -1440,6 +1616,47 @@ function retryWithoutPenLiftCurl(k, i, stroke, level, prev, verdict) {
     prev[0].pts.splice(0, prev[0].pts.length, ...firstCut);
   }
   return { ...retry, penLiftCurl: true };
+}
+
+/**
+ * One curl-cut retry of a rejected stroke (and of stroke 1 at its re-check).
+ * @param {object} guard HookRules.curlGuard
+ * @param {boolean} nearest cut the pen-lift (end) curl at its own bend, not at the sharpest turn near the end. HOTFIX-v15d.5:
+ *   the pencil's 2-5 unit lift curl after a hook made the hook corner the sharpest turn, so the default cut removed
+ *   the hook with the curl and a correct hook stroke stayed 'hook-dropped'. Only used for that reject.
+ * @param {boolean} [thin] HOTFIX-v15d.6: drop sub-unit pencil jitter first (hook-curl.js thinJitter), then cut the
+ *   curl; the thinned ink is retried even without a curl. Only used for a hook-dropped reject that both curl
+ *   retries left: the jitter stretched the measured tail so the hook drawn up to the reference's tip was not seen.
+ * @returns {{retry: object, strokeCut: Array|null, firstCut: Array|null}|null} the passing retry, or null
+ */
+function curlRetry(guard, k, i, stroke, level, prev, verdict, nearest, thin = false) {
+  const units = KANJIVG_UNITS;
+  const cut = (pts) => {
+    if (!thin) {
+      return guard.withoutCurl(pts, units, nearest);
+    }
+    const thinned = guard.thinJitter(pts, units);
+    if (thinned.length === pts.length) {
+      // HOTFIX-v15d.7: nothing to thin (a subset of the same length is the same ink): the cut is the nearest-bend
+      // retry's, which already failed, so skip the third judge pass.
+      return null;
+    }
+    const trimmed = guard.withoutCurl(thinned, units, nearest) || thinned;
+    return trimmed.length < pts.length ? trimmed : null;
+  };
+  // HOTFIX-v15d.7: for a hook reject, cut the curl from the ink without its pencil-rest clusters, as the judge sees
+  // it (steadyPoints); otherwise the jitter left at the pen-up point hides the curl's bend from withoutCurl. Other
+  // rejects keep the d.6 cut on the raw ink: on proportion / length rejects the rest-free cut let a look-alike
+  // (夕 for タ, rival_sweep) through.
+  const rest = HOOK_REJECT.test(verdict.shape || '') ? withoutPenRest : (pts) => pts;
+  const strokeCut = cut(rest(stroke.pts));
+  const firstCut = verdict.redoFirst && prev[0] && prev[0].i === 0 ? cut(rest(prev[0].pts)) : null;
+  if (!strokeCut && !firstCut) {
+    return null;
+  }
+  const retryPrev = firstCut ? [{ ...prev[0], pts: firstCut }, ...prev.slice(1)] : prev;
+  const retry = checkStrokeAsDrawn(k, i, { ...stroke, pts: strokeCut || stroke.pts }, level, retryPrev);
+  return retry.ok ? { retry, strokeCut, firstCut } : null;
 }
 
 /** checkStroke on the ink as drawn, with resting clusters collapsed (HOTFIX-ipad steadyPoints). */
@@ -2017,7 +2234,7 @@ function fadeLevel(c){const r=recGet(c);if(!r||!r.lastPracticed)return 0;const s
  *  its part-alone boxes are then skipped (it still shows, keyword included, in the part boxes and equation). */
 function partKnown(g){if(CONFIG.FLOW.REVIEW_PARTS===false)return false;return Object.values(DATA.kanji).some(K=>(Number((recGet(K.k)||{}).streak)||0)>=1&&(K.k===g||K.parts.some(p=>p.g===g)))}
 /** Create one writing box (guide SVG + canvas Pad) for step s. */
-function makeBox(s){const K=DATA.kanji[s.kc],k=s.t==='W'?wordObj(s.w):s.t==='P'?partObj(K,s.pi):K,b=document.createElement('div');b.className='box'+(k.isWord?' wbox':'')+(s.lines===false?' nolines':'');b.dataset.kanji=k.k;b.dataset.retry='0';if(k.isWord){b.style.setProperty('--n',k.cells);b.style.setProperty('--C',`min(var(--B), ${Math.floor(90/k.cells)}vw)`)}
+function makeBox(s){const K=DATA.kanji[s.kc],k=s.t==='W'?wordObj(s.w):s.t==='P'?partObj(K,s.pi):K,b=document.createElement('div');b.className='box'+(k.isWord?' wbox':'')+(s.lines===false?' nolines':'');b.dataset.kanji=k.k;b.dataset.retry='0';if(k.isWord){b.style.setProperty('--n',k.cells);b.style.setProperty('--C',`min(var(--B), calc(var(--SW, 100vw) * ${(0.9/k.cells).toFixed(4)}))`)}
   b.appendChild(guide(k,{step:'step',trace:'faint',free:'blank'}[s.g],s.parts));const cv=document.createElement('canvas');b.appendChild(cv);
   const pad=new Pad(cv);pad.locked=true;const o={b,pad,k,s};pad.onStroke=p=>onStroke(boxes.indexOf(o),p);return o}
 /** Build the practice sheet: one row (.track) per word, boxes appended to their word's row. */
@@ -2027,8 +2244,10 @@ let rowEls=[];function build(){const tr=$('track');tr.innerHTML='';rowEls=D.map(
 /** Insert a repeat box (same level) right after box i, marked with the circular-arrow icon. */
 function addRepeatBox(i){const s={...steps[i],repeat:true};steps.splice(i+1,0,s);const o=makeBox(s);o.b.insertAdjacentHTML('beforeend','<div class="rpt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 11-2.3-5.6"/><path d="M20 4v5h-5"/></svg></div>');boxes[i].b.after(o.b);boxes.splice(i+1,0,o);requestAnimationFrame(()=>o.pad.resize())}
 /** Size boxes for the viewport (--B, --gap, --C) and resize canvases. */
-function layout(){const W=innerWidth,H=innerHeight,sh=$('stage').clientHeight;const B=Math.round(Math.max(200,Math.min(W*(W>H?0.44:0.86),sh-140)));const gap=Math.round(B*0.1);
- document.documentElement.style.setProperty('--B',B+'px');document.documentElement.style.setProperty('--gap',gap+'px');document.documentElement.style.setProperty('--C',`min(${B}px, ${Math.floor(W*0.9/5)}px)`);
+function layout(){const W=innerWidth,H=innerHeight,sh=$('stage').clientHeight;const short=W>H&&H<=500,sw=$('stage').clientWidth;   // HOTFIX-landscape-pad: phone landscape fits the pad to the stage
+ const tight=!short&&sh-140<200;   // short portrait (375x500): the 200px floor pushed undo/clear below the stage, under the panel
+ const B=Math.round(short?Math.max(120,Math.min(sw*0.86,sh-140)):tight?Math.max(120,Math.min(W*0.86,200,sh-124)):Math.max(200,Math.min(W*(W>H?0.44:0.86),sh-140)));const gap=Math.round(B*0.1);
+ document.documentElement.style.setProperty('--B',B+'px');document.documentElement.style.setProperty('--SW',short?sw+'px':'100vw');document.documentElement.style.setProperty('--gap',gap+'px');document.documentElement.style.setProperty('--C',`min(${B}px, ${Math.floor((short?sw:W)*0.9/5)}px)`);
  requestAnimationFrame(sizePads);position(false)}
 /** Canvas memory/perf: only boxes within PAD_NEAR of the current one, or holding ink, get a real bitmap. A lesson can
  *  have 80+ boxes; sizing them all cost >1 s per lesson open and can exceed iPad Safari's canvas memory limit.
@@ -2039,7 +2258,10 @@ function sizePads(){const M=boxes.map((x,i)=>[x,x.pad.cv.offsetWidth,x.pad.cv.of
 /** Centre the current box horizontally in its row, and the current row vertically in the sheet. */
 function position(anim){const b=boxes[cur]&&boxes[cur].b;if(!b)return;const row=b.parentElement,ki=steps[cur].ki;
  row.classList.toggle('anim',anim);row.style.transition=anim?`transform ${CONFIG.SLIDE_MS}ms var(--ease-spring),opacity .4s`:'opacity .4s';
- row.style.transform=`translateX(${innerWidth/2-b.offsetLeft-b.offsetWidth/2}px)`;
+ const cx=(innerWidth>innerHeight&&innerHeight<=500)?$('stage').clientWidth/2:innerWidth/2;   // HOTFIX-landscape-pad: centre in the stage column
+ let tx=cx-b.offsetLeft-b.offsetWidth/2;
+ if(cx!==innerWidth/2){const sw=$('stage').clientWidth,m=8;tx=Math.min(Math.max(tx,m-b.offsetLeft),sw-m-b.offsetLeft-b.offsetWidth)}   // keep the current box fully inside the stage column
+ row.style.transform=`translateX(${tx}px)`;
  rowEls.forEach((r,i)=>{r.classList.toggle('past',i<ki);r.classList.toggle('future',i>ki);r.classList.remove('leaving')});
  const rows=$('track');rows.classList.toggle('anim',anim);rows.style.transform=`translateY(${-row.offsetTop}px)`}
 /** Make box `cur` active (only it accepts ink), hide guides on finished boxes, reposition. */
@@ -2580,6 +2802,9 @@ class Pad{constructor(cv){this.cv=cv;this.ctx=cv.getContext('2d');this.strokes=[
  pt(e){const b=this.cv.getBoundingClientRect();let p=e.pointerType==='pen'?(e.pressure||.5):.5;return{x:(e.clientX-b.left)/b.height,y:(e.clientY-b.top)/b.height,p}}
  ok(e){if(e.pointerType==='pen')penSeen=true;return !(penSeen&&e.pointerType==='touch')}
  down(e){if(this.locked&&this.ok(e)&&!this.cur&&handoffOpen()){e.preventDefault();try{this.cv.setPointerCapture(e.pointerId)}catch(_){}this.cur={id:e.pointerId,pen:e.pointerType==='pen',pts:[this.pt(e)],handoff:true};return} // box-end flash/slide: ink now, judge in the next box
+ // v15d.4: a pen cannot touch down twice, so a pen pointerdown while a pen stroke is open means its pointerup was lost
+ // (iPad: 夫 strokes 3+4 merged into one 'End is off' stroke). Commit and judge the open stroke at its last point first.
+ if(this.cur&&this.cur.pen&&e.pointerType==='pen'&&this.ok(e)){this.up({pointerId:this.cur.id});if(!this.cur)this.down(e);return}
  if(this.locked||!this.ok(e)||(this.cur&&!(e.pointerType==='pen'&&!this.cur.pen)))return; // one stroke at a time: a 2nd finger is ignored (a pen replaces a palm touch)
 e.preventDefault();clearRawInk(this);if(window.V15UI&&V15UI.onStrokeStart)V15UI.onStrokeStart();try{this.cv.setPointerCapture(e.pointerId)}catch(_){}this.cur={id:e.pointerId,pen:e.pointerType==='pen',pts:[this.pt(e)]};}
  move(e){if(!this.cur||e.pointerId!==this.cur.id)return;e.preventDefault();let evs=e.getCoalescedEvents?e.getCoalescedEvents():[];if(!evs.length)evs=[e];evs.forEach(ev=>this.cur.pts.push(this.pt(ev)));if(!this.raf)this.raf=requestAnimationFrame(()=>{this.raf=0;this.redraw()})} // ≤1 redraw per frame (Pencil sends 240 Hz)

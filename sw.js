@@ -3,7 +3,7 @@
 // The lazy per-level data and link files are listed in levels.js and precached too.
 importScripts('levels.js');
 
-const VERSION = 'kanji-v15f';
+const VERSION = 'kanji-v15h';
 
 const FILES = [
   './', 'index.html', 'favicon.ico', 'fonts/Caladea-Regular.ttf', 'fonts/Caladea-Bold.ttf', 'fonts/Caladea-Italic.ttf', 'data.js', 'links.js', 'kana.js', 'kana-links.js', 'confusables.js', 'proportion_metrics.js', 'levels.js',

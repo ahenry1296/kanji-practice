@@ -309,15 +309,46 @@
   const overrideLabel = (kanji) => `I wrote ${kanji} correctly`;
 
   /** Show the floating pill only when there is no overlay to hold it (lesson pad, writing items). */
-  function syncOverridePill() {
+  function syncOverridePill({ keepRow = false } = {}) {
     const el = document.getElementById('v15ovr');
     if (!el) return;
     const overlayShown = Boolean(host() && host().classList.contains('show'));
+    // HOTFIX-pill-reflow: when a stroke starts, the pill only turns invisible. It keeps its panel row until the box
+    // changes, so the pad never moves mid-stroke (removing the row re-centres the pad by 28px).
+    const keepInvisible = keepRow && !override && !el.hidden && !overlayShown;
+    el.style.visibility = keepInvisible ? 'hidden' : '';
+    el.inert = keepInvisible;
+    if (keepInvisible) return;
     el.hidden = !override || overlayShown;
+    placeLessonPill(el);
     if (!override) return;
     el.querySelector('.v15-ovr-label').textContent = overrideLabel(override.kanji);
     el.setAttribute('aria-label', overrideLabel(override.kanji));
   }
+
+  /**
+   * HOTFIX-pill-reflow v2: a lesson pill floats over the progress-dots slot of the pad's controls row, so it never
+   * changes layout (v1 kept a panel row that was still added at the miss, 28px of pad movement; with the v15d.4 lost
+   * pen-up path that miss is judged inside the next pointerdown, so the shift landed one frame into the new stroke).
+   */
+  function placeLessonPill(el) {
+    const prog = document.querySelector('#stage .controls .prog');
+    const inRow = Boolean(override && override.mode === 'lesson' && prog && !el.hidden);
+    el.classList.toggle('v15-ovr-inrow', inRow);
+    if (!inRow) return;
+    const r = prog.getBoundingClientRect();
+    const ctl = prog.parentElement.getBoundingClientRect();
+    // the slot between undo and clear: the whole controls row minus its outer buttons
+    const btns = [...prog.parentElement.children].filter((b) => b !== prog && b.getBoundingClientRect().width > 0);
+    const lefts = btns.filter((b) => b.getBoundingClientRect().right <= r.left + 1).map((b) => b.getBoundingClientRect().right);
+    const rights = btns.filter((b) => b.getBoundingClientRect().left >= r.right - 1).map((b) => b.getBoundingClientRect().left);
+    const lo = lefts.length ? Math.max(...lefts) + 8 : ctl.left + 8;
+    const hi = rights.length ? Math.min(...rights) - 8 : ctl.right - 8;
+    el.style.setProperty('--v15-ovr-x', `${Math.round((lo + hi) / 2)}px`);
+    el.style.setProperty('--v15-ovr-y', `${Math.round(r.top + r.height / 2)}px`);
+    el.style.setProperty('--v15-ovr-w', `${Math.max(120, Math.floor(hi - lo))}px`);
+  }
+  addEventListener('resize', () => { const el = document.getElementById('v15ovr'); if (el && !el.hidden) placeLessonPill(el); });
 
   function showOverride(info) {
     override = info;
@@ -439,7 +470,9 @@
 
   /** The user started a new stroke: a lesson override pill is no longer about the current attempt. */
   function onStrokeStart() {
-    if (override && override.mode === 'lesson') hideOverride();
+    if (!override || override.mode !== 'lesson') return;
+    override = null;
+    syncOverridePill();   // v2: the lesson pill is out of layout (controls row), so hiding it cannot move the pad
   }
 
   function onBoxChange() {
@@ -1366,14 +1399,38 @@
   function watchPicker() {
     const list = document.getElementById('klist');
     if (!list) return;
-    new MutationObserver(fitPicker).observe(list, { attributes: true, attributeFilter: ['class'] });
+    // HOTFIX-klist-focus: the closed picker (opacity 0) is inert, so Tab and screen readers skip its Settings /
+    // What's new / Placement / lesson buttons. inert, not visibility:hidden: its text stays in the page text.
+    const syncInert = () => { list.inert = !list.classList.contains('show'); };
+    syncInert();
+    new MutationObserver(() => { syncInert(); fitPicker(); }).observe(list, { attributes: true, attributeFilter: ['class'] });
     list.addEventListener('transitionend', fitPicker);
     window.addEventListener('resize', fitPicker);
     fitPicker();
   }
 
+  /**
+   * HOTFIX-infopanel-focus: a closed info popover (.ipop, opacity 0) is inert, so Tab skips its Jisho / Tatoeba
+   * links; it is toggled with .show by the info button's own handler. Popovers are rebuilt with each box, so one
+   * observer on the document syncs every .ipop on class changes and on new nodes (batched per microtask).
+   */
+  function watchInfoPanels() {
+    let queued = false;
+    const sync = () => {
+      queued = false;
+      for (const p of document.querySelectorAll('.ipop')) {
+        const closed = !p.classList.contains('show');
+        if (p.inert !== closed) p.inert = closed;
+      }
+    };
+    const queue = () => { if (!queued) { queued = true; queueMicrotask(sync); } };
+    new MutationObserver(queue).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] });
+    sync();
+  }
+
   function init() {
     watchPicker();
+    watchInfoPanels();
     if (!document.getElementById('v15')) {
       document.body.insertAdjacentHTML('afterbegin', '<div class="lend v15" id="v15" role="dialog" aria-modal="true" aria-label="Test"></div>');
     }

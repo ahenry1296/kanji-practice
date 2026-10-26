@@ -56,9 +56,10 @@
    * sharpest turn is at least CURL.minTurn degrees the ink is cut there. Otherwise the ink comes back unchanged.
    * Strokes shorter than 2 * CURL.maxLength + CURL.lookback use DOT_CURL; shorter than that again are left alone.
    * @param {Array} polyline [{x, y}] or [[x, y]], KanjiVG units
+   * @param {boolean} [nearest] cut at the first turn peak over minTurn counted from the end (HOTFIX-v15d.5)
    * @returns {{points: number[][], curl: number}} points (as pairs) and the length of the curl removed (0 if none)
    */
-  function trimCurl(polyline) {
+  function trimCurl(polyline, nearest = false) {
     const [points, length] = resample(polyline.map(asPair));
     const n = points.length;
     const fits = (limits) => length >= 2 * limits.maxLength + limits.lookback;
@@ -66,11 +67,23 @@
     if (!fits(limits)) return { points, curl: 0 };
     const lookback = Math.round(limits.lookback / STEP);
     const end = points[n - 1];
+    const turns = [];   // [index, turn], from the end backwards
+    for (let i = n - 2; i >= lookback && (n - 1 - i) * STEP < limits.maxLength; i--) {
+      turns.push([i, Math.abs(wrap(heading(points[i], end) - heading(points[i - lookback], points[i])))]);
+    }
     let cut = -1;
     let sharpest = 0;
-    for (let i = n - 2; i >= lookback && (n - 1 - i) * STEP < limits.maxLength; i--) {
-      const turn = Math.abs(wrap(heading(points[i], end) - heading(points[i - lookback], points[i])));
+    for (const [i, turn] of turns) {
       if (turn > sharpest) { sharpest = turn; cut = i; }
+    }
+    if (nearest) {
+      // HOTFIX-v15d.5: the curl's own bend, i.e. the first turn peak over minTurn counted from the end. On a hook
+      // stroke the hook's corner can be sharper than the curl after it, and cutting there dropped the hook too.
+      const isPeak = ([, turn], j) => turn >= limits.minTurn && (j + 1 >= turns.length || turn >= turns[j + 1][1]);
+      const peak = turns.findIndex(isPeak);
+      if (peak >= 0) {
+        [cut, sharpest] = turns[peak];
+      }
     }
     if (sharpest < limits.minTurn) return { points, curl: 0 };
     return { points: points.slice(0, cut + 1), curl: (n - 1 - cut) * STEP };
@@ -92,25 +105,50 @@
    * neither.
    * @param {Array<{x:number, y:number}>} pts the pad's points, in box units (0..1)
    * @param {number} [units] box size in KanjiVG units (109)
+   * @param {boolean} [nearest] cut the pen-lift curl at its own bend (the turn nearest the end), not the sharpest one
    * @returns {Array|null} a contiguous slice of pts (the same point objects) with the curls cut off
    */
-  function withoutCurl(pts, units = 109) {
+  function withoutCurl(pts, units = 109, nearest = false) {
     if (!pts || pts.length < 3) return null;
     const scaled = pts.map((q) => [q.x * units, q.y * units]);
-    const tail = curlPointCount(scaled, trimCurl(scaled).curl);
+    const tail = curlPointCount(scaled, trimCurl(scaled, nearest).curl);
     const reversed = scaled.slice(0, scaled.length - tail).reverse();
     const head = reversed.length >= 3 ? curlPointCount(reversed, trimCurl(reversed).curl) : 0;
     if (!tail && !head) return null;
     return pts.slice(head, pts.length - tail);
   }
 
+  /** Spacing (units) below which a point is pencil jitter for thinJitter: hook_rules.js resamples at 1 unit. */
+  const JITTER_STEP = 1.0;
+
+  /**
+   * HOTFIX-v15d.6: the stroke's points without sub-step jitter. The pencil-240 ink zigzags by about a unit around
+   * the line and piles up points where the pen slows (the hook tip, the lift), so its arc length is about 1.5x the
+   * drawn path. That stretches the final 15 % window that hook_rules.js measures and hides the pen-lift tail from
+   * trimCurl (its 5.5-unit limit is arc length). A point is kept only when it is at least JITTER_STEP units from the
+   * last kept one; the first and last points are always kept.
+   * @param {Array<{x:number, y:number}>} pts the pad's points, in box units (0..1)
+   * @param {number} [units] box size in KanjiVG units (109)
+   * @returns {Array} a subset of pts (the same point objects, in order)
+   */
+  function thinJitter(pts, units = 109) {
+    if (!pts || pts.length < 3) return pts;
+    const kept = [pts[0]];
+    for (let i = 1; i < pts.length - 1; i++) {
+      const last = kept[kept.length - 1];
+      if (Math.hypot(pts[i].x - last.x, pts[i].y - last.y) * units >= JITTER_STEP) kept.push(pts[i]);
+    }
+    kept.push(pts[pts.length - 1]);
+    return kept;
+  }
+
   /** Expose the guard as HookRules.curlGuard (index.html's checkStroke retries a reject without the curl). */
   function install() {
     const hooks = root.HookRules;
     if (!hooks || hooks.curlGuard) return;
-    hooks.curlGuard = { CURL, DOT_CURL, trimCurl, withoutCurl };
+    hooks.curlGuard = { CURL, DOT_CURL, JITTER_STEP, trimCurl, withoutCurl, thinJitter };
   }
 
   install();
-  if (typeof module !== 'undefined' && module.exports) module.exports = { CURL, DOT_CURL, trimCurl, withoutCurl, install };
+  if (typeof module !== 'undefined' && module.exports) module.exports = { CURL, DOT_CURL, JITTER_STEP, trimCurl, withoutCurl, thinJitter, install };
 }(typeof self !== 'undefined' ? self : this));
