@@ -151,7 +151,6 @@
   /** Feedback before the next question; short so a quick second tap never lands on a stale question. */
   const FEEDBACK_MS = 300;
   const LEVEL_UP_MS = 1200;
-  const OVERRIDE_MS = 10000;
   const TOAST_MS = 2000;
   const INTRO = 'Find your level. We start at N5 and move up while you know at least 8 of 10. Three misses in a level ends the test. Nothing you have already learned is lowered.';
 
@@ -303,10 +302,9 @@
    * Pending override: {kanji, mode: 'lesson'|'check'|'practice'}.
    * UX-B4: the pill names its kanji. In a level check or practice it sits in the miss banner when the overlay shows
    * (missBanner) and floats under the writing box only while a writing item is on screen; it is cleared when the
-   * item after the miss is done (checkAdvance / practiceAdvance). In a lesson it floats and times out as before.
+   * item after the miss is done (checkAdvance / practiceAdvance). In a lesson it floats until the next stroke starts or the box changes (no timeout).
    */
   let override = null;
-  let overrideTimer = null;
 
   const overrideLabel = (kanji) => `I wrote ${kanji} correctly`;
 
@@ -323,14 +321,12 @@
 
   function showOverride(info) {
     override = info;
-    clearTimeout(overrideTimer);
-    if (info.mode === 'lesson') overrideTimer = setTimeout(hideOverride, OVERRIDE_MS);
+    // INK-OVERLAY (Botty, 26 Oct): a lesson pill no longer times out; it stays until the next stroke or box change.
     syncOverridePill();
   }
 
   function hideOverride() {
     override = null;
-    clearTimeout(overrideTimer);
     syncOverridePill();
   }
 
@@ -439,6 +435,11 @@
       return;
     }
     V15.onKanjiComplete(store, k.k, { clean: !failedKanji().has(k.k) });
+  }
+
+  /** The user started a new stroke: a lesson override pill is no longer about the current attempt. */
+  function onStrokeStart() {
+    if (override && override.mode === 'lesson') hideOverride();
   }
 
   function onBoxChange() {
@@ -1392,6 +1393,6 @@
     prefetchWords();
   }
 
-  root.V15UI = { dataReady, loadWords, menuHTML, pruneRuns, kanjiTier, onReject, onWrongKanji, onCelebrate, onBoxChange, onLessonEnd, state: S, actions: ACTIONS, render, toast };
+  root.V15UI = { dataReady, loadWords, menuHTML, pruneRuns, kanjiTier, onReject, onWrongKanji, onCelebrate, onStrokeStart, onBoxChange, onLessonEnd, state: S, actions: ACTIONS, render, toast };
   init();
 })(window);

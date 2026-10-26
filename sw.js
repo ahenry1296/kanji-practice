@@ -3,7 +3,7 @@
 // The lazy per-level data and link files are listed in levels.js and precached too.
 importScripts('levels.js');
 
-const VERSION = 'kanji-v15e';
+const VERSION = 'kanji-v15f';
 
 const FILES = [
   './', 'index.html', 'favicon.ico', 'fonts/Caladea-Regular.ttf', 'fonts/Caladea-Bold.ttf', 'fonts/Caladea-Italic.ttf', 'data.js', 'links.js', 'kana.js', 'kana-links.js', 'confusables.js', 'proportion_metrics.js', 'levels.js',
@@ -17,7 +17,7 @@ const FILES = [
   'sentences-N5.js',
   ...(self.KANJI_SENTENCE_FILES || []),
   ...(self.SEARCH_INDEX_FILES || []),
-  'reading-words.js', 'reading-tests.js', 'placement-pools.js', 'practice-catalog.js', 'rank-model.js', 'reading-answer.js', 'placement-model.js', 'unit-test-model.js', 'level-check-model.js', 'practice-model.js', 'v15-integration.js', 'v15-ui.js', 'hook-straight.js',
+  'reading-words.js', 'reading-tests.js', 'placement-pools.js', 'practice-catalog.js', 'rank-model.js', 'reading-answer.js', 'placement-model.js', 'unit-test-model.js', 'level-check-model.js', 'practice-model.js', 'v15-integration.js', 'v15-ui.js', 'hook-curl.js', 'hook-straight.js', 'debug-strokes.js',
   'manifest.webmanifest',
   'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png',
 ];
