@@ -166,5 +166,132 @@
     return Boolean(item.word) && ReadingAnswer.readingMatches(answer, item.word);
   }
 
-  return { DEFAULT_SIZE, DEFAULT_MAX_ITEMS, LOW_RANK, MIX, filterKanji, weakReasons, selectWeak, rng, itemsFor, buildQueue, markRepeats, attachWords, checkAnswer };
+
+  /** v16 #9: retries (requeued copies) allowed per kanji in one session. */
+  const MAX_RETRIES_PER_SESSION = 2;
+  /** v16 #9: other items between a missed item and its retry, when the queue is long enough. */
+  const MIN_REQUEUE_GAP = 5;
+
+  /**
+   * v16 #9: after a missed item, put one retry of it later in the session instead of straight away.
+   * The retry goes after at least MIN_REQUEUE_GAP other items (or at the end of a shorter queue), moved later
+   * past any item of the same kanji so it is never twice in a row unless the queue ends; at most
+   * MAX_RETRIES_PER_SESSION retries per kanji (counted from the queue itself, so no extra state).
+   * A retry is practice only: it carries `retry: n` and `scored: false`, and the caller applies no rank event
+   * (no pass, no clear failure) and no record finish for it — the miss was already scored once, so v15 rank
+   * rules (near-miss retry inside a box, clear failures, demotion) and the #2 learning steps see exactly what they
+   * saw without requeueing. The in-box near-miss retry is unchanged and is not a requeue.
+   * @param {object[]} queue the session queue (not mutated)
+   * @param {number} index index of the missed item
+   * @param {object} [item] the missed item (default queue[index])
+   * @returns {{queue: object[], requeued: boolean, at: number}} at = retry index, or -1 when capped
+   */
+  function requeue(queue, index, item = queue[index]) {
+    const used = item ? queue.filter((x) => x.kanji === item.kanji && x.retry).length : 0;
+    if (!item || used >= MAX_RETRIES_PER_SESSION) return { queue: queue.slice(), requeued: false, at: -1 };
+    const copy = Object.assign({}, item, { retry: used + 1, scored: false });
+    delete copy.repeat;
+    let at = Math.min(index + 1 + MIN_REQUEUE_GAP, queue.length);
+    while (at < queue.length && (queue[at - 1].kanji === item.kanji || (queue[at] && queue[at].kanji === item.kanji))) at += 1;
+    const out = queue.slice(0, at).concat([copy], queue.slice(at)).map((x) => {
+      if (!x.repeat) return x;
+      const y = Object.assign({}, x);
+      delete y.repeat;
+      return y;
+    });
+    return { queue: markRepeats(out), requeued: true, at };
+  }
+
+  /** v16 #9: true when an item's outcome should reach the rank model / records (false only for retries). */
+  function isScored(item) {
+    return !(item && item.scored === false);
+  }
+
+  /** v16 #6: target share of items that belong to a confusable pair in a mixed review set (reported, not forced). */
+  const MIN_PAIR_SHARE = 0.3;
+
+  /**
+   * v16 #6: confusable partner per kanji from confusables.js `pairs` only (never invented). Each kanji is used in at
+   * most one pair (first eligible pair in data order), like the practice-sets confusable sets.
+   * @param {string[]} kanjiList the due kanji, most overdue first
+   * @param {{chars: string[]}[]} pairs CONFUSABLES.pairs
+   * @param {(k: string) => boolean} canPartner whether a not-due kanji may join as an unscored contrast item
+   * @returns {Map<string, {partner: string, due: boolean}>} both directions
+   */
+  function confusablePartners(kanjiList, pairs, canPartner) {
+    const due = new Set(kanjiList);
+    const out = new Map();
+    for (const k of kanjiList) {
+      if (out.has(k)) continue;
+      for (const p of pairs || []) {
+        const chars = (p && Array.isArray(p.chars)) ? p.chars : [];
+        if (chars.length !== 2 || !chars.includes(k) || chars[0] === chars[1]) continue;
+        const other = chars[0] === k ? chars[1] : chars[0];
+        if (out.has(other)) continue;
+        if (!due.has(other) && !canPartner(other)) continue;
+        out.set(k, { partner: other, due: true });
+        out.set(other, { partner: k, due: due.has(other) });
+        break;
+      }
+    }
+    return out;
+  }
+
+  /**
+   * v16 #6: a review set that mixes in look-alikes. Scored items are built only for the due kanji (itemsFor, as
+   * buildQueue), so the #2 due logic decides what is reviewed. A confusable partner that is not due joins as ONE
+   * unscored contrast item (`scored: false`, #9 isScored → no rank event, no recFinish, no due change); reading
+   * unless its writing is unlocked. Pair members are placed next to each other where possible, the same kanji is
+   * never twice in a row unless nothing else is left (then `repeat: true`), items carry `pair: <other>|null`.
+   * #9 requeue works on the result as on any queue (retries stay unscored).
+   * @param {object} rankState
+   * @param {string[]} dueKanji
+   * @param {{pairs?: object[], canPartner?: (k: string) => boolean, seed?: number, maxItems?: number}} [opts]
+   * @returns {{queue: object[], pairShare: number, pairShareMet: boolean, pairs: string[][]}}
+   */
+  function mixedReview(rankState, dueKanji, { pairs = [], canPartner = () => false, seed = 1, maxItems = DEFAULT_MAX_ITEMS } = {}) {
+    const list = Array.from(new Set(dueKanji));
+    const partners = confusablePartners(list, pairs, canPartner);
+    const random = rng(seed);
+    const pool = [];
+    for (const k of list) {
+      const pair = partners.has(k) ? partners.get(k).partner : null;
+      itemsFor(k, RankModel.getKanji(rankState, k)).forEach((x) => pool.push(Object.assign(x, { pair })));
+    }
+    for (const [k, info] of partners) {
+      if (info.due) continue;
+      const record = RankModel.getKanji(rankState, k);
+      pool.push({ kanji: k, kind: RankModel.writingUnlocked(record) ? 'writing' : 'reading', rank: record.rank,
+        pair: info.partner, scored: false, contrast: true });
+    }
+    for (let i = pool.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    const left = {};
+    pool.forEach((x) => { left[x.kanji] = (left[x.kanji] || 0) + 1; });
+    const queue = [];
+    while (pool.length) {
+      const prev = queue[queue.length - 1];
+      let pick = 0;
+      let best = null;
+      pool.forEach((x, i) => {
+        // Prefer: not the last kanji, the last item's look-alike (contrast right after), most items left, other kind.
+        const key = [prev && x.kanji === prev.kanji ? 1 : 0, prev && prev.pair === x.kanji ? 0 : 1, -left[x.kanji],
+          prev && x.kind === prev.kind ? 1 : 0, i];
+        if (!best || lexLess(key, best)) { best = key; pick = i; }
+      });
+      const item = pool.splice(pick, 1)[0];
+      left[item.kanji] -= 1;
+      queue.push(item);
+    }
+    const out = markRepeats(queue.slice(0, Math.max(0, maxItems)));
+    const inPair = out.filter((x) => x.pair).length;
+    const pairShare = out.length ? inPair / out.length : 0;
+    const used = [];
+    for (const [k, info] of partners) if (k < info.partner) used.push([k, info.partner]);
+    return { queue: out, pairShare, pairShareMet: pairShare >= MIN_PAIR_SHARE, pairs: used };
+  }
+
+  return { MIN_PAIR_SHARE, confusablePartners, mixedReview, MAX_RETRIES_PER_SESSION, MIN_REQUEUE_GAP, requeue, isScored, DEFAULT_SIZE, DEFAULT_MAX_ITEMS, LOW_RANK, MIX, filterKanji, weakReasons, selectWeak, rng, itemsFor, buildQueue, markRepeats, attachWords, checkAnswer };
 });

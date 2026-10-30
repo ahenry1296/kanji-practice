@@ -1,0 +1,437 @@
+/* v16 theme overrides — V16 #5: text contrast >= 4.5:1 (3:1 large) and a 12px floor.
+ * Kept out of index.html per V16_PLAN WP-C; linked after the inline <style> so these win.
+ * Colours are the v15 hues, only darkened (same hue/saturation) until they pass on --paper. */
+
+@font-face{font-family:CambriaLatin;src:local("Cambria"),url(fonts/Caladea-Regular.ttf) format("truetype");font-weight:400;font-style:normal;font-display:swap;unicode-range:U+0000-024F,U+2000-206F,U+20AC,U+2122}
+@font-face{font-family:CambriaLatin;src:local("Cambria Bold"),local("Cambria-Bold"),url(fonts/Caladea-Bold.ttf) format("truetype");font-weight:600 900;font-style:normal;font-display:swap;unicode-range:U+0000-024F,U+2000-206F,U+20AC,U+2122}
+@font-face{font-family:CambriaLatin;src:local("Cambria Italic"),local("Cambria-Italic"),url(fonts/Caladea-Italic.ttf) format("truetype");font-weight:400;font-style:italic;font-display:swap;unicode-range:U+0000-024F,U+2000-206F,U+20AC,U+2122}
+:root {
+  /* tools/test_fonts.py: stacks and computed button fonts must start with Cambria. A one-word family name serializes
+     unquoted, so the Latin-only faces from index.html ("Cambria Latin") are re-declared as CambriaLatin below. */
+  --ui: CambriaLatin, Cambria, Georgia, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans CJK JP", "Noto Sans JP", system-ui, sans-serif;
+  --mincho: CambriaLatin, Cambria, Georgia, "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif CJK JP", "Noto Serif JP", serif;
+  --faint-ink: #7b715c;   /* was #b5ad9c / #bdb6a6 / #cfc8b8 (1.6-2.1:1); now 4.6:1 on paper */
+}
+
+/* Reading line: okurigana and the ・ separator */
+.kunr .okuri { color: var(--faint-ink); }
+.kun .sep    { color: var(--faint-ink); }
+
+/* Part equation: + / → operators, the "?" part slot, and the hidden result "？" (large text, 3:1) */
+.eq .op                  { color: var(--faint-ink); }
+.eq .q                   { color: #876841; }   /* was #b08a5a, 2.85:1 on the pink "now" card */
+.eq .res.hidden::before  { color: #a78d56; }   /* was #d3c6aa; 26px+ so 3:1 applies */
+
+/* 12px floor for the small Latin labels under chips and tags (were 11px) */
+.rtag small,
+.jp small,
+.seal i,
+.seal em,
+.peek small,
+.kchip small,
+.plab small,
+.klist .kchips button.jp small { font-size: 12px; }
+
+/* BUG-E: the seal's 完了 label was sakura-deep #c7798a on the seal paper (3.14:1 at 12px). A deeper sakura (5.4:1);
+   the border and the 64px kanji keep #c7798a (large text, 3:1), so it still reads as the vermilion seal. */
+@media (prefers-color-scheme: light) { .seal small { color: #9e4f61; } }
+
+/* ---- V16 #10: first-run welcome and empty states (markup from v15-ui.js) ---- */
+.v15-welcome-more { margin: 18px 0 8px; }
+.v15-welcome-alt { justify-content: center; flex-wrap: wrap; }
+.v15-empty {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  margin: 8px 0; padding: 10px 12px; border-radius: 12px; background: #f3f1e6;
+  font: 500 14px var(--ui); color: #1a1a1a;
+}
+.v15-empty p { margin: 0; flex: 1 1 180px; text-align: left; }
+.v15-empty-hint { margin: 8px 0; font-size: 14px; color: #1a1a1a; }
+
+/* 復習 count badge: white on sakura-deep was 3.2:1 at 11px; a deeper sakura (5.2:1) at the 12px minimum. */
+.revb b { background: #a0566a; font-size: 12px; }
+
+/* V16 views overlay (#v16v, v16-views.js): Botfive's stats / families / settings / study cards on paper. */
+#v16v { z-index: 50; align-items: flex-start; overflow-y: auto; background: var(--paper); padding: 16px 0 32px; }
+#v16v:not(.show) { display: none; }
+.v16v-card { width: min(94vw, 720px); margin: 0 auto; }
+.v16v-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.v16v-head h1 { font: 600 22px var(--ui); margin: 0; color: var(--ink); }
+.v16v-head h1 .ja { margin-right: 8px; }
+.v16v-back { min-width: 44px; min-height: 44px; padding: 0 16px; border-radius: 12px; border: 0;
+  background: #efeadf; color: var(--ink); font: 600 15px var(--ui); cursor: pointer; }
+.v16v-back:focus-visible { outline: 3px solid #4a5d38; outline-offset: 2px; }
+.v16v-slot + .v16v-slot { margin-top: 12px; }
+/* Study cards leech count: same 12px / deep sakura (5.2:1) as the 復習 badge. */
+.klist .v15-menu .v15-mbadge b { background: #a0566a; color: #fff; font-size: 12px; }
+
+/* R18 backup banner (bottom, above the pad controls) and R19 What's new list. */
+#v16bk { position: fixed; left: 8px; right: 8px; bottom: max(8px, env(safe-area-inset-bottom)); z-index: 60; margin: 0 auto; max-width: 560px;
+  background: #fffdf7; color: #2b2622; border: 1px solid #d9d2c3; border-radius: 12px; padding: 10px 12px; box-shadow: 0 4px 16px rgba(0,0,0,.12); font-size: 14px; }
+#v16bk[data-kind="error"], #v16bk[data-kind="recovery"] { border-color: #a0566a; }
+#v16bk p { margin: 0 0 8px; }
+/* RC7 offline chip: top centre over the header, takes no taps, hides itself */
+#v16net { position: fixed; top: max(6px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 61; pointer-events: none;
+  max-width: calc(100vw - 24px); padding: 6px 12px; border-radius: 999px; background: #23261f; color: #fdfaf5; font-size: 13px; line-height: 1.35;
+  text-align: center; box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+#v16net[hidden] { display: none; }
+@media (prefers-color-scheme: dark) { #v16net { background: #ecebe4; color: #1c1e1a; } }
+#v16bk div { display: flex; gap: 8px; justify-content: flex-end; }
+#v16bk button { min-height: 44px; padding: 0 16px; border-radius: 10px; border: 0; background: #efeadf; color: #2b2622; font: inherit; }
+#v16bk button:first-child { background: #4a5d38; color: #fff; }
+.v16v-new { margin: 0; padding: 0 0 0 1.2em; line-height: 1.5; font-size: 15px; color: #2b2622; }
+.v16v-new li { margin: 0 0 8px; }
+
+/* Component glyph drawings (B3 data) in the component explorer and the weak-spot card. */
+#v16v svg.v16g { width: 1em; height: 1em; display: block; fill: none; stroke: currentColor; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+#v16v svg.v16g path { stroke: currentColor; fill: none; }
+#v16v .cv-glyph { display: flex; justify-content: center; align-items: center; min-height: 1.2em; }
+#v16v .v16g-fig { display: flex; align-items: center; gap: 10px; color: var(--ink, #23261f); margin: 8px 0 0; }
+#v16v .v16g-fig svg.v16g { width: 56px; height: 56px; background: #efeadf; border-radius: 8px; padding: 4px; }
+#v16v .v16g-fig small { font-size: 12px; color: var(--ink, #23261f); }
+#v16v .v16g-fig .v16g-from { padding: 2px 6px; border: 1px solid currentColor; border-radius: 999px; }
+
+/* R7 writing prompt: what to write, which box, stroke count; one-tap replay of the current stroke. */
+#v16prompt { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 6px auto; max-width: 720px;
+  padding: 6px 10px; background: #fdfaf5; color: #23261f; border: 1px solid #d8d0bf; border-radius: 10px; font-size: 14px; }
+#v16prompt[hidden] { display: none; }
+/* Overlay the stage's bottom strip (between undo and trash) instead of taking a row from the pad. */
+#stage > #v16prompt { position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%); margin: 0; z-index: 32; /* above .controls (31) */
+  width: max-content; max-width: calc(100% - 120px); }
+/* The bar says "Box n of m", so it stands in for the progress dots it sits over. */
+body:has(#stage > #v16prompt:not([hidden])) .controls .prog { visibility: hidden; }
+#v16prompt p { margin: 0; }
+/* In the stage strip the bar is at most two lines tall, so it never grows up over the pad on narrow phones. */
+#stage > #v16prompt .v16p-text { min-width: 0; flex: 1 1 auto; }
+#stage > #v16prompt p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 600px) {
+  #stage > #v16prompt { padding: 4px 6px 4px 10px; }
+  #stage > #v16prompt .v16p-rl { display: none; }   /* icon-only Replay on phones; the aria-label still names it */
+  #stage > #v16prompt .v16p-replay { padding: 0; font-size: 18px; }
+}
+/* Phone landscape: the stage is too short for a strip under the pad (v15f squeezes the pad already), so the bar stays out. */
+@media (max-height: 500px) { #stage > #v16prompt { display: none; } }
+#v16prompt .v16p-meta { font-size: 12px; color: #4a4a40; }
+#v16prompt .v16p-say { min-height: 44px; min-width: 44px; padding: 0; border-radius: 10px; border: 1px solid #5d7148;
+  background: transparent; color: inherit; font-size: 18px; cursor: pointer; flex: none;
+  margin-block: -5px; /* 44px hit area that overhangs into the bar's padding, so the bar keeps its height */ }
+#v16prompt .v16p-say[hidden] { display: none; }
+#v16prompt .v16p-replay { min-height: 44px; min-width: 44px; padding: 0 12px; border-radius: 10px; border: 0;
+  background: #5d7148; color: #fff; font: inherit; font-size: 14px; cursor: pointer; flex: none; }
+.v16p-anim { fill: none; stroke: #b03a2e; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+
+/* ---- V16 dark mode (plan #13 / G11): token overrides, so index.html, v15 and B5's scoped views follow ---- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --paper: #1c1e1a; --ink: #ecebe4; --muted: #c9c5bb; --faint-ink: #b3ab98; --card: rgba(40, 43, 37, .92);
+    --matcha: #4d5e3a; --matcha2: #7e9466; --matcha-deep: #a9c08a; --indigo: var(--matcha-deep); --indigo2: #9db37f;
+    --sakura: #4a2f35; --sakura2: #5a3a41; --sakura-deep: #e59aab; --verm: var(--sakura-deep); --err: #ff7a66;
+    --v16-panel: #2c2f28; --v16-raised: #353930; --v16-on-accent: #16180f;
+  }
+  /* B5's scoped views: only their hard-coded panel/track colours need a dark value; ink/paper/accent already follow */
+  .sv-root.sv-root { --sv-track: var(--v16-panel); }
+  .st-root.st-root { --st-panel: var(--v16-panel); }
+  .cv-root.cv-root { --cv-chip: var(--v16-panel); }
+  .sc-root.sc-root { --sc-panel: var(--v16-panel); --sc-dim: #55594e; }
+  .cv-root .cv-learn, .st-root button.st-primary, .sc-root button.sc-primary { color: var(--v16-on-accent) !important; }
+  .st-root input[type=number] { background: var(--v16-panel) !important; }
+  /* v15/v16 surfaces with hard-coded light colours */
+  .v16v-back, #v16bk button, #v16v .v16g-fig svg.v16g { background: var(--v16-panel) !important; color: var(--ink) !important; }
+  #v16bk button:first-child, #v16prompt .v16p-replay { background: var(--matcha-deep) !important; color: var(--v16-on-accent) !important; }
+  .v15-empty-hint, .v16v-new { color: var(--ink) !important; }
+  #v16prompt { background: var(--v16-panel) !important; color: var(--ink) !important; }
+  #v16prompt .v16p-say { border-color: var(--matcha-deep); }
+  #v16prompt .v16p-meta { color: var(--muted) !important; }
+  .v16p-anim { stroke: #ff8a70; }
+  /* index.html: hard-coded paper/ink pairs in the lesson chrome and the picker */
+  .rtag, .kchip, .klist, .klist button, .klist .kchips button.jp, .klist .v15-menu button { background: var(--v16-raised) !important; }
+  .klist .kchips button.jp.sel, .klist button.on, .klist button.sel { background: var(--matcha) !important; }
+  .rtag small, .jp small, .seal i, .jp em, .on b, .facts i, .plab small, .peek small, .kchip small, .pname small, .hcount, .pempty,
+  .lvname span, .klist .sk, .klist button, .klist .st, .klist .kchips button.jp, .klist .kchips button.jp span,
+  .klist .kchips button.jp small, .rtag b, .kchip b, .kchip span { color: var(--ink) !important; opacity: 1 !important; }
+  .klist .tier, .klist .v15-menu button small { color: var(--ink) !important; }
+  .klist .sk i { color: var(--ink) !important; }
+  .plab, .plab .pt { background: var(--v16-raised) !important; }
+  .box, .ipop { background: var(--v16-raised) !important; }
+  .eq .p, .eq .p.rev { background: var(--sakura) !important; }
+  .eq .p span { color: var(--ink) !important; opacity: 1 !important; }
+  .eq .res b { color: var(--sakura-deep) !important; }
+  .mlink { color: var(--ink) !important; opacity: 1 !important; }   /* mnemonic line under the equation (index.html: #1a1a1a) */
+  .q { color: #d8b27c !important; }                                   /* recall "?" (light #876841 is 2.3:1 here) */
+  /* Results, lesson-end, seal and toast: index.html paints these on light surfaces with #1a1a1a text. */
+  .lend { background: rgba(28, 30, 26, .6) !important; }
+  .lcard, .seal { background: var(--v16-panel) !important; box-shadow: 0 10px 40px rgba(0, 0, 0, .45) !important; }
+  .seal em, .seal i { font-size: 12px !important; }   /* index.html sets 11px (under the 12px minimum) */
+  .lt, .lt small, .lb button, .lb button span, .lb button small { color: var(--ink) !important; }
+  /* Practice filter rows (Level:/Set:/Radical:/Component:): index.html paints them #f7f5ee, so the dark ink labels were 1.1:1 */
+  .v15-filter { background: var(--v16-raised) !important; }
+  .v15-filter label, .v15-filter select { color: var(--ink) !important; }
+  .v15-filter select option { background: var(--v16-raised); color: var(--ink); }
+  .lb button:not(.pri), .v15-row, #v15toast { background: var(--v16-raised) !important; color: var(--ink) !important; }
+  html, body { background: var(--paper); color: var(--ink); }
+  /* The pen ink is drawn in #1a1a1a by index.html (CONFIG.INK); flip the canvas so it reads on the dark box (display only). */
+  .box > canvas { filter: invert(1) hue-rotate(180deg); }
+}
+
+/* ---- Reduced motion completeness (plan #14): seal/celebration, lesson-end and overlay fades become instant ---- */
+@media (prefers-reduced-motion: reduce) {
+  .seal, .seal *, .lend, .lend *, #v16v, #v16v *, #v16prompt, #v16bk { transition: none !important; animation: none !important; }
+  .v16p-anim { animation: none !important; stroke-dashoffset: 0 !important; }
+  .petal { display: none !important; }   /* celebration confetti */
+}
+
+/* R21 rules-fetch error bar: sits in #stage's bottom strip (over the prompt bar, which is hidden while it shows) instead of
+ * over the bottom toolbar. !important beats the loader's inline style; v16-views.js narrows it to clear every control. */
+#stage > #v16-rules-error { position: absolute !important; left: 50% !important; bottom: 4px !important; top: auto !important;
+  transform: translateX(-50%) !important; z-index: 33 !important; max-width: min(720px, calc(100% - 120px)); box-sizing: border-box;
+  padding: 4px 6px 4px 10px !important; gap: 8px !important; font-size: 12px !important; line-height: 1.3; }
+#stage > #v16-rules-error .v16-rules-error-text { min-width: 0; flex: 1 1 auto; display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; overflow: hidden; }
+#stage > #v16-rules-error button { flex: 0 0 auto; min-height: 32px; padding: 0 10px; }
+#stage > #v16-rules-error .v16-rules-error-text { cursor: pointer; }
+#stage > #v16-rules-error .v16-rules-error-text:not(.v16-open) { white-space: nowrap; }
+#stage > #v16-rules-error .v16-rules-error-text.v16-open { -webkit-line-clamp: unset; max-height: 40vh; overflow: auto; }
+#stage:has(> #v16-rules-error:not([style*="display: none"])) > #v16prompt { visibility: hidden; }
+@media (prefers-color-scheme: dark) {
+  #stage > #v16-rules-error { background: var(--v16-raised, #2a2723) !important; color: #ffb4ab !important; border-color: #ffb4ab !important; }
+}
+
+/* v16 #11: drop reason + Undo on result screens */
+.v15-row .v16-why { color: var(--ink); font: 500 13px var(--ui); }
+.v15-row .v16-undo { min-height: 32px; min-width: 56px; margin-left: 6px; padding: 0 12px; border: 1.5px solid currentColor; border-radius: 16px; background: transparent; color: var(--matcha-deep, #4a5d38); font: 600 13px var(--ui); cursor: pointer; vertical-align: middle; }
+.v15-row .v16-undo:focus-visible { outline: 3px solid var(--matcha-deep, #4a5d38); outline-offset: 2px; }
+
+/* v16 #16: note editor in the kanji info popover. The closed popover is also hidden from focus (its Jisho link and
+   the note field were reachable by Tab while invisible). */
+.ipop:not(.show) { visibility: hidden; transition: opacity .25s, transform .25s, visibility 0s linear .25s; }
+.ipop.show { visibility: visible; transition: opacity .25s, transform .25s, visibility 0s; }
+.ipop .v16-note { display: flex; flex-direction: column; gap: 4px; flex: 1 1 100%; min-width: 0; margin-top: 6px; }
+.ipop .v16-note i { font: 600 12px var(--ui); font-style: normal; color: var(--ink); }
+.ipop .v16-note input { width: 100%; min-height: 40px; box-sizing: border-box; padding: 8px 10px; border: 1.5px solid #8a8478; border-radius: 10px; background: var(--paper); color: var(--ink); font: 16px var(--ui); }
+.ipop .v16-note input::placeholder { color: #6b675f; }
+.ipop .v16-note input:focus-visible { outline: 3px solid var(--matcha-deep, #5d7148); outline-offset: 1px; }
+@media (prefers-color-scheme: dark) { .ipop .v16-note input { border-color: #9a9488; } .ipop .v16-note input::placeholder { color: #a8a397; } }
+
+/* v16 #8: component writing box over the practice card (KanjiWriting.startComponentWrite draws into .v16-cw-box) */
+.v16-cw { position: fixed; inset: 0; z-index: 61; display: flex; align-items: center; justify-content: center; padding: 12px; background: color-mix(in srgb, var(--paper) 92%, transparent); }
+.v16-cw-card { display: flex; flex-direction: column; align-items: center; gap: 8px; width: min(94vw, 460px); max-height: calc(100dvh - 24px); overflow: auto; padding: 16px; border-radius: 18px; background: var(--v16-raised, #fff); color: var(--ink); box-shadow: 0 6px 24px rgba(60, 50, 30, .14); }
+.v16-cw-card p { margin: 0; text-align: center; color: var(--ink); }
+.v16-cw-box { --cw-size: min(80vw, 52vh, 400px); border: 2px solid #8a8576; border-radius: 12px; background: var(--paper); touch-action: none; }
+.v16-cw-skip { min-width: 120px; min-height: 44px; padding-inline: 20px; }
+.v16-cw-skip:focus-visible { outline: 3px solid var(--matcha-deep); outline-offset: 2px; }
+
+/* v16 #7: streak, due and daily goal above the menu */
+.v16-habit { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2px 6px; margin: 8px 0 0; font: 600 14px/1.4 var(--ui, system-ui); color: var(--ink); }
+.v16-habit .v16-streak.at-risk { color: #8a3b12; }
+.v16-habit .v16-goal-met { color: #3f5a2a; }
+@media (prefers-color-scheme: dark) { .v16-habit .v16-streak.at-risk { color: #ffb08a; } .v16-habit .v16-goal-met { color: var(--matcha-deep); } }
+
+/* v16 #15: Jisho and Tatoeba links get a 44px tap target (text size unchanged) */
+.ipop a[href*="jisho.org"], .ipop a[href*="tatoeba.org"], .facts a[href*="jisho.org"], .facts a[href*="tatoeba.org"] {
+  display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; padding-block: 4px; box-sizing: border-box; touch-action: manipulation;
+}
+.ipop .sent a[href*="tatoeba.org"] { display: flex; width: fit-content; }
+/* #15: an open info popover sits above the writing rows (they overlapped its links in short landscape) */
+#panel:has(.ipop.show) { position: relative; z-index: 6; }
+.ipop .facts a[href*="jisho.org"] { align-self: flex-start; }
+.ipop a[href*="jisho.org"], .facts a[href*="jisho.org"] { color: var(--matcha-deep, #4a5d38); }
+/* #15: in short landscape the popover hung off the left edge of the scrolling #panel and was clipped, hiding the links */
+@media (orientation: landscape) and (max-height: 430px) {
+  #panel .ipop.show { left: 4px !important; right: 4px !important; width: auto !important; max-width: calc(100% - 8px) !important; transform: none !important; }
+}
+/* #17 mixed-script polish (CSS only, no inserted characters): room for kana ascenders and Latin descenders */
+.v15-chip, .kchips > *, .v15 button, #v16bk button, .v16-cw button { line-height: 1.4 !important; }
+/* a little space where an inline Japanese run meets a Latin gloss */
+:is(.v15-chip, .kchips > *, button) :lang(ja) + :not(:lang(ja)):not(small) { margin-inline-start: 0.12em; }
+/* #14 reduced motion, complete coverage: every CSS animation and transition becomes instant. Tiny durations
+   (not "none") so animationend/transitionend listeners still fire. Petals stay hidden (rule above). */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001s !important; animation-delay: 0s !important; animation-iteration-count: 1 !important;
+    transition-duration: 0.001s !important; transition-delay: 0s !important; scroll-behavior: auto !important;
+  }
+}
+/* #12 desktop: the blurred neighbour boxes (.box.veil) showed as a big empty grey panel beside the card at >=1024px.
+   Hide them there; visibility keeps the track layout (and so the pad size) unchanged. */
+@media (min-width: 1024px) {
+  .track .box.veil { visibility: hidden; }
+}
+
+/* V16 load line (home): 7-day forecast mini chart + budget. Display only. */
+.v16-habit .v16-load { flex: 1 0 100%; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 2px 6px; font-weight: 400; }
+.v16-load-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 18px; width: 56px; border-bottom: 1px solid currentColor; }
+.v16-load-bars i { flex: 1; min-height: 2px; background: #5b6b4a; }
+.v16-load-bars i.today { background: var(--ink); }
+.v16-load-bars i.over, .v16-load .over { color: #8a3b12; }
+.v16-load-bars i.over { background: #8a3b12; }
+.v16-load-note { flex-basis: 100%; text-align: center; color: #8a3b12; }
+@media (prefers-color-scheme: dark) { .v16-load-bars i { background: var(--matcha-deep); } .v16-load-bars i.over, .v16-load .over, .v16-load-note { color: #ffb08a; } .v16-load-bars i.over { background: #ffb08a; } }
+
+/* Research #2: masked example word in the prompt (display only). Last on the line, so the ellipsis cuts it first. */
+#v16prompt .v16p-word { font-weight: 400; }
+.v16-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Research #3: display-font toggle. Only --mincho (display kanji) changes; Latin stays Cambria. Default (Mincho) sets nothing. */
+html[data-kfont="textbook"]{--mincho:"Cambria Latin",Cambria,Georgia,"UD Digi Kyokasho N-R","UD デジタル 教科書体 N-R","YuKyokasho","Klee One","Hiragino Mincho ProN","Yu Mincho","Noto Serif CJK JP","Noto Serif JP",serif}
+html[data-kfont="gothic"]{--mincho:"Cambria Latin",Cambria,Georgia,"Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans CJK JP","Noto Sans JP",sans-serif}
+.v16-font{border:1px solid rgba(60,50,30,.18);border-radius:12px;margin:16px 0 8px;padding:8px 12px 12px;font:400 14px var(--ui)}
+.v16-font legend{font-weight:600;padding:0 4px}
+.v16-font p{margin:0 0 8px;font-size:13px}
+.v16-font label,.st-root .v16-font label{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin-right:16px;cursor:pointer;flex-wrap:nowrap}
+.v16-font input,.st-root .v16-font input[type=radio]{width:20px;height:20px;margin:0}
+.v16-font [data-kf]{font-size:22px}
+.v16-font [data-kf="textbook"]{font-family:"UD Digi Kyokasho N-R","UD デジタル 教科書体 N-R","YuKyokasho","Klee One",serif}
+.v16-font [data-kf="mincho"]{font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif CJK JP","Noto Serif JP",serif}
+.v16-font [data-kf="gothic"]{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans CJK JP","Noto Sans JP",sans-serif}
+/* RC7-polish: the restore file picker's own "Choose File" button is a 44px touch target (settings-view.js not edited) */
+.st-root input[type=file]::file-selector-button{min-height:44px;padding:0 14px;margin-right:10px;font:inherit;border-radius:10px}
+.st-root input[type=file]::-webkit-file-upload-button{min-height:44px;padding:0 14px;margin-right:10px;font:inherit;border-radius:10px}
+/* RC8-miss-nudge: start point + direction after an early miss (visual only, gone after 1.6 s) */
+.v16-nudge{pointer-events:none}
+.v16-nudge-dot{fill:var(--verm,#c0392b);transform-box:fill-box;transform-origin:center;animation:v16nudge .5s ease-in-out 3}
+.v16-nudge-dir{fill:none;stroke:var(--verm,#c0392b);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+@keyframes v16nudge{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.55}}
+@media (prefers-reduced-motion: reduce){.v16-nudge-dot{animation:none}}
+/* RC8-first-lesson-coach: non-modal "How writing works" card after "Start first lesson" (shown once) */
+#v16coach{position:fixed;left:50%;transform:translateX(-50%);bottom:max(10px,env(safe-area-inset-bottom));z-index:62;width:min(400px,calc(100vw - 20px));max-height:calc(100vh - 20px);overflow:auto;box-sizing:border-box;padding:14px 16px 12px;border-radius:16px;background:#fffdf8;color:#23261f;box-shadow:0 8px 28px rgba(0,0,0,.22);font-size:15px;line-height:1.35}
+#v16coach h2{margin:0 0 8px;font-size:16px}
+#v16coach ul{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:8px}
+#v16coach li{display:flex;gap:10px;align-items:center}
+#v16coach svg{flex:0 0 28px;width:28px;height:28px}
+#v16coach .cc-l{stroke:#b9b4a8;stroke-width:3;stroke-linecap:round;fill:none}
+#v16coach .cc-t{stroke:#e8a9b6;stroke-width:5;stroke-linecap:round;fill:none}
+#v16coach .cc-a{stroke:#a5465c;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none}
+#v16coach .cc-d{fill:#a5465c}
+#v16coach .cc-p{transform-box:fill-box;transform-origin:center;animation:v16nudge 1s ease-in-out infinite}
+#v16coach button{min-height:44px;min-width:96px;margin-left:auto;display:flex;justify-content:center}
+@media (prefers-color-scheme: dark){#v16coach{background:#26291f;color:#ecebe4}#v16coach .cc-d{fill:#f0a3b3}#v16coach .cc-a{stroke:#f0a3b3}#v16coach .cc-l{stroke:#77736a}}
+@media (prefers-reduced-motion: reduce){#v16coach .cc-p{animation:none}}
+@media (max-height:520px){#v16coach{font-size:13px;padding:8px 12px;line-height:1.25}#v16coach h2{font-size:14px;margin-bottom:4px}#v16coach ul{gap:2px;margin-bottom:4px}#v16coach svg{flex-basis:24px;width:24px;height:24px}}
+@media (max-height:520px) and (min-width:600px){#v16coach{left:auto;right:max(10px,env(safe-area-inset-right));transform:none;top:max(8px,env(safe-area-inset-top));bottom:auto;width:min(380px,calc(50vw - 40px))}}
+/* RC8-comeback: welcome-back line after 3+ days away with reviews due */
+.v16-back{margin:4px 0 8px;padding:8px 12px;border-radius:12px;background:#f4f1e6;color:#23261f;font-size:14px;line-height:1.35}
+.v16-back p{margin:0}
+@media (prefers-color-scheme: dark){.v16-back{background:#2c3024;color:#ecebe4}}
+/* RC8-weakspot-ui: R24 weak-spot card + unscored practice overlay */
+.v16ws-card h3{margin:0 0 6px;font-size:16px}
+.v16ws-card ul{list-style:none;margin:0 0 8px;padding:0}
+.v16ws-card li{display:flex;gap:10px;align-items:center;padding:4px 0}
+.v16ws-g{font-size:28px;line-height:1;min-width:1.2em;text-align:center}
+.v16ws-t{display:flex;flex-direction:column;font-size:14px;line-height:1.3}
+.v16ws-go,.v16ws-b button{min-height:44px;min-width:88px;padding:0 16px;border-radius:12px;border:1px solid #6b6f60;background:#23261f;color:#fff;font:inherit;font-size:15px;cursor:pointer}
+.v16ws-b .v16ws-skip{background:transparent;color:#23261f}
+#v16ws{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;background:rgba(253,250,245,.97);color:#23261f}
+#v16ws .v16ws-in{display:flex;flex-direction:column;align-items:center;gap:8px;max-width:100%;padding:8px}
+#v16ws h2{margin:0;font-size:18px}
+#v16ws .v16ws-p{margin:0;font-size:15px;text-align:center}
+#v16ws .v16ws-box{--cw-size:min(82vw,calc(100vh - 170px),420px);background:#fff;border-radius:12px}
+#v16ws .v16ws-b{display:flex;gap:10px}
+@media (max-height:520px) and (min-aspect-ratio:1/1){#v16ws .v16ws-in{display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto 1fr auto;column-gap:16px}#v16ws .v16ws-box{--cw-size:calc(100vh - 24px);grid-column:2;grid-row:1/5}#v16ws h2,#v16ws .v16ws-p,#v16ws .v16ws-b{grid-column:1}}
+@media (prefers-color-scheme: dark){#v16ws{background:rgba(24,26,21,.97);color:#ecebe4}.v16ws-go,.v16ws-b button{background:#ecebe4;color:#1b1d17;border-color:#9a9e8e}.v16ws-b .v16ws-skip{background:transparent;color:#ecebe4}}
+/* RC8-notes-ui: R25 "Your story" card in the study view (plain text, one line) */
+.v16nt-card h3{margin:0 0 6px;font-size:16px}
+.v16nt-k{font-size:20px}
+.v16nt-t{margin:0 0 8px;font-size:15px;line-height:1.35;overflow-wrap:anywhere;white-space:pre-wrap}
+.v16nt-m{margin:0 0 8px;font-size:14px;line-height:1.35;color:#4a4d42}
+.v16nt-l{display:block;margin:0 0 8px}
+.v16nt-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.v16nt-i{box-sizing:border-box;width:100%;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid #6b6f60;background:#fff;color:#23261f;font:inherit;font-size:16px}
+.v16nt-b{display:flex;gap:10px;flex-wrap:wrap}
+.v16nt-e,.v16nt-s,.v16nt-u{min-height:44px;min-width:88px;padding:0 16px;border-radius:12px;border:1px solid #6b6f60;background:#23261f;color:#fff;font:inherit;font-size:15px;cursor:pointer}
+.v16nt-u{background:transparent;color:#23261f}
+@media (prefers-color-scheme: dark){.v16nt-m{color:#c9c7bd}.v16nt-i{background:#1b1d17;color:#ecebe4;border-color:#9a9e8e}.v16nt-e,.v16nt-s{background:#ecebe4;color:#1b1d17;border-color:#9a9e8e}.v16nt-u{background:transparent;color:#ecebe4;border-color:#9a9e8e}}
+/* RC9-known-import-ui: R26 "I already know some kanji" dialog + settings entry (plain text only) */
+#v16kn{position:fixed;inset:0;z-index:72;display:flex;align-items:flex-start;justify-content:center;overflow:auto;background:rgba(253,250,245,.98);color:#23261f;padding:max(12px,env(safe-area-inset-top)) 12px 12px}
+#v16kn .v16kn-in{width:min(560px,100%);display:flex;flex-direction:column;gap:8px}
+#v16kn h2{margin:0;font-size:20px}
+.v16kn-hint,.v16kn-sp{margin:0;font-size:15px;line-height:1.35}
+.v16kn-l{display:block}
+.v16kn-ta{box-sizing:border-box;width:100%;min-height:96px;max-height:40vh;padding:8px 10px;border-radius:10px;border:1px solid #6b6f60;background:#fff;color:#23261f;font:inherit;font-size:16px;resize:vertical}
+.v16kn-f{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-height:44px;font-size:14px}
+.v16kn-f input{font:inherit;font-size:14px;max-width:100%}
+.v16kn-f input::file-selector-button{min-height:44px;padding:0 12px;font:inherit}
+.v16kn-pv{margin:0;font-size:15px;font-weight:600;min-height:1.3em}
+.v16kn-list{margin:0;font-size:18px;line-height:1.5;overflow-wrap:anywhere;max-height:30vh;overflow:auto}
+.v16kn-b,.v16kn-b2{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.v16kn-done,.v16kn-last{margin:0;font-size:15px}
+.v16kn-go,.v16kn-x,.v16kn-undo,.v16kn-open,.v16kn-sundo{min-height:44px;min-width:88px;padding:0 16px;border-radius:12px;border:1px solid #6b6f60;background:#23261f;color:#fff;font:inherit;font-size:15px;cursor:pointer}
+.v16kn-x,.v16kn-undo,.v16kn-sundo{background:transparent;color:#23261f}
+.v16kn-go:disabled{background:#d9d5ca;color:#3c3f35;border-color:#9a9e8e;cursor:default}
+@media (prefers-color-scheme: dark){#v16kn{background:rgba(24,26,21,.98);color:#ecebe4}.v16kn-ta{background:#1b1d17;color:#ecebe4;border-color:#9a9e8e}.v16kn-go,.v16kn-open{background:#ecebe4;color:#1b1d17;border-color:#9a9e8e}.v16kn-x,.v16kn-undo,.v16kn-sundo{background:transparent;color:#ecebe4;border-color:#9a9e8e}.v16kn-go:disabled{background:#3a3d33;color:#d6d4ca}}
+/* RC10-study-order-ui: R27 Settings → Order of new kanji (plain text only) */
+.v16so-set h3{font-size:16px;margin:16px 0 6px}
+.v16so-row{display:flex;align-items:center;gap:8px;min-height:44px;font-size:15px;cursor:pointer}
+.v16so-row input{width:24px;height:24px;margin:10px;accent-color:#23261f}
+.v16so-help,.v16so-sum,.v16so-msg{margin:4px 0;font-size:15px}
+.v16so-sum{font-weight:600}
+.v16so-cl{display:flex;flex-direction:column;gap:4px;font-size:15px}
+.v16so-ta{box-sizing:border-box;width:100%;min-height:88px;max-height:40vh;padding:8px 10px;border-radius:10px;border:1px solid #6b6f60;background:#fff;color:#23261f;font:inherit;font-size:16px;resize:vertical}
+.v16so-first{margin:4px 0;font-size:18px;line-height:1.5;overflow-wrap:anywhere}
+.v16so-save{min-height:44px;min-width:88px;padding:0 16px;border-radius:12px;border:1px solid #6b6f60;background:#23261f;color:#fff;font:inherit;font-size:15px;cursor:pointer}
+.v16so-save:disabled{background:#d9d5ca;color:#3c3f35;border-color:#9a9e8e;cursor:default}
+@media (prefers-color-scheme: dark){.v16so-row input{accent-color:#ecebe4}.v16so-ta{background:#1b1d17;color:#ecebe4;border-color:#9a9e8e}.v16so-save{background:#ecebe4;color:#1b1d17;border-color:#9a9e8e}.v16so-save:disabled{background:#3a3d33;color:#d6d4ca}}
+/* RC11-word-unlock-ui: R28 words you can read (view, result line) */
+.v16wu{display:flex;flex-direction:column;gap:10px}
+.v16wu-sum{margin:0;font-size:17px;font-weight:600}
+.v16wu-hint{margin:0;font-size:15px;line-height:1.35}
+.v16wu-next h3{margin:0 0 6px;font-size:16px}
+.v16wu-nl,.v16wu-list{list-style:none;margin:0;padding:0}
+.v16wu-n{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid #d9d5ca}
+.v16wu-nt{min-width:0}
+.v16wu-k{font-size:26px;font-weight:600}
+.v16wu-c{font-size:15px;font-weight:600}
+.v16wu-s{font-size:16px;overflow-wrap:anywhere}
+.v16wu-go,.v16wu-more{min-height:44px;min-width:88px;padding:0 16px;border-radius:12px;border:1px solid #6b6f60;background:#23261f;color:#fff;font:inherit;font-size:15px;cursor:pointer;flex:none}
+.v16wu-more{background:transparent;color:#23261f;align-self:flex-start}
+.v16wu-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:4px 12px}
+.v16wu-w{font-size:17px;line-height:1.4;min-height:24px}
+.v16wu-r{font-size:14px;color:#3c3f35}
+.v16wu-m{font-size:13px;color:#3c3f35}
+.v16wu-slot{margin-top:8px}
+.v16wu-h{margin:0;font-size:14px;font-weight:600}
+.v16wu-row{margin:2px 0;font-size:17px;overflow-wrap:anywhere}
+.v16wu-row .v16wu-k{font-size:17px}
+@media (prefers-color-scheme: dark){.v16wu-n{border-color:#4a4d42}.v16wu-go{background:#ecebe4;color:#1b1d17;border-color:#9a9e8e}.v16wu-more{color:#ecebe4;border-color:#9a9e8e}.v16wu-r,.v16wu-m{color:#cfcdc4}}
+
+/* RC12-readable-sentences-ui: "Sentences you can read" in the Words view. */
+.v16rs h3{margin:0 0 6px;font-size:16px}
+.v16rs-sum,.v16rs-hint{margin:0 0 6px;font-size:15px;line-height:1.35}
+.v16rs-list{list-style:none;margin:0;padding:0}
+.v16rs-i{padding:8px 0;border-bottom:1px solid #d9d5ca;overflow-wrap:anywhere}
+.v16rs-ja{margin:0 0 6px;font:20px/1.5 var(--mincho)}
+.v16rs-en{margin:6px 0 0;font-size:15px;color:#3c3f35}
+.v16rs-acts{display:flex;flex-wrap:wrap;gap:8px}
+.v16rs-say,.v16rs-tr,.v16rs-more{min-height:44px;min-width:88px;padding:0 16px;border-radius:12px;border:1px solid #6b6f60;background:transparent;color:#23261f;font:inherit;font-size:15px;cursor:pointer}
+.v16rs-more{margin-top:8px}
+.v16rs-at{margin:6px 0 0;font-size:12px;color:#3c3f35}
+.v16rs-at a{color:inherit;text-decoration:underline}
+@media (prefers-color-scheme: dark){.v16rs-i{border-color:#4a4d42}.v16rs-say,.v16rs-tr,.v16rs-more{color:#ecebe4;border-color:#9a9e8e}.v16rs-en,.v16rs-at{color:#cfcdc4}}
+
+/* RC13-lookalike-pairs-ui (B4) */
+.v16lp{margin:16px 0 0}
+.v16lp h3{margin:0 0 6px;font-size:16px}
+.v16lp-sum,.v16lp-hint{margin:0 0 6px;font-size:15px;line-height:1.35}
+.v16lp-list{list-style:none;margin:0;padding:0}
+.v16lp-i{padding:8px 0;border-bottom:1px solid #d9d5ca;overflow-wrap:anywhere}
+.v16lp-g{display:flex;align-items:center;gap:12px;margin:0 0 4px}
+.v16lp-k{font:40px/1.1 var(--mincho)}
+.v16lp-vs{font-size:14px;color:#3c3f35}
+.v16lp-note,.v16lp-new{margin:0 0 6px;font-size:15px;line-height:1.35;color:#3c3f35}
+.v16lp-go,.v16lp-more{min-height:44px;min-width:88px;padding:0 16px;border-radius:12px;border:1px solid #6b6f60;background:transparent;color:#23261f;font:inherit;font-size:15px;cursor:pointer}
+.v16lp-more{margin-top:8px}
+.v16lp-i:focus{outline:none}
+@media (prefers-color-scheme: dark){.v16lp-i{border-color:#4a4d42}.v16lp-go,.v16lp-more{color:#ecebe4;border-color:#9a9e8e}.v16lp-note,.v16lp-new,.v16lp-vs{color:#cfcdc4}}
+
+/* RC14-stroke-tint-ui (B4): colour + mark + border style, so state never rests on colour alone. */
+#v16st{display:none;position:fixed;left:8px;bottom:8px;z-index:60;max-width:min(360px,calc(100vw - 16px));max-height:40vh;overflow:auto;background:var(--card,#fff);color:var(--ink,#1a1a1a);border:1px solid var(--line,#888);border-radius:10px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.18);pointer-events:none;font-size:14px}
+#v16st.show{display:block}
+.v16st-h{font-weight:600;margin-bottom:4px}
+.v16st-row{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0}
+.v16st-c{display:inline-flex;align-items:center;gap:3px;min-width:30px;padding:1px 6px;border-radius:6px;border:2px solid;font-size:13px;background:var(--card,#fff);color:var(--ink,#1a1a1a)}
+.v16st-c b{font-weight:700}
+.v16st-ok{border-style:solid;border-color:#2e7d32}.v16st-ok b{color:#1b5e20}
+.v16st-near{border-style:dotted;border-color:#8a5a00}.v16st-near b{color:#7a4f00}
+.v16st-miss{border-style:dashed;border-color:#c62828}.v16st-miss b{color:#b71c1c}
+@media (prefers-color-scheme: dark){#v16st,.v16st-c{background:var(--v16-panel,#2c2f28)}.v16st-ok b{color:#81c784}.v16st-near b{color:#ffcc80}.v16st-miss b{color:#ef9a9a}.v16st-ok{border-color:#81c784}.v16st-near{border-color:#ffcc80}.v16st-miss{border-color:#ef9a9a}}
+.v16st-sum{margin:4px 0}
+.v16st-x{pointer-events:auto;font:inherit;padding:4px 10px;min-height:44px}

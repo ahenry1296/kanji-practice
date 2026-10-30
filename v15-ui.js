@@ -82,6 +82,7 @@
       UT = root.UnitTestModel;
       LC = root.LevelCheckModel;
       PR = root.PracticeModel;
+      skipRecFinishForRetries();
       if (!RA) {
         console.warn('v15: reading models did not load; v15 screens stay unavailable');
         return;   // coreReady stays pending: screens never render half-loaded
@@ -148,6 +149,7 @@
     unitResults: 'v15:unit-results',
   };
   const TIER_LABEL = { none: 'Not started', bronze: 'Bronze', silver: 'Silver', gold: 'Gold', diamond: 'Diamond' };
+  const TIER_ORDER = Object.keys(TIER_LABEL);   // none < bronze < silver < gold < diamond
   /** Feedback before the next question; short so a quick second tap never lands on a stale question. */
   const FEEDBACK_MS = 300;
   const LEVEL_UP_MS = 1200;
@@ -278,12 +280,84 @@
     return { word, choices };
   }
 
-  const levelPool = (level) => PR.filterKanji(root.PRACTICE_CATALOG, root.PRACTICE_SETS, { levels: [level] });
+  // R29-cleanup (Botfive): levelPool removed; nothing called it (checked app, tests and smokes).
   const levelOf = (kanji) => (root.PRACTICE_CATALOG.kanji[kanji] || {}).level || 'N5';
 
   // ------------------------------------------------------------------ toast + override pill (lesson screen)
 
   let toastTimer = null;
+  // ------------------------------------------------------------------ v16 glue (R5–R8 call sites)
+
+  /** Options the V15 glue needs to spot look-alike mix-ups (confusables + DATA.kanji). */
+  const glueOpts = () => ({ pairs: root.CONFUSABLES ? root.CONFUSABLES.pairs : [], kanjiMap: typeof DATA !== 'undefined' ? DATA.kanji : {} });
+
+  /** The longer look-alike the learner most likely wrote instead of `kanji` (prefix look-alikes, then confusables). */
+  function answerKanjiFor(kanji) {
+    const longer = root.PREFIX_LOOKALIKES && root.PREFIX_LOOKALIKES.prefixOf[kanji];
+    if (longer && longer.length) return longer[0].char;
+    const pair = (root.CONFUSABLES ? root.CONFUSABLES.pairs : []).find((p) => p.chars.includes(kanji));
+    return pair ? pair.chars.find((c) => c !== kanji) : null;
+  }
+
+  /** R6: writing-guide level of a kanji (0 start dots, 1 first stroke, 2 blank); blank when the glue is absent. */
+  function scaffoldLevel(kanji) {
+    if (typeof V15.scaffoldFor !== 'function') return 2;
+    try { return V15.scaffoldFor(store, kanji, glueOpts().kanjiMap).kanji.level; } catch (_) { return 2; }
+  }
+
+  /** Draw the scaffold into the recall box: start dots of every stroke (0) or the first stroke faintly (1). */
+  function applyScaffold(level) {
+    const box = typeof boxes !== 'undefined' ? boxes[cur] : null;
+    const svg = box && box.b && box.b.querySelector(':scope>svg');
+    if (!svg || !box.k || !box.k.paths) return;
+    box.b.dataset.scaffold = String(level);
+    const add = (tag, attrs) => {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+      el.classList.add('v16-scaffold');
+      svg.appendChild(el);
+    };
+    if (level === 0) {
+      box.k.paths.forEach((d) => {
+        const m = /M\s*([\d.]+)[ ,]+([\d.]+)/i.exec(d);
+        if (m) add('circle', { cx: m[1], cy: m[2], r: 3.2, fill: '#8a8a90' });
+      });
+    } else if (level === 1) {
+      add('path', { d: box.k.paths[0], fill: 'none', stroke: '#c4c4c8', 'stroke-width': 3.5, 'stroke-linecap': 'round' });
+    }
+  }
+
+  /** R7: fold due look-alike drills into the open practice session after the item just answered. */
+  function foldDrills() {
+    const pr = S.pr;
+    if (typeof V15.foldContrasts !== 'function' || !pr || !pr.queue.length) return;
+    const r = V15.foldContrasts(store, pr.queue, { at: pr.index });
+    if (!r.folded.length) return;
+    const drills = r.queue.slice(pr.index + 1, pr.index + 1 + r.queue.length - pr.queue.length)
+      .map((it) => ({ kanji: it.kanji, kind: 'reading', drillWith: it.pair, note: it.note, scored: it.scored !== false }))
+      .filter((it) => it.word || (it.word = RA.drillWord(WORDS[it.kanji] || [])));
+    pr.queue.splice(pr.index + 1, 0, ...drills);
+    for (const it of drills) if (!(it.kanji in pr.before)) pr.before[it.kanji] = RM.getKanji(ranks(), it.kanji).rank;
+  }
+
+  /** R8: re-study = a recall lesson of the parts (deepest first), then the kanji itself (scored). */
+  function startLeechRestudy(kanji) {
+    const steps = V15.leechRestudy(store, kanji, glueOpts().kanjiMap);
+    S.restudy = kanji;
+    const word = (k) => { const w = readingWordFor(k); return { w: k, r: w ? w.r : '', m: w ? w.m : '' }; };
+    loadLesson({ id: `v16:restudy:${kanji}`, title: kanji, custom: true, level: levelOf(kanji), words: steps.map((st) => word(st.kanji)) },
+      { force: true, kanjiOnly: true, recallOnly: true });
+  }
+
+  /** Start a recall lesson of the given new kanji (V15.pickNewLesson picks, a weak component). */
+  function startKanjiLesson(picks, title = picks.join('')) {
+    if (S.view) closeView();
+    const word = (k) => { const w = readingWordFor(k); return { w: k, r: w ? w.r : '', m: w ? w.m : '' }; };
+    const go = () => loadLesson({ id: `v16:pick:${picks.join('')}`, title, custom: true, level: levelOf(picks[0]), words: picks.map(word) },
+      { force: true, kanjiOnly: true });
+    if (WORDS) go(); else loadWords().then(go);
+  }
+
   function toast(text) {
     const el = document.getElementById('v15toast');
     if (!el) return;
@@ -419,6 +493,12 @@
    * A rejected stroke: the first near miss (hook-layer reject) in a box is a free retry; a second one, or any other
    * reject, is the box's clear failure (once per box). In a v15 writing item the failure ends the item.
    */
+  /** R7: "Stroke 3: it needs a hook at the end." from the checker's reject code (v16-views.js map). */
+  function strokeHint(box, verdict) {
+    const n = box.pad ? box.pad.strokes.length + (verdict.redoFirst ? 0 : 1) : 1;
+    return root.V16Views && root.V16Views.rejectMessage ? root.V16Views.rejectMessage(verdict, Math.max(1, n)) : '';
+  }
+
   function onReject(box, verdict) {
     const kanji = kanjiOfBox(box);
     if (!kanji) return;
@@ -428,12 +508,12 @@
     if (near && state.borderline < V15.MAX_BORDERLINE_PER_BOX) {
       state.borderline += 1;
       if (S.writing && S.writing.mode === 'practice' && S.pr) S.pr.retried += 1;   // R1-5: counted on the summary
-      toast('Almost — try that stroke once more.');
+      toast(`Almost. ${strokeHint(box, verdict)} Try once more.`);
       return;
     }
     if (state.failed) return;
     state.failed = true;
-    if (near) toast('Not quite — that counts as a miss.');
+    toast(near ? `Not quite — that counts as a miss. ${strokeHint(box, verdict)}` : `Try again. ${strokeHint(box, verdict)}`);
     boxFailed(kanji, near ? { rejects: [verdict, verdict] } : { rejects: [verdict] });
   }
 
@@ -444,7 +524,7 @@
     toast("That's a different kanji.");
     if (state.failed) return;
     state.failed = true;
-    boxFailed(kanji, { wrongKanji: true });
+    boxFailed(kanji, { wrongKanji: true, answerKanji: answerKanjiFor(kanji) });
   }
 
   function boxFailed(kanji, boxInfo) {
@@ -454,13 +534,18 @@
       setTimeout(() => writingItemDone(false, boxInfo), 0);
       return;
     }
-    const res = V15.onWritingBox(store, kanji, boxInfo);
+    const res = V15.onWritingBox(store, kanji, boxInfo, glueOpts());
     showOverride({ kanji, mode: 'lesson' });
     if (res.to < res.from) toast(`Missed — ${TIER_LABEL[tierName(res.from)]} → ${TIER_LABEL[tierName(res.to)]}.`);
   }
 
   function onCelebrate(k) {
     if (!k || k.isWord || k.isPart) return;
+    if (S.restudy && S.restudy === k.k) {   // R8: the scored last step of a re-study
+      V15.completeLeechRestudy(store, k.k);
+      S.restudy = null;
+      toast(`Fresh look done: ${k.k}.`);
+    }
     if (S.writing && S.writing.kanji === k.k) {
       setTimeout(() => writingItemDone(true, null), 0);
       return;
@@ -565,7 +650,236 @@
     }).join('');
   }
 
+  // ------------------------------------------------------------------ first run + empty states (V16 #10)
+
+  const WELCOMED_KEY = 'v16:welcomed';
+
+  /**
+   * A first run has no progress at all: no review records, no ranked kanji, no saved v15 runs and no welcome yet.
+   * (Boot has already written `set` and an empty `ranks`, so those keys alone don't count as progress.)
+   * A deep link (any ?query or #hash) goes straight to the lesson as before.
+   */
+  function isFirstRun() {
+    if (store.getItem(WELCOMED_KEY) || root.location.search || root.location.hash) return false;
+    const keys = Object.keys(store);
+    if (keys.some((k) => k.startsWith('rec:') || k.startsWith('v15:') || k === 'lv')) return false;
+    return Object.keys(ranks().kanji || {}).length === 0;
+  }
+
+  function markWelcomed() { store.setItem(WELCOMED_KEY, new Date().toISOString()); }
+
+  const firstRadicalSet = () => (typeof SETS !== 'undefined' ? SETS.find((set) => set.level === '部首' && set.words.length) : null);
+
+  /** First-run home: one clear start action; placement and other ways in are secondary links. */
+  function welcomeView() {
+    const radicals = firstRadicalSet();
+    const lesson = typeof curSet !== 'undefined' && curSet ? curSet.title : 'N5 lesson 1';
+    return card(`<h1 tabindex="-1"><span class="ja" lang="ja">ようこそ</span>Welcome</h1>
+      <p>Learn to write kanji stroke by stroke. Start with the first N5 lesson (${esc(lesson)}); the app schedules reviews for you as you go.</p>
+      <p class="v15-muted v15-welcome-more">Already know some kanji?</p>
+      <div class="v15-pills v15-welcome-alt">
+        <button class="v15-pill" data-v15="welcomePlacement"><span lang="ja">診断</span> Find my level</button>
+        ${radicals ? '<button class="v15-pill" data-v15="welcomeRadicals"><span lang="ja">部首</span> Start with radicals</button>' : ''}
+        <button class="v15-pill" data-v15="welcomePick">Choose a lesson</button>
+        ${root.V16Lazy ? '<button class="v15-pill" data-v15="welcomeKnown"><span lang="ja">既知</span> I already know some kanji</button>' : ''}
+      </div>`,
+    bottomBar([{ ja: '始める', en: 'Start first lesson', act: 'welcomeStart', pri: true }]));
+  }
+
+  // RC8-first-lesson-coach (B4): after "Start first lesson" on the welcome screen, a small non-modal card explains how
+  // writing works, with the same visual cues the boxes use (start dot, blinking start point, trace). It shows once
+  // (v16:coached) and closes on "Got it", Escape or the first stroke. Display only.
+  const COACH_KEY = 'v16:coached';
+  const COACH_DOT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12H19" class="cc-l"/><circle cx="5" cy="12" r="3.2" class="cc-d"/></svg>';
+  const COACH_BLINK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12H14M11 9l3 3-3 3" class="cc-a"/><circle cx="5" cy="12" r="3.2" class="cc-d cc-p"/></svg>';
+  const COACH_TRACE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12H19" class="cc-t"/><circle cx="5" cy="12" r="2.4" class="cc-d"/></svg>';
+  function closeCoach(focusStage) {
+    const el = document.getElementById('v16coach');
+    if (!el) return;
+    el.remove();
+    try { store.setItem(COACH_KEY, new Date().toISOString()); } catch (e) { /* private mode */ }
+    document.removeEventListener('pointerdown', coachStroke, true);
+    document.removeEventListener('keydown', coachKey, true);
+    if (focusStage) { const st = document.getElementById('stage'); if (st && st.focus) st.focus({ preventScroll: true }); }
+  }
+  function coachStroke(e) { if (e.target && e.target.closest && e.target.closest('canvas')) closeCoach(false); }
+  function coachKey(e) { if (e.key === 'Escape') closeCoach(true); }
+  function showCoach() {
+    if (store.getItem(COACH_KEY) || document.getElementById('v16coach')) return;
+    const el = document.createElement('section');
+    el.id = 'v16coach';
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-modal', 'false');
+    el.setAttribute('aria-labelledby', 'v16coach-h');
+    el.innerHTML = `<h2 id="v16coach-h">How writing works</h2>
+      <ul>
+        <li>${COACH_DOT}<span>Write each stroke in order, starting at the dot.</span></li>
+        <li>${COACH_BLINK}<span>Missed? The start point and direction blink. Try again.</span></li>
+        <li>${COACH_TRACE}<span>On the third miss a trace appears. It counts as a hint.</span></li>
+      </ul>
+      <button type="button" class="v15-pill" data-coach="ok">Got it</button>`;
+    el.querySelector('[data-coach="ok"]').addEventListener('click', () => closeCoach(true));
+    document.body.appendChild(el);
+    document.addEventListener('pointerdown', coachStroke, true);
+    document.addEventListener('keydown', coachKey, true);
+    root.requestAnimationFrame(() => { const b = el.querySelector('button'); if (b) b.focus({ preventScroll: true }); });
+  }
+
+  /** Earliest future review time over all `rec:` records, or null when nothing has been learned. */
+  function nextReviewAt() {
+    let next = null;
+    for (const key of Object.keys(store)) {
+      if (!key.startsWith('rec:')) continue;
+      const at = Date.parse((readJson(key) || {}).nextReview);
+      if (at && (next === null || at < next)) next = at;
+    }
+    return next;
+  }
+
+  function whenText(at) {
+    const date = new Date(at);
+    const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const days = Math.round((new Date(date).setHours(0, 0, 0, 0) - new Date().setHours(0, 0, 0, 0)) / 864e5);
+    if (days <= 0) return `today at ${time}`;
+    if (days === 1) return `tomorrow at ${time}`;
+    return `${date.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })} at ${time}`;
+  }
+
+  /** RC7-polish: today's review count exactly as Stats shows it ("Reviews due", today's bar), so Home and Stats agree.
+   *  Read-only; 0 if the stats model is not loaded. */
+  function dueLaterToday() {
+    try {
+      const s = root.V15 && typeof root.V15.stats === 'function' ? root.V15.stats(store) : null;
+      const n = s && s.forecast && s.forecast[0] ? Number(s.forecast[0].due) : 0;
+      return Number.isFinite(n) && n > 0 ? n : 0;
+    } catch (e) { return 0; }
+  }
+
+  /** Review empty state under the level bar; nothing is added while reviews are due (the 復習 badge shows them). */
+  function reviewStatusHTML() {
+    if (typeof dueWords !== 'function' || dueWords().length) return '';
+    const next = nextReviewAt();
+    const later = next !== null && whenText(next).startsWith('today') ? dueLaterToday() : 0;
+    const text = next === null
+      ? 'Nothing to review yet. Finish a lesson and its kanji come back here when they are due.'
+      : later ? `Nothing due now · ${later} later today, next ${whenText(next).replace(/^today /, '')}.`
+        : `Nothing due — next review ${whenText(next)}.`;
+    const action = next === null
+      ? '<button class="v15-pill" data-v15="closePickerAction">Continue lesson</button>'
+      : '<button class="v15-pill" data-v15="openPractice"><span lang="ja">練習</span> Practise now</button>';
+    return `<div class="v15-empty" role="status"><p>${text}</p>${action}</div>`;
+  }
+
+  // ------------------------------------------------------------------ v16 #7: streak, due and daily goal
+
+  /**
+   * One status line above the menu, "3-day streak · Due 7 · done 4 / 10". Streak and goal come from
+   * V15.habit (HabitModel); without it only the due count shows (V15.dueCounts), and without either nothing.
+   */
+  function habitHTML() {
+    const st = habitStatus();
+    if (!st) return '';
+    const parts = [];
+    if (st.streak !== undefined) {
+      parts.push(st.streak > 0
+        ? `<span class="v16-streak${st.atRisk ? ' at-risk' : ''}">${st.streak}-day streak${st.atRisk ? ' — one review keeps it' : ''}</span>`
+        : '<span class="v16-streak">Start a streak: one review today</span>');
+    }
+    parts.push(`<span>Due ${st.due}</span>`);
+    if (st.goal !== undefined) parts.push(`<span class="v16-goal${st.goalMet ? ' v16-goal-met' : ''}">done ${st.done} / ${st.goal}${st.goalMet ? ' ✓' : ''}</span>`);
+    return `<p class="v16-habit" role="status">${parts.join('<span aria-hidden="true"> · </span>')}${loadHTML()}</p>`;
+  }
+
+  /**
+   * V16 load line (MARKET_RESEARCH pain #1): the next 7 days of reviews from V15.loadStatus as a mini chart plus
+   * "Tomorrow N", the daily budget, and a note when new kanji are paused. Display only: no scheduling change.
+   */
+  function loadHTML() {
+    let st;
+    try { if (typeof V15.loadStatus !== 'function' || !root.LoadModel) return ''; st = V15.loadStatus(store); } catch (err) { console.warn('v16: load status unavailable', err); return ''; }
+    if (!st || !Array.isArray(st.forecast) || st.forecast.length < 2) return '';
+    const week = st.forecast.slice(0, 7), cap = Math.max(1, Math.round(st.capacity) || 1);
+    const top = Math.max(cap, ...week, 1);
+    const bars = week.map((n, i) => `<i class="${n > cap ? 'over' : ''}${i ? '' : ' today'}" style="height:${Math.max(2, Math.round((n / top) * 100))}%"></i>`).join('');
+    const peak = Math.max(...week.slice(1));
+    const label = `Reviews due, next 7 days: ${week.join(', ')}. Daily budget ${cap}.`;
+    const paused = st.newAllowed === 0 && st.reason === 'over-budget'
+      ? '<span class="v16-load-note">New kanji paused today: review first</span>' : '';
+    return `<span class="v16-load"><span class="v16-load-bars" role="img" aria-label="${label}">${bars}</span>`
+      + `<span>Tomorrow ${week[1]}</span><span aria-hidden="true"> · </span><span${peak > cap ? ' class="over"' : ''}>week peak ${peak} / budget ${cap}</span>${paused}</span>`;
+  }
+
+  /**
+   * RC8-comeback (B4, backlog #3 "return from break"): after 3 or more calendar days away with reviews due, the
+   * picker starts with a short welcome-back line ("Welcome back after 5 days · 12 reviews due"). The aim is to make
+   * the backlog look like a place to restart, not a wall. Display only: the queue and scheduling are unchanged.
+   */
+  const COMEBACK_DAYS = 3;
+  function daysAway() {
+    let last = 0;
+    for (const key of Object.keys(store)) {
+      if (!key.startsWith('rec:')) continue;
+      const t = Date.parse((readJson(key) || {}).lastPracticed);
+      if (t > last) last = t;
+    }
+    if (!last) return 0;
+    return Math.round((new Date().setHours(0, 0, 0, 0) - new Date(last).setHours(0, 0, 0, 0)) / 864e5);
+  }
+  function comebackHTML() {
+    try {
+      const away = daysAway();
+      if (away < COMEBACK_DAYS) return '';
+      const st = habitStatus();
+      const due = st ? Number(st.due) || 0 : 0;
+      if (!due) return '';
+      return `<div class="v16-back" role="status"><p><b>Welcome back</b> after ${away} days · ${due} review${due === 1 ? '' : 's'} due. A few minutes is a good start.</p></div>`;
+    } catch (err) { return ''; }
+  }
+
+  /** {streak?, atRisk?, due, done?, goal?, goalMet?} or null when neither the habit nor the due API is loaded. */
+  function habitStatus() {
+    try {
+      if (typeof V15.habit === 'function' && root.HabitModel) return V15.habit(store);
+      if (typeof V15.dueCounts === 'function') return { due: V15.dueCounts(store).due };
+    } catch (err) {
+      console.warn('v16: habit status unavailable', err);
+    }
+    return null;
+  }
+
+  /** Rewrite the status line in place when the due counts or the habit change. */
+  function refreshHabit() {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = habitHTML();
+    const fresh = tmp.firstElementChild;
+    if (!fresh) return;
+    const lines = document.querySelectorAll('.v16-habit');
+    for (const line of lines) if (line.innerHTML !== fresh.innerHTML) line.innerHTML = fresh.innerHTML;
+    // the menu may have rendered before the models loaded: add the line above it then
+    const menu = !lines.length && document.querySelector('.v15-menu:not(.v16-views)');
+    if (menu) menu.parentNode.insertBefore(fresh, menu.previousElementSibling && menu.previousElementSibling.classList.contains('v15-empty') ? menu.previousElementSibling : menu);
+  }
+
+  /** A finished scored kanji review (not a word, not an unscored retry) counts toward the streak and goal. */
+  function recordReview(key) {
+    if (typeof V15.recordReview !== 'function' || !root.HabitModel || String(key).startsWith('w:')) return;
+    try { V15.recordReview(store); } catch (err) { console.warn('v16: recordReview failed', err); }
+  }
+
   // ------------------------------------------------------------------ menu (§3)
+
+  /** RC11-word-unlock-ui (R28): new readable words since the list was last opened ('' until the 'unlock' group is in). */
+  function wordsBadge() {
+    const w = root.V16WordUnlock;
+    if (!w || !w.ready()) return '';
+    try { const n = w.summary().newSinceSeen; return n > 0 ? `<b>${n > 99 ? '99+' : n}</b>` : ''; } catch (e) { return ''; }
+  }
+  /** RC11-word-unlock-ui (R28): an empty slot on a result screen for kanji that went from unranked to ranked; v16-views fills it. */
+  function unlockSlot(changes) {
+    if (!root.V16Lazy) return '';
+    const ks = [...new Set(changes.filter((c) => c.from === 0 && c.to > 0).map((c) => c.kanji))];
+    return ks.length ? `<div class="v16wu-slot" data-k="${esc(ks.join(''))}"></div>` : '';
+  }
 
   function menuHTML() {
     const lcCount = LC ? Math.min(LC.DEFAULT_SIZE, studied().length) : 0;   // 0 until the models are in
@@ -573,7 +887,11 @@
     // validated, so fall back to "a key exists".
     const resume = (root.PLACEMENT_POOLS ? isValidRun(KEYS.placement, readJson(KEYS.placement)) : store.getItem(KEYS.placement)) ? '<b>Resume</b>' : '';
     const btn = (ja, en, act, extra = '') => `<button data-v15="${act}" aria-label="${en}"><span lang="ja">${ja}</span><small>${en}</small><span class="v15-mbadge">${extra}</span></button>`;
-    return `<div class="lb v15-menu">${btn('診断', 'Placement', 'openPlacement', resume)}${btn('確認', 'Level check', 'openCheck', lcCount ? `<b>${lcCount}</b>` : '')}${btn('単元', 'Unit test', 'openUnits')}${btn('練習', 'Practice', 'openPractice')}</div>`;
+    // V16 views (v16-views.js opens them): Botfive's stats, kanji families, settings and study cards
+    const view = (ja, en, name, extra = '') => `<button data-v16view="${name}" aria-label="${en}"><span lang="ja">${ja}</span><small>${en}</small><span class="v15-mbadge">${extra}</span></button>`;
+    const leeches = typeof V15.leechList === 'function' ? V15.leechList(store).length : 0;
+    const views = root.V16Views ? `<div class="lb v15-menu v16-views"><button data-v16new aria-label="New kanji"><span lang="ja">新</span><small>New kanji</small><span class="v15-mbadge"></span></button>${view('学習', 'Study cards', 'study', leeches ? `<b>${leeches}</b>` : '')}${view('統計', 'Stats', 'stats')}${view('部品', 'Kanji families', 'parts')}${view('設定', 'Settings', 'settings')}${view('新機能', "What's new", 'whatsnew')}${view('読める', 'Words you can read', 'words', wordsBadge())}</div>` : '';
+    return `${comebackHTML()}${habitHTML()}${reviewStatusHTML()}<div class="lb v15-menu">${btn('診断', 'Placement', 'openPlacement', resume)}${btn('確認', 'Level check', 'openCheck', lcCount ? `<b>${lcCount}</b>` : '')}${btn('単元', 'Unit test', 'openUnits')}${btn('練習', 'Practice', 'openPractice')}</div>${views}`;
   }
 
   /**
@@ -592,7 +910,7 @@
         const next = fresh.querySelector('.v15-mbadge');
         if (badge && next && badge.innerHTML !== next.innerHTML) badge.innerHTML = next.innerHTML;
       }
-    }
+    }  refreshHabit();   // v16 #7
   }
 
   // ------------------------------------------------------------------ placement (§4)
@@ -615,7 +933,7 @@
     return card(`${quitButton()}
       ${topLine(`${q.level} · ${st.asked + 1} / ${st.queue.length}`, st.asked, st.queue.length)}
       ${banner}
-      <div class="${set.word.w === q.kanji ? 'v15-char' : 'v15-word'}" lang="ja">${wordHTML(set.word, q.kanji)}</div>
+      <div class="${set.word.w === q.kanji ? 'v15-char' : 'v15-word'}" lang="ja" data-rf="${esc(q.kanji)}">${wordHTML(set.word, q.kanji)}</div>
       <p class="v15-ask">How is this read?</p>
       <div class="v15-choices" role="group" aria-label="Readings">${choiceRows(q.kanji, set, 'placementChoose', fb)}${idk}</div>
       ${st.level === 'N5' && st.asked === 0 && !pl.state.answers.length ? `<p class="v15-small v15-muted" style="margin-top:16px">${INTRO}</p>` : ''}`);
@@ -684,7 +1002,7 @@
     const isLast = ut.index === unit.questions.length - 1;
     return card(`${quitButton()}
       ${topLine(`Unit ${ut.unit} · ${ut.index + 1} / ${unit.questions.length}`, ut.index, unit.questions.length)}
-      <div class="v15-word" lang="ja">${wordHTML({ w: q.w }, q.kanji)}</div>
+      <div class="v15-word" lang="ja" data-rf="${esc(q.kanji)}">${wordHTML({ w: q.w }, q.kanji)}</div>
       <div class="v15-gloss">${esc(q.m)}</div>
       <p class="v15-ask">Choose the reading.</p>
       <div class="v15-choices" role="group" aria-label="Readings">${rows}</div>`,
@@ -723,20 +1041,21 @@
   // ------------------------------------------------------------------ writing items (level check + practice)
 
   /** Replace the lesson with a one-box recall lesson of the kanji (meaning + reading shown, written from memory). */
-  function startWriting(kanji, mode) {
+  function startWriting(kanji, mode, scored = true) {
     const word = readingWordFor(kanji);
-    S.writing = { kanji, mode };
+    S.writing = { kanji, mode, scored };
     S.lessonReplaced = true;
     host().classList.remove('show');
     host().innerHTML = '';
     loadLesson({ id: `v15:${kanji}`, title: kanji, custom: true, level: levelOf(kanji),
       words: [{ w: kanji, r: word ? word.r : '', m: word ? word.m : '' }] }, { force: true, kanjiOnly: true, recallOnly: true });
+    if (mode === 'practice') requestAnimationFrame(() => applyScaffold(scaffoldLevel(kanji)));   // R6 (practice only)
   }
 
   /** The writing item ended: clean (celebrate) or failed (first clear failure of its box). */
   function writingItemDone(clean, boxInfo) {
     if (!S.writing) return;
-    const { kanji, mode } = S.writing;
+    const { kanji, mode, scored } = S.writing;
     let repeatToast = '';
     S.writing = null;
     resetLesson();
@@ -755,21 +1074,24 @@
     } else {
       const pr = S.pr;
       let drop = null;
-      if (clean) {
+      pr.results.push({ kind: 'writing', ok: clean, retry: !scored });
+      if (!scored) {
+        // v16 #9: a retry is practice only; the miss was scored when it happened
+        pr.banner = clean ? null : { kanji, retry: true };
+      } else if (clean) {
         const done = V15.onKanjiComplete(store, kanji, { clean: true });
-        pr.results.push({ kind: 'writing', ok: true });
         pr.banner = done.to > done.from ? { kanji, up: { from: done.from, to: done.to } } : null;
       } else {
-        const res = V15.onWritingBox(store, kanji, boxInfo);
+        const res = V15.onWritingBox(store, kanji, boxInfo, glueOpts());
         if (res.to < res.from) drop = { from: res.from, to: res.to };
-        pr.results.push({ kind: 'writing', ok: false });
         pr.banner = { kanji, drop, warnTo: drop ? null : nextMissDropsTo(kanji) };
       }
+      if (!clean) requeueMiss();
       // Review E1: announce a writing rep after a clean write, and after any write that leaves no banner showing.
       const next = pr.queue[pr.index + 1];
       if (next && next.repeat && next.kind === 'writing' && (clean || !pr.banner)) repeatToast = clean ? `✓ Good — write ${kanji} once more.` : `Write ${kanji} once more.`;
       practiceAdvance();
-      if (!clean) showOverride({ kanji, mode: 'practice' });
+      if (!clean && scored) showOverride({ kanji, mode: 'practice' });
       // A rep of the same kanji reloads the same box: say so after the new box is up, or it looks like the
       // stroke was lost (E2E_PASS #1).
       if (repeatToast) toast(repeatToast);
@@ -777,10 +1099,23 @@
     render();
   }
 
+  /** v16 #8: " · Parts written 1 / 2" on the summary (skipped parts are not counted). */
+  function partsLine(pr) {
+    const tries = (pr.componentResults || []).filter((r) => !r.cancelled);
+    return tries.length ? ` · Parts written ${tries.filter((r) => r.ok).length} / ${tries.length}` : '';
+  }
+
   function missBanner(b) {
     if (!b) return '';
     if (b.up) return `<p class="v15-banner" data-announce><span lang="ja">${esc(b.kanji)}</span> ${changeHTML(b.up.from, b.up.to)}</p>`;
     const k = `<span lang="ja">${esc(b.kanji)}</span>`;
+    if (b.component) {
+      const part = `<span lang="ja">${esc(b.component.glyph)}</span>`;
+      const text = b.component.clean ? `✓ Part ${part} of ${k} written cleanly.`
+        : b.component.completed ? `Part ${part} of ${k} written, with some redrawn strokes.` : `Part ${part} of ${k} needs more practice.`;
+      return `<p class="v15-banner" data-announce>${text}</p>`;
+    }
+    if (b.retry) return `<p class="v15-banner miss" data-announce>Missed again — ${k}. Not scored; it comes back later.</p>`;
     // UX-B4: say what a drop dropped to, and warn only when the rank model says the next miss would drop it
     const text = b.drop ? `Missed — ${k} dropped to ${TIER_LABEL[tierName(b.drop.to)]}.`
       : b.warnTo != null ? `Missed — ${k}. One more miss drops it to ${TIER_LABEL[tierName(b.warnTo)]}.`
@@ -819,7 +1154,7 @@
 
   function checkStart() {
     const lc = S.lc;
-    lc.items = LC.selectKanji(ranks(), { readingWords: WORDS });
+    lc.items = V15.levelCheckOrder ? V15.levelCheckOrder(LC.selectKanji(ranks(), { readingWords: WORDS }), glueOpts()) : LC.selectKanji(ranks(), { readingWords: WORDS });   // R30 order only
     if (!lc.items.length) { lc.step = 'empty'; return; }
     Object.assign(lc, { index: 0, results: [], changes: [], step: 'items', feedback: null, banner: null });
     saveCheck();
@@ -858,7 +1193,7 @@
       // UX-B4: a miss on the last item keeps its banner (and its pill) on the result screen
       return card(`${missBanner(lc.banner)}<p class="v15-headline" tabindex="-1" data-announce>Level check done</p>
         <p class="v15-score" data-announce>Score: ${correct} / ${lc.items.length} correct</p>
-        ${changeGroupsHTML(groupChanges(lc.changes))}`,
+        ${changeGroupsHTML(groupChanges(lc.changes))}${unlockSlot(lc.changes)}`,
       // UX-B4: offer weak practice only when there is something weak to practise
       bottomBar(anyWeak()
         ? [{ ja: '練習', en: 'Practise weak kanji', act: 'practiceWeak', pri: true }, { ja: '終わる', en: 'Done', act: 'quit' }]
@@ -874,7 +1209,7 @@
     const fb = lc.feedback;
     const buttons = fb ? [{ en: 'Next', act: 'checkNext', pri: true }] : [{ en: 'Check', act: 'checkReading', pri: true }, { en: "I don't know", act: 'checkIdk' }];
     return card(`${head}
-      <div class="${word.w === item.kanji ? 'v15-char' : 'v15-word'}" lang="ja">${wordHTML(word, item.kanji)}</div>
+      <div class="${word.w === item.kanji ? 'v15-char' : 'v15-word'}" lang="ja" data-rf="${esc(item.kanji)}">${wordHTML(word, item.kanji)}</div>
       <div class="v15-gloss">${esc(word.m)}</div>
       ${readingInputHTML(item.kanji, lc.typed, fb)}
       <div>${fb ? readingFeedbackHTML(word, fb.correct) : ''}</div>`, bottomBar(buttons));
@@ -933,10 +1268,133 @@
     return `<span class="v15-change">${badge(tierName(rec.rank))}</span> · pending (${why})`;
   }
 
+  /**
+   * v16 #11: why a kanji moved down on a result screen, and an Undo when the rank model still holds the previous
+   * record (RankModel keeps \`undo\` on a demotion; an override restores it exactly).
+   */
+  function dropWhy(kanji) {
+    const out = [];
+    if (S.view === 'check' && S.lc) {
+      for (const r of S.lc.results) if (r.kanji === kanji && r.outcome !== 'correct' && r.outcome !== 'override') out.push(r.outcome === 'readingMiss' ? 'reading' : 'writing');
+    } else if (S.pr) {
+      for (const r of S.pr.results || []) if (r.kanji === kanji && !r.ok) out.push(r.kind === 'reading' ? 'reading' : 'writing');
+    }
+    const w = out.filter((x) => x === 'writing').length, rd = out.length - w;
+    const parts = [];
+    if (w) parts.push(w === 1 ? '1 clear writing miss' : `${w} clear writing misses`);
+    if (rd) parts.push(rd === 1 ? 'reading missed' : `${rd} reading misses`);
+    return parts.join(', ');
+  }
+
+  function dropWhyHTML(c) {
+    const why = dropWhy(c.kanji);
+    const rec = RM.getKanji(ranks(), c.kanji);
+    const canUndo = Boolean(rec.undo) && rec.rank === c.to;
+    return `${why ? `<span class="v16-why">: ${esc(why)}</span>` : ''}${canUndo ? ` <button class="v16-undo" data-v15="undoDrop" data-arg="${esc(c.kanji)}" aria-label="Undo the drop of ${esc(c.kanji)}">Undo</button>` : ''}`;
+  }
+
+  function undoDrop(kanji) {
+    const before = RM.getKanji(ranks(), kanji);
+    if (!before.undo) return;
+    if (S.view === 'check' && S.lc) checkRecord(kanji, 'override');
+    else V15.onOverride(store, kanji);
+    const after = RM.getKanji(ranks(), kanji);
+    toast(`Undone: ${kanji} is back to ${TIER_LABEL[tierName(after.rank)]}.`);
+  }
+
+  // v16 #16: optional mnemonic/story note. An aid only: never shown before the learner writes, only in the info popover.
+  const NOTE_PREFIX = 'v16:note:';   // under v16: so ExportModel backs it up
+  const NOTE_MAX = 140;
+  function noteKey(k) { return NOTE_PREFIX + k; }
+  function readNote(k) { try { return store.getItem(noteKey(k)) || ''; } catch (e) { return ''; } }
+  function writeNote(k, text) {
+    const t = String(text || '').replace(/\s+/g, ' ').trim().slice(0, NOTE_MAX);
+    try { if (t) store.setItem(noteKey(k), t); else store.removeItem(noteKey(k)); } catch (e) { toast('Could not save the note (storage full).'); }
+    return t;
+  }
+  // RC7 (research backlog #12): the learner's own keyword for a kanji. Display only: the writing prompt shows it in
+  // place of the built-in keyword. No grading or scheduling reads it. Saved under v16: so ExportModel backs it up.
+  const KW_PREFIX = 'v16:kw:';
+  const KW_MAX = 40;
+  function readKeyword(k) { try { return store.getItem(KW_PREFIX + k) || ''; } catch (e) { return ''; } }
+  function writeKeyword(k, text) {
+    const t = String(text || '').replace(/\s+/g, ' ').trim().slice(0, KW_MAX);
+    try { if (t) store.setItem(KW_PREFIX + k, t); else store.removeItem(KW_PREFIX + k); } catch (e) { toast('Could not save the keyword (storage full).'); }
+    root.dispatchEvent(new CustomEvent('v16:keyword', { detail: { kanji: k, keyword: t } }));
+    return t;
+  }
+  function keywordField(k) {
+    const wrap = document.createElement('label');
+    wrap.className = 'v16-note v16-kw';
+    const def = (typeof DATA !== 'undefined' && DATA.kanji && DATA.kanji[k] && (DATA.kanji[k].keyword || (DATA.kanji[k].meanings || [])[0])) || '';
+    wrap.innerHTML = `<i>My keyword</i><input type="text" maxlength="${KW_MAX}" autocomplete="off" enterkeyhint="done" placeholder="${esc(def || 'Your own keyword')}" aria-label="My keyword for ${esc(k)} (empty = ${esc(def)})">`;
+    const input = wrap.querySelector('input');
+    input.value = readKeyword(k);
+    input.dataset.kanji = k;
+    let timer = 0;
+    input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => writeKeyword(k, input.value), 400); });
+    input.addEventListener('change', () => { clearTimeout(timer); input.value = writeKeyword(k, input.value); });
+    input.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) input.blur(); });
+    return wrap;
+  }
+  // Keep an open keyword field in step when the keyword changes elsewhere (another tab, a restore).
+  root.addEventListener('v16:keyword', () => {
+    document.querySelectorAll('.v16-kw input').forEach((i) => { if (i !== document.activeElement) i.value = readKeyword(i.dataset.kanji); });
+  });
+  // RC6-FIX-infopop: the info popover opens below its (i) button and can run past the bottom of the screen
+  // (rc6 review: 390x844, 375x667, 820x1180, 1180x820; the Tatoeba link could not be reached), or past the panel's left edge. While it is open, keep it inside
+  // the viewport: lift it (never over its own (i) button, which closes it), cap its height and let it scroll. Display only.
+  function fitInfoPop() {
+    const pop = document.querySelector('#panel .ipop');
+    if (!pop) return;
+    const panel = document.getElementById('panel');
+    pop.style.maxHeight = ''; pop.style.overflowY = ''; pop.style.overscrollBehavior = ''; pop.style.top = ''; pop.style.width = '';
+    if (panel) panel.style.zIndex = '';
+    if (!pop.classList.contains('show')) return;
+    if (panel) panel.style.zIndex = '40';   // open: above the stage rows, controls (31) and prompt bar (32) it can overlap
+    // Narrow it to the panel when it would stick out to the left: the panel scrolls (overflow auto) and clips it (844x390).
+    const pr = panel ? panel.getBoundingClientRect() : null;
+    if (pr && pop.getBoundingClientRect().left < pr.left + 4) pop.style.width = `${Math.max(160, Math.floor(pop.getBoundingClientRect().right - pr.left - 8))}px`;
+    const vh = root.visualViewport ? root.visualViewport.height : root.innerHeight;
+    const r = pop.getBoundingClientRect();
+    if (r.bottom <= vh - 8) return;
+    const ib = document.querySelector('#panel .ib.info');
+    const floor = Math.max(8, ib ? ib.getBoundingClientRect().bottom + 4 : 8);
+    const want = Math.max(floor, Math.floor(vh - 8 - pop.scrollHeight));
+    const lift = Math.max(0, r.top - want);
+    if (lift) pop.style.top = `${parseFloat(getComputedStyle(pop).top) - lift}px`;
+    const h = Math.floor(vh - 8 - (r.top - lift));
+    if (pop.scrollHeight > h) { pop.style.maxHeight = `${Math.max(96, h)}px`; pop.style.overflowY = 'auto'; pop.style.overscrollBehavior = 'contain'; }
+  }
+  document.addEventListener('click', () => root.requestAnimationFrame(() => root.requestAnimationFrame(fitInfoPop)));
+  root.addEventListener('resize', () => root.requestAnimationFrame(fitInfoPop));
+
+  function attachNote() {
+    const facts = document.querySelector('#panel .ipop .facts');
+    if (!facts || facts.querySelector('.v16-note')) return;
+    const a = facts.querySelector('a[href*="%23kanji"]');
+    if (!a) return;   // kanji only (word popovers have no per-kanji note)
+    const m = /\/search\/(.+?)%23kanji/i.exec(a.getAttribute('href') || '');
+    if (!m) return;
+    const k = decodeURIComponent(m[1]);
+    const wrap = document.createElement('label');
+    wrap.className = 'v16-note';
+    wrap.innerHTML = `<i>My note</i><input type="text" maxlength="${NOTE_MAX}" autocomplete="off" enterkeyhint="done" placeholder="A story or hint for ${esc(k)}" aria-label="My note for ${esc(k)}">`;
+    const input = wrap.querySelector('input');
+    input.value = readNote(k);
+    input.dataset.kanji = k;
+    let timer = 0;
+    input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => writeNote(k, input.value), 400); });
+    input.addEventListener('change', () => { clearTimeout(timer); input.value = writeNote(k, input.value); });
+    input.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) input.blur(); });
+    facts.insertBefore(wrap, a);
+    facts.insertBefore(keywordField(k), wrap);
+  }
+
   function changeGroupsHTML(groups) {
     const titles = { up: 'Moved up', down: 'Moved down', pending: 'Pending', same: 'No change' };
     return Object.keys(titles).filter((g) => groups[g].length).map((g) => `<p class="v15-group">${titles[g]} (${groups[g].length})</p>
-      <div class="v15-rows">${groups[g].map((c) => `<div class="v15-row">${chip(c.kanji)}<span class="grow">${g === 'pending' ? pendingHTML(c.rec, c.capped) : changeHTML(c.from, c.to)}</span></div>`).join('')}</div>`).join('');
+      <div class="v15-rows">${groups[g].map((c) => `<div class="v15-row">${chip(c.kanji)}<span class="grow">${g === 'pending' ? pendingHTML(c.rec, c.capped) : changeHTML(c.from, c.to)}${g === 'down' ? dropWhyHTML(c) : ''}</span></div>`).join('')}</div>`).join('');
   }
 
   // ------------------------------------------------------------------ practice (§8)
@@ -1009,7 +1467,8 @@
       body = '<p>Nothing weak right now — nice. Choose kanji to practise instead.</p><div class="v15-pills"><button class="v15-pill on" data-v15="practiceMode" data-arg="choose">Choose</button></div>';
     } else if (pr.mode === 'choose') {
       const chosen = new Set(pr.chosen);
-      body = `<div class="v15-pills"><button class="v15-pill" data-v15="selectAll">Select all (${plan.list.length})</button><button class="v15-pill" data-v15="selectNone">Clear</button></div>
+      const hint = chosen.size ? '' : '<p class="v15-empty-hint">Tap kanji below to choose them, or Select all.</p>';
+      body = `${hint}<div class="v15-pills"><button class="v15-pill" data-v15="selectAll">Select all (${plan.list.length})</button><button class="v15-pill" data-v15="selectNone">Clear</button></div>
         <div class="v15-chips v15-grid">${plan.list.map((k) => chip(k, { act: 'toggleKanji', sel: chosen.has(k) })).join('')}</div>`;
     }
     const summary = plan.state === 'ok' ? `<p class="v15-score" data-announce>${plan.kanji.length} kanji · ${plan.queue.length} items</p>` : '';
@@ -1022,15 +1481,115 @@
     bottomBar([{ ja: '始める', en: 'Start', act: 'practiceStart', pri: true, disabled: !plan.queue.length }, { ja: '戻る', en: 'Back', act: 'quit' }]));
   }
 
+  /** v16 #9: false for a requeued retry, whose outcome must not reach ranks or records. */
+  function isScoredItem(item) {
+    return !PR || typeof PR.isScored !== 'function' || PR.isScored(item);
+  }
+
+  /** v16 #9: a missed practice item comes back later in the session (at most twice per kanji; the model caps). */
+  function requeueMiss() {
+    const pr = S.pr;
+    if (!PR || typeof PR.requeue !== 'function') return;
+    const result = PR.requeue(pr.queue, pr.index);
+    if (result.requeued) pr.queue = result.queue;
+  }
+
+  /**
+   * v16 #9: index.html finishes the lesson record (V15.recFinish) for every finished box, including a retry's.
+   * While an unscored retry is being written, its record is left alone so it never moves a learning step or due date.
+   */
+  function skipRecFinishForRetries() {
+    if (!V15 || typeof V15.recFinish !== 'function' || V15.recFinish.v16Wrapped) return;
+    const recFinish = V15.recFinish;
+    const wrapped = (storage, key, ...rest) => {
+      if (S.writing && S.writing.scored === false && key === S.writing.kanji) {
+        let saved = null;
+        try { saved = JSON.parse(storage.getItem(`rec:${key}`)); } catch (_) { saved = null; }
+        return saved || { cleanRecalls: 0, hintsUsed: 0, done: 0, streak: 0, intervalDays: 0, lastPracticed: null, nextReview: null };
+      }
+      const rec = recFinish(storage, key, ...rest);
+      recordReview(key);   // v16 #7: every other finished kanji box counts as a review
+      return rec;
+    };
+    wrapped.v16Wrapped = true;
+    V15.recFinish = wrapped;
+  }
+
+  // ------------------------------------------------------------------ v16 #8: write the new component at Bronze
+
+  /** Tier of a kanji or component glyph (part-only glyphs like 亻 have no rank: 'none'). */
+  function tierOfGlyph(glyph) {
+    return typeof V15.progressOf === 'function' ? V15.progressOf(store, glyph).tier : tierName(RM.getKanji(ranks(), glyph).rank);
+  }
+
+  /**
+   * The component step after a scored reading at Bronze: the kanji's least-known component (part-only radicals
+   * count as new), once per kanji per session. Null when the writing API is missing, the kanji is not at Bronze,
+   * has a single component (that is the whole kanji), or the step was already offered this session.
+   */
+  function componentStepFor(kanji) {
+    const writing = root.KanjiWriting;
+    const pr = S.pr;
+    if (!writing || typeof writing.startComponentWrite !== 'function' || typeof DATA === 'undefined') return null;
+    const entry = DATA.kanji[kanji];
+    if (!entry || !Array.isArray(entry.parts) || entry.parts.length < 2) return null;
+    if (tierOfGlyph(kanji) !== 'bronze') return null;
+    pr.componentOffered = pr.componentOffered || [];
+    if (pr.componentOffered.includes(kanji)) return null;
+    const rankOf = (glyph) => TIER_ORDER.indexOf(tierOfGlyph(glyph));
+    let best = -1;
+    entry.parts.forEach((part, index) => {
+      if (part.g && (best < 0 || rankOf(part.g) < rankOf(entry.parts[best].g))) best = index;
+    });
+    if (best < 0) return null;
+    pr.componentOffered.push(kanji);
+    return { kanji, partIndex: best, glyph: entry.parts[best].g };
+  }
+
+  /**
+   * Open the component box over the practice card. The result is practice only (no rank or record change yet;
+   * v16 #8 has no model event), shown as a banner on the next item. Skip or Escape cancels.
+   */
+  function openComponentWrite(step, then) {
+    const overlay = document.createElement('div');
+    overlay.className = 'v16-cw';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', `Write the part ${step.glyph}`);
+    overlay.innerHTML = `<div class="v16-cw-card">
+        <p class="v15-ask">Write the part <span lang="ja">${esc(step.glyph)}</span> of <span lang="ja">${esc(step.kanji)}</span></p>
+        <p class="v15-muted">From memory · practice, not scored</p>
+        <div class="v16-cw-box"></div>
+        <button type="button" class="v15-pill v16-cw-skip">Skip</button>
+      </div>`;
+    document.body.appendChild(overlay);
+    const close = () => { overlay.remove(); document.removeEventListener('keydown', onKey, true); };
+    const onResult = (result) => {
+      close();
+      S.pr.results.push({ kind: 'component', ok: result.clean, retry: true });
+      S.pr.componentResults = (S.pr.componentResults || []).concat([{ ok: result.clean, cancelled: result.cancelled }]);
+      then();
+      if (!result.cancelled) S.pr.banner = { kanji: step.kanji, component: { glyph: step.glyph, clean: result.clean, completed: result.completed } };
+      render();
+    };
+    const handle = root.KanjiWriting.startComponentWrite(step.kanji, step.partIndex, onResult, { container: overlay.querySelector('.v16-cw-box') });
+    if (!handle) { close(); then(); render(); return; }
+    const onKey = (e) => { if (e.key === 'Escape') { e.preventDefault(); handle.cancel(); } };
+    document.addEventListener('keydown', onKey, true);
+    overlay.querySelector('.v16-cw-skip').addEventListener('click', () => handle.cancel());
+    overlay.querySelector('.v16-cw-skip').focus();
+  }
+
   function practiceShowItem() {
     const pr = S.pr;
     const item = pr.queue[pr.index];
-    if (item && item.kind === 'writing') startWriting(item.kanji, 'practice');
+    if (item && item.kind === 'writing') startWriting(item.kanji, 'practice', isScoredItem(item));
   }
 
   function practiceAdvance() {
     const pr = S.pr;
     if (override && override.mode === 'practice') hideOverride();   // UX-B4: the pill belongs to the item just done
+    foldDrills();
     pr.index += 1;
     pr.cur = { typed: '', feedback: null };
     if (pr.index >= pr.queue.length) { pr.step = 'result'; store.removeItem(KEYS.practice); return; }
@@ -1042,29 +1601,41 @@
     const pr = S.pr;
     if (pr.step === 'setup') return practiceSetupView();
     if (pr.step === 'result') {
-      const reading = pr.results.filter((r) => r.kind === 'reading');
-      const writing = pr.results.filter((r) => r.kind === 'writing');
+      const scoredResults = pr.results.filter((r) => !r.retry);   // v16 #9: retries are practice only
+      const reading = scoredResults.filter((r) => r.kind === 'reading');
+      const writing = scoredResults.filter((r) => r.kind === 'writing');
+      const reasked = pr.results.filter((r) => r.retry && r.kind !== 'component').length;
       const ok = (list) => list.filter((r) => r.ok).length;
       const moved = Object.keys(pr.before).map((k) => ({ kanji: k, from: pr.before[k], to: RM.getKanji(ranks(), k).rank })).filter((c) => c.to !== c.from);
       // UX-B4: a miss on the last item keeps its banner (and its pill) on the result screen
       return card(`${missBanner(pr.banner)}<p class="v15-headline" tabindex="-1" data-announce>Practice done</p>
         <p class="v15-score" data-announce>Reading ${ok(reading)} / ${reading.length} · Writing ${ok(writing)} / ${writing.length}</p>
-        <p class="v15-muted">Retried near misses: ${pr.retried}</p>
-        ${moved.length ? changeGroupsHTML(groupChanges(moved)) : ''}`,
+        <p class="v15-muted">Retried near misses: ${pr.retried}${reasked ? ` · Asked again later: ${reasked}` : ''}${partsLine(pr)}</p>
+        ${moved.length ? changeGroupsHTML(groupChanges(moved)) : ''}${unlockSlot(moved)}`,
       bottomBar([{ ja: '繰り返す', en: 'Again', act: 'practiceAgain', pri: true }, { ja: '終わる', en: 'Done', act: 'quit' }]));
     }
     const item = pr.queue[pr.index];
-    const again = item.repeat && !pr.banner ? `<p class="v15-banner" data-announce>Once more: <span lang="ja">${esc(item.kanji)}</span></p>` : '';
-    const head = `${quitButton()}${topLine(`${pr.index + 1} / ${pr.queue.length}`, pr.index, pr.queue.length)}${missBanner(pr.banner)}${again}`;
+    const again = pr.banner ? ''
+      : item.retry ? `<p class="v15-banner" data-announce>Again: <span lang="ja">${esc(item.kanji)}</span> · practice, not scored</p>`   // v16 #9
+        : item.repeat ? `<p class="v15-banner" data-announce>Once more: <span lang="ja">${esc(item.kanji)}</span></p>` : '';
+    const drill = item.drillWith ? `<p class="v15-banner v16-drill" data-announce>Look-alikes: <span lang="ja">${esc(item.kanji)}</span> vs <span lang="ja">${esc(item.drillWith)}</span>${item.note ? ` — ${esc(item.note)}` : ''}</p>` : '';
+    const head = `${quitButton()}${topLine(`${pr.index + 1} / ${pr.queue.length}`, pr.index, pr.queue.length)}${missBanner(pr.banner)}${again}${drill}`;
     if (item.kind === 'writing') return card(`${head}<p class="v15-ask">Write: <span lang="ja">${esc(item.kanji)}</span></p>`);
     const word = item.word;
     const fb = pr.cur.feedback;
     const buttons = fb ? [{ en: 'Next', act: 'practiceNext', pri: true }] : [{ en: 'Check', act: 'practiceCheck', pri: true }, { en: "I don't know", act: 'practiceIdk' }];
     return card(`${head}
-      <div class="v15-word" lang="ja">${wordHTML(word, item.kanji)}</div>
+      <div class="v15-word" lang="ja" data-rf="${esc(item.kanji)}">${wordHTML(word, item.kanji)}</div>
       <div class="v15-gloss">${esc(word.m)}</div>
       ${readingInputHTML(item.kanji, pr.cur.typed, fb)}
-      <div>${fb ? readingFeedbackHTML(word, fb.correct) : ''}</div>`, bottomBar(buttons));
+      <div>${fb && fb.partial ? almostHTML(fb.partial) : ''}${fb ? readingFeedbackHTML(word, fb.correct) : ''}</div>`, bottomBar(buttons));
+  }
+
+  /** R5: "Almost: long vowel" for a near-miss reading (graded 'hard', no rank drop). */
+  function almostHTML(partial) {
+    const labels = root.PartialCredit ? root.PartialCredit.LABELS : {};
+    const text = (partial.reasons || []).map((r) => labels[r] || r).join(', ') || 'close';
+    return `<p class="v15-feedback v16-almost" data-verdict="near" data-announce>Almost: ${esc(text)}</p>`;
   }
 
   function practiceStartQueue(queue) {
@@ -1121,6 +1692,18 @@
 
   const ACTIONS = {
     quit: closeView,
+    undoDrop(k) { undoDrop(k); },
+    welcomeStart() { markWelcomed(); closeView(); setTimeout(showCoach, 450); },
+    welcomePlacement() { markWelcomed(); ACTIONS.openPlacement(); },
+    welcomeKnown() { if (root.V16KnownUI) root.V16KnownUI.open(); },   // RC9-known-import-ui (R26): the import dialog; the welcome stays behind it
+    welcomeRadicals() { markWelcomed(); closeView(); loadSet(firstRadicalSet().id); },
+    welcomePick() {
+      markWelcomed();
+      closeView();
+      const chip = document.getElementById('kchip');
+      if (chip) chip.click();
+    },
+    closePickerAction() { if (typeof closePicker === 'function') closePicker(); },
     closeModal() { S.modal = null; },
     resume() { const m = S.modal; S.modal = null; m.onResume(); },
     /** 'Start new' in the unfinished-unit confirm: drop the other unit's saved run and start the tapped unit. */
@@ -1267,12 +1850,27 @@
     practiceIdk() { ACTIONS.practiceReading(false); },
     practiceReading(correct) {
       const pr = S.pr;
-      pr.cur.feedback = { correct };
+      const item = pr.queue[pr.index];
       pr.banner = null;
-      pr.results.push({ kind: 'reading', ok: correct });
-      V15.onReadingResult(store, pr.queue[pr.index].kanji, correct);
+      const scored = isScoredItem(item);
+      pr.results.push({ kind: 'reading', ok: correct, retry: !scored && !item.drillWith });
+      if (item.scored === false && item.drillWith) { pr.cur.feedback = { correct }; return; }   // R7: unscored look-alike
+      // v16 #8: decided on the tier the item was asked at, before this answer moves it
+      pr.cur.component = scored ? componentStepFor(item.kanji) : null;
+      if (!correct) requeueMiss();   // v16 #9
+      if (!scored) { pr.cur.feedback = { correct }; return; }   // v16 #9: retries never score
+      const accepted = item.word ? RA.acceptedReadings(item.word) : [];
+      const res = V15.onReadingResult(store, item.kanji, correct, Object.assign({ answer: pr.cur.typed, accepted }, glueOpts()));
+      recordReview(item.kanji);   // v16 #7: a scored reading counts; writing counts through recFinish
+      pr.cur.feedback = { correct, partial: res && res.partial ? res.partial : null };
     },
-    practiceNext: practiceAdvance,
+    practiceNext() {
+      const step = S.pr.cur && S.pr.cur.component;
+      if (!step) { practiceAdvance(); return; }
+      S.pr.cur.component = null;
+      openComponentWrite(step, practiceAdvance);
+    },
+    leechStart(k) { closeView(); startLeechRestudy(k); },
     override: applyOverride,
     practiceAgain() { S.pr.seed += 1; S.pr.step = 'setup'; },
   };
@@ -1291,21 +1889,32 @@
 
   function render() {
     if (!S.view) return;
-    if (!WORDS) {   // models / reading words not in yet: show a placeholder and render for real once they are
+    if (!WORDS && S.view !== 'welcome') {   // models / reading words not in yet: show a placeholder and render for real once they are
       host().innerHTML = '<p class="v15-loading" role="status">Loading…</p>';
       loadWords().then(render);
       return;
     }
-    const views = { placement: placementView, unit: unitView, check: checkView, practice: practiceView };
+    const views = { welcome: welcomeView, placement: placementView, unit: unitView, check: checkView, practice: practiceView };
     const was = document.activeElement;
     const hadFocus = host().contains(was);
     const wasKey = !hadFocus ? '' : was.dataset.v15 ? `[data-v15="${was.dataset.v15}"][data-arg="${CSS.escape(was.dataset.arg || '')}"]` : (was.id ? `#${was.id}` : '*');
     host().innerHTML = views[S.view]() + modalHTML();
+    applyReadingFont();   // RC16-reading-font-ui (R31)
     const key = screenKey();
     restoreFocus(key !== lastScreen, wasKey);
     lastScreen = key;
     announce();
     syncOverridePill();
+  }
+
+  /** RC16 (R31): reading prompts (data-rf = prompt kanji) get V15.readingFontFor's face, else the app font. Display only. */
+  function applyReadingFont() {
+    if (!V15.readingFontFor) return;
+    for (const el of host().querySelectorAll('[data-rf]')) {
+      let f = null;
+      try { f = V15.readingFontFor(localStorage, el.dataset.rf, { doc: el.ownerDocument }); /* RC16 fallback: only faces this device has */ } catch (e) { /* storage blocked: app font */ }
+      el.style.fontFamily = f ? f.family : '';
+    }
   }
 
   /** New screen: dialog button, else reading input, else the heading. Same screen: the control that had focus. */
@@ -1399,7 +2008,7 @@
   function watchPicker() {
     const list = document.getElementById('klist');
     if (!list) return;
-    // HOTFIX-klist-focus: the closed picker (opacity 0) is inert, so Tab and screen readers skip its Settings /
+    // V16-klist-focus: the closed picker (opacity 0) is inert, so Tab and screen readers skip its Settings /
     // What's new / Placement / lesson buttons. inert, not visibility:hidden: its text stays in the page text.
     const syncInert = () => { list.inert = !list.classList.contains('show'); };
     syncInert();
@@ -1409,28 +2018,8 @@
     fitPicker();
   }
 
-  /**
-   * HOTFIX-infopanel-focus: a closed info popover (.ipop, opacity 0) is inert, so Tab skips its Jisho / Tatoeba
-   * links; it is toggled with .show by the info button's own handler. Popovers are rebuilt with each box, so one
-   * observer on the document syncs every .ipop on class changes and on new nodes (batched per microtask).
-   */
-  function watchInfoPanels() {
-    let queued = false;
-    const sync = () => {
-      queued = false;
-      for (const p of document.querySelectorAll('.ipop')) {
-        const closed = !p.classList.contains('show');
-        if (p.inert !== closed) p.inert = closed;
-      }
-    };
-    const queue = () => { if (!queued) { queued = true; queueMicrotask(sync); } };
-    new MutationObserver(queue).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] });
-    sync();
-  }
-
   function init() {
     watchPicker();
-    watchInfoPanels();
     if (!document.getElementById('v15')) {
       document.body.insertAdjacentHTML('afterbegin', '<div class="lend v15" id="v15" role="dialog" aria-modal="true" aria-label="Test"></div>');
     }
@@ -1443,13 +2032,40 @@
     document.addEventListener('change', onChange);
     document.addEventListener('keydown', onKey);
     document.addEventListener('keydown', trapTab);
+    root.addEventListener('v16:due-changed', refreshHabit);   // v16 #7
+    root.addEventListener('v16:habit', refreshHabit);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshHabit(); });   // a new day
+    // v16 #16: a one-line note per kanji inside the info popover (index.html re-renders #panel; we add to it)
+    const panelEl = document.getElementById('panel');
+    if (panelEl && root.MutationObserver) { new MutationObserver(attachNote).observe(panelEl, { childList: true }); attachNote(); }
     document.addEventListener('compositionstart', () => { composing = true; });
     // Safari fires compositionend before the confirming Enter's keydown: clear the flag on the next task
     document.addEventListener('compositionend', () => { setTimeout(() => { composing = false; }, 0); });
     if (typeof renderPicker === 'function') renderPicker();
     prefetchWords();
+    // Welcome shows on a first run; a test that needs the old start-in-writing sets sessionStorage 'v16:welcome-test' = '0'.
+    const autoWelcome = sessionStorage.getItem('v16:welcome-test') !== '0';
+    if (autoWelcome && isFirstRun()) { openView('welcome'); render(); }
+    root.addEventListener('v16:contrast', (e) => toast(`Mixed up with ${e.detail.lookalike} — a look-alike drill comes next.`));
+    root.addEventListener('v16:leech', (e) => toast(`${e.detail.kanji} needs a fresh look — see the home screen.`));
+    root.addEventListener('v16:vacation-off', () => toast('Vacation mode is off. Welcome back!'));
   }
 
-  root.V15UI = { dataReady, loadWords, menuHTML, pruneRuns, kanjiTier, onReject, onWrongKanji, onCelebrate, onStrokeStart, onBoxChange, onLessonEnd, state: S, actions: ACTIONS, render, toast };
+  // #14 reduced motion: Web Animations (e.g. the component combine in index.html) finish instantly too.
+  (function () {
+    const mq = root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)');
+    const orig = Element.prototype.animate;
+    if (!mq || !orig || orig.__v16rm) return;
+    const fast = function (kf, opt) {
+      if (mq.matches) {
+        opt = typeof opt === 'number' ? { duration: 0 } : Object.assign({}, opt || {}, { duration: 0, delay: 0, endDelay: 0, iterations: 1 });
+      }
+      return orig.call(this, kf, opt);
+    };
+    fast.__v16rm = true;
+    Element.prototype.animate = fast;
+  })();
+
+  root.V15UI = { dataReady, loadWords, menuHTML, pruneRuns, kanjiTier, onReject, onWrongKanji, onCelebrate, onStrokeStart, onBoxChange, onLessonEnd, state: S, actions: ACTIONS, render, toast, startKanjiLesson };
   init();
 })(window);

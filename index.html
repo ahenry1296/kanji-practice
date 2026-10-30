@@ -460,6 +460,8 @@ body:has(#v15ovr.v15-ovr-inrow:not([hidden])) .controls .prog { visibility: hidd
 #v15 button:focus-visible, #v15 input:focus-visible, #v15 select:focus-visible, #v15ovr:focus-visible,
 .klist .v15-menu button:focus-visible { outline: 3px solid #4a5d38; outline-offset: 2px; }
 #v15 [tabindex="-1"]:focus { outline: none; }
+/* RC10D-coach-focus: #stage is only a programmatic focus target (coach "Got it"/Escape); not in the tab order, no ring. */
+#stage:focus { outline: none; }
 .v15-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) {
   .tier.diamond, #v15 .tier.diamond { animation: none !important; }
@@ -540,13 +542,14 @@ body:has(#v15ovr:not([hidden])) #v15.lend { padding-bottom: calc(var(--v15-bar-h
 /* UX-B4: legend for the "new" dot on placement result chips */
 .v15-legend { display: flex; align-items: center; gap: 6px; margin: 4px 0 8px; }
 .v15-legend .new { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--verm); }
-</style></head><body>
+</style><link rel="stylesheet" href="v16-theme.css">
+</head><body>
 <div class="top">
  <div class="knav l"><button class="ib nb" id="prev" aria-label="Previous word"><span class="peek" id="peekp"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="ib" id="kchip" aria-label="Kanji list" onclick="searching=false;closeEnd();renderPicker();document.getElementById('klist').classList.toggle('show')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></button><div class="klist" id="klist"></div></div>
  <div class="reading"><span class="rtag" id="rtag"></span><div class="kun" id="kun"></div><div class="on" id="on"></div><button class="ib tspk" id="tspk" aria-label="Play word"></button></div>
  <div class="knav r"><button class="ib nb" id="next" aria-label="Next word"><span class="peek" id="peekn"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button></div>
 </div>
-<div class="stage" id="stage"><div class="sheet" id="sheet"><div class="rows" id="track"></div></div>
+<div class="stage" id="stage" tabindex="-1"><div class="sheet" id="sheet"><div class="rows" id="track"></div></div>
  <div class="controls"><button class="ib" id="undo" aria-label="Undo stroke"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 010 11H11"/></svg></button><div class="prog"><div class="segs" id="dots"></div><div class="lvname" id="lvname"></div></div><button class="ib" id="clear" aria-label="Clear box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button></div>
 </div>
 <div class="panel" id="panel"></div>
@@ -563,10 +566,10 @@ body:has(#v15ovr:not([hidden])) #v15.lend { padding-bottom: calc(var(--v15-bar-h
 <script src="confusables.js"></script>
 <script src="proportion-rules-kana.js"></script>
 <script src="proportion-rules-N5.js"></script>
-<script src="proportion-rules-N4.js"></script>
-<script src="proportion-rules-N3.js"></script>
-<script src="proportion-rules-N2.js"></script>
-<script src="proportion-rules-N1.js"></script>
+<!-- v16 R21: proportion-rules-N4..N1.js load on demand through v16-rules-loader.js (V16Rules), which also blocks
+     grading until a box's rule file is in; all stay precached in sw.js. -->
+<script src="proportion-rules-index.js"></script>
+<script src="v16-rules-loader.js"></script>
 <script src="proportion_metrics.js"></script>
 <script src="stroke-topology-kana.js"></script>
 <script src="stroke-topology-N5.js"></script>
@@ -582,7 +585,31 @@ body:has(#v15ovr:not([hidden])) #v15.lend { padding-bottom: calc(var(--v15-bar-h
 <script src="hook-straight.js"></script>
 <script src="debug-strokes.js"></script>
 <script src="rank-model.js"></script>
+<script src="progress-model.js"></script>
+<script src="scheduler-model.js"></script>
+<script src="gating-model.js"></script>
+<script src="habit-model.js"></script>
+<script src="load-model.js"></script>
+<script src="export-model.js"></script>
+<script src="diagnosis-model.js"></script>
+<!-- v16 R5–R8 (Botfive): partial credit, fading scaffolds, contrast drills, leeches (used by the V15 glue) -->
+<script src="partial-credit.js"></script>
+<script src="fading-scaffolds.js"></script>
+<script src="contrast-model.js"></script>
+<script src="leech-model.js"></script>
+<script src="session-timer.js"></script>
+<script src="data-safety.js"></script>
+<!-- v16 R20: stats-model, component-model, context-sentences-n5, sentences-model, tips and the view files load
+     after first paint / on first mount through v16-loader.js (V16Lazy / V16Views); all stay precached. -->
+<script src="v16-loader.js"></script>
 <script src="v15-integration.js"></script>
+<script src="stats-view.js"></script>
+<script src="components-view.js"></script>
+<script src="settings-view.js"></script>
+<script src="study-cards-view.js"></script>
+<script src="tips-data.js"></script>
+<script src="tips-model.js"></script>
+<script src="v16-views.js"></script>
 <script>window.V15_DATA_SCRIPTS = ["reading-answer.js", "placement-model.js", "unit-test-model.js", "level-check-model.js", "practice-model.js", "reading-tests.js", "placement-pools.js", "practice-catalog.js", "practice-sets.js"];</script>
 <script>
 /* ============================================================================================
@@ -598,13 +625,16 @@ body:has(#v15ovr:not([hidden])) #v15.lend { padding-bottom: calc(var(--v15-bar-h
    Storage (localStorage): rec:<k>, rec:w:<word> (done = full practices → mastery tier), hints:<k>, set, lv.
    Timers: every delayed step goes through later(), tied to the lesson generation `gen`, so leaving a lesson cancels them.
    ============================================================================================ */
+/** UI preferences (hint counts, last tab, last lesson) go through R18's DataSafety queue when it is loaded: a full
+ *  or evicted store then keeps the value pending instead of throwing mid-lesson. */
+const prefSet=(key,value)=>window.DataSafety?DataSafety.safeSet(localStorage,key,String(value)):localStorage.setItem(key,value);
 
 /* ==================== CONFIG — edit freely ==================== */
 const DATA=window.KANJI_DATA; // generated by tools/gen_data.py (see README)
 let D=[];                     // current lesson: [{k:word text, w:{w,r,m,jmdict}}]
 let penSeen=false;            // palm rejection: once a pen is seen, ignore touch
 /* Tunables (times in ms, distances in box units where 1 = box size):
-   SCHEDULE_DAYS  spaced-review intervals; a review that needs hints resets to the first one.
+   SCHEDULE_DAYS  old spaced-review ladder; only a fallback now: v16 schedules reviews with FSRS (scheduler-model.js, key `sched`).
    FLASH_MS       part-complete flash duration; SLIDE_DELAY_MS pause before sliding on. */
 const CONFIG={
  /* Stroke checking tolerances, in fractions of the box (KanjiVG 109-unit space).
@@ -662,11 +692,7 @@ const recGet=k=>{try{const r=JSON.parse(localStorage.getItem('rec:'+k));return r
 /** Finish a kanji/word and schedule its next review.
  *  Spaced schedule: first completion → SCHEDULE_DAYS[0]; each later completion moves one step up the list;
  *  a REVIEW that needed hints falls back to the first interval. @returns the updated record */
-function recFinish(k,sessClean,sessHints){const r=recGet(k)||{cleanRecalls:0,hintsUsed:0,lastPracticed:null,nextReview:null,intervalDays:0};
- const S=CONFIG.SCHEDULE_DAYS,wasReview=!!r.lastPracticed;let iv;
- if(wasReview&&sessHints>0)iv=S[0];else{const i=S.indexOf(r.intervalDays);iv=r.intervalDays?S[Math.min(i+1,S.length-1)]:S[0]}
- const now=new Date();r.cleanRecalls=(Number(r.cleanRecalls)||0)+sessClean;r.done=(Number(r.done)||0)+1;r.hintsUsed=(Number(r.hintsUsed)||0)+sessHints;r.streak=sessHints>0?0:(Number(r.streak)||0)+1;r.lastPracticed=now.toISOString();r.intervalDays=iv;r.nextReview=new Date(now.getTime()+iv*864e5).toISOString();
- localStorage.setItem('rec:'+k,JSON.stringify(r));return r}
+function recFinish(k,sessClean,sessHints){return V15.recFinish(localStorage,k,sessClean,sessHints,{scheduleDays:CONFIG.SCHEDULE_DAYS,stepsMs:CONFIG.LEARNING_STEPS===false?false:undefined})}
 /** Mastery tier of a word = number of full practices (rec.done): '' | bronze | silver | gold | diamond. */
 /** Chip tint: the v15 rank (V15.tierOf) for a studied one-kanji word, else the word-done tier. */
 function tier(w){const v=window.V15UI&&V15UI.kanjiTier(w);if(v)return v;const n=Number((recGet('w:'+w)||{}).done)||0;return n?CONFIG.MASTERY[Math.min(n,4)-1]:''}
@@ -1563,6 +1589,7 @@ function steadyPoints(points) {
 }
 
 function checkStroke(k, i, stroke, level = 'L1', prev = []) {
+  if (window.V16Rules) V16Rules.assertReady(k.k);   // v16 R21: never grade without this character's look-alike rules
   const verdict = checkStrokeAsDrawn(k, i, stroke, level, prev);
   if (!verdict.ok) {
     return retryWithoutPenLiftCurl(k, i, stroke, level, prev, verdict);
@@ -2207,7 +2234,7 @@ function labelPos(k,pi,lw,lh,W,H,ink){const u=H/109,b=bbox(k,pi),m=0.045*H,g=6,P
  *  (word box: character → outline). Any hint marks the box as hinted → a repeat box of the same level is added on completion. */
 function useHint(){const c=boxes[cur];if(isStep(c.s))return;const pi=partOf(c.k,Math.min(c.pad.strokes.length,c.k.strokes-1));c.hints=c.hints||{};const L=ladder(c.k,c.s),h=c.hints[pi]||0;c.hints[pi]=h+1;
  if(h>=L.length){c.b.querySelectorAll('.mk-h path,path.mk-h').forEach(q=>{q.classList.remove('gpulse');void q.getBBox();q.classList.add('gpulse')})}
- localStorage.setItem(hintKey(c.k.k),hintCount(c.k.k)+1);
+ prefSet(hintKey(c.k.k),hintCount(c.k.k)+1);
  if(L[h]==='outline'){const svg=c.b.querySelector(':scope>svg'),g=document.createElementNS(NS,'g');g.setAttribute('class','mk-h');const p=c.k.parts[pi];for(let i=p.from;i<=p.to;i++){const q=document.createElementNS(NS,'path');q.setAttribute('d',c.k.paths[i]);q.setAttribute('class','houtline');g.appendChild(q)}svg.appendChild(g)}
  c.anim={};renderPanel();upd()}
 
@@ -2229,10 +2256,10 @@ function makeSteps(opts={}){steps.length=0;const drilled=new Set(),F=CONFIG.FLOW
 /** Scaffold fading level for kanji c from its record: 0 = full flow (new, or last practice needed hints),
  *  1 = short review (recall box first, then one trace with part boxes + one freehand), 2 = recall box only
  *  (2+ clean completions in a row). Evidence: retrieval practice + fading worked examples (RESEARCH.md). */
-function fadeLevel(c){const r=recGet(c);if(!r||!r.lastPracticed)return 0;const st=Number(r.streak)||0;return st>=2?2:st>=1?1:0}
+function fadeLevel(c){return V15.progressOf(localStorage,c).fade}
 /** A component counts as known once any learned kanji containing it (or the component itself) was finished cleanly:
  *  its part-alone boxes are then skipped (it still shows, keyword included, in the part boxes and equation). */
-function partKnown(g){if(CONFIG.FLOW.REVIEW_PARTS===false)return false;return Object.values(DATA.kanji).some(K=>(Number((recGet(K.k)||{}).streak)||0)>=1&&(K.k===g||K.parts.some(p=>p.g===g)))}
+function partKnown(g){if(CONFIG.FLOW.REVIEW_PARTS===false)return false;const now=Date.now();return ProgressModel.partKnown(g,Object.values(DATA.kanji),k=>V15.progressOf(localStorage,k,now))}
 /** Create one writing box (guide SVG + canvas Pad) for step s. */
 function makeBox(s){const K=DATA.kanji[s.kc],k=s.t==='W'?wordObj(s.w):s.t==='P'?partObj(K,s.pi):K,b=document.createElement('div');b.className='box'+(k.isWord?' wbox':'')+(s.lines===false?' nolines':'');b.dataset.kanji=k.k;b.dataset.retry='0';if(k.isWord){b.style.setProperty('--n',k.cells);b.style.setProperty('--C',`min(var(--B), calc(var(--SW, 100vw) * ${(0.9/k.cells).toFixed(4)}))`)}
   b.appendChild(guide(k,{step:'step',trace:'faint',free:'blank'}[s.g],s.parts));const cv=document.createElement('canvas');b.appendChild(cv);
@@ -2339,7 +2366,7 @@ function markVerdict(box, verdict) {
 
 function reject(c,p,n){markVerdict(c,'rejected');const s=p.strokes.pop();p.fade={s,t0:performance.now()};showRawInk(c,p,s);const tick=()=>{p.redraw();if(p.fade&&performance.now()-p.fade.t0<360)requestAnimationFrame(tick);else{p.fade=null;p.redraw()}};tick();
  c.miss=c.miss||{};c.miss[n]=(c.miss[n]||0)+1;if(isMem(c.s))c.failed=true;
- if(c.miss[n]===CONFIG.CHECK.MISSES_FOR_HINT&&c.k.paths[n]){traceGuide(c,n);if(!isStep(c.s)){c.autoHints=(c.autoHints||0)+1;localStorage.setItem(hintKey(c.k.k),hintCount(c.k.k)+1)}}}
+ if(c.miss[n]===CONFIG.CHECK.MISSES_FOR_HINT&&c.k.paths[n]){traceGuide(c,n);if(!isStep(c.s)){c.autoHints=(c.autoHints||0)+1;prefSet(hintKey(c.k.k),hintCount(c.k.k)+1)}}}
 /**
  * Raw-ink overlay: after a reject, the exact points that were judged stay visible over the guide (a thin, unsmoothed
  * line with a dot per sample and a start marker), so the user can see what the checker saw. Display only: grading
@@ -2390,6 +2417,24 @@ function onStroke(boxIndex, pad) {
   }
   if (!box || pad.strokes.length > box.k.strokes) {
     dropStrayStroke(box, pad);
+    return;
+  }
+  // v16 R21: rules for this character not loaded yet → hold the stroke (pad locked), load, then grade it.
+  // A second stroke while one is held (only if something unlocked the pad) is dropped: the held one is graded first.
+  if (pad.rulesHeld) {
+    pad.strokes.pop();
+    pad.redraw();
+    pad.locked = true;
+    return;
+  }
+  const lessonGen = gen;
+  // R21-fix1: V16Rules grades only if the held stroke is still the pad's last stroke; unlock only a lock it added
+  if (window.V16Rules && V16Rules.holdStroke(box.k.k, pad, (release) => {
+    if (lessonGen === gen && boxes[boxIndex] === box && boxIndex === cur) {
+      if (release.lockedByR21) pad.locked = false;
+      onStroke(boxIndex, pad);
+    }
+  })) {
     return;
   }
   const strokeIndex = pad.strokes.length - 1;
@@ -2744,7 +2789,7 @@ function closeEnd() {
 }
 /** Seal + petals; records the completion and shows the next review interval. */
 function celebrate(k){if(window.V15UI)V15UI.onCelebrate(k);const key=k.isWord?'w:'+k.k:k.k,S=sess[key]||{clean:0,hints:0},r=recFinish(key,S.clean,S.hints),d=r.intervalDays;
- const s=$('seal');s.dataset.verdict='correct';s.dataset.kanji=k.k;s.innerHTML=`${k.k}<small>完了</small><i>done</i><em>Next review: ${d===1?'tomorrow':'in '+d+' days'}</em>`;s.classList.add('show');setTimeout(()=>s.classList.remove('show'),1600);
+ const s=$('seal');s.dataset.verdict='correct';s.dataset.kanji=k.k;s.innerHTML=`${k.k}<small>完了</small><i>done</i><em>Next review: ${d===0?'in '+(r.dueAt<36e5?Math.round(r.dueAt/6e4)+' min':Math.round(r.dueAt/36e5)+' h'):d===1?'tomorrow':'in '+d+' days'}</em>`;s.classList.add('show');setTimeout(()=>s.classList.remove('show'),1600);
  const cols=['#c7798a','#b5c99a','#8a9e6e','#f4d6dc'];for(let i=0;i<26;i++){const e=document.createElement('div');e.className='petal';const x=innerWidth/2+(Math.random()-.5)*260,y=innerHeight*.42+(Math.random()-.5)*120;
   e.style.cssText=`left:${x}px;top:${y}px;background:${cols[i%4]};--dx:${(Math.random()-.5)*520}px;--dy:${120+Math.random()*320}px;--r:${(Math.random()-.5)*720}deg;--t:${900+Math.random()*700}ms`;document.body.appendChild(e);setTimeout(()=>e.remove(),1700)}}
 
@@ -2841,12 +2886,266 @@ e.preventDefault();clearRawInk(this);if(window.V15UI&&V15UI.onStrokeStart)V15UI.
 /** Raw-ink overlay colour: dark red, 6.5:1 on the paper background. */
 const RAW_INK_COLOR = '#b3261e';
 /* undo/clear ignore a finished box (e.g. the last box after the lesson-end seal): clearing it used to leave it locked & empty */
-$('undo').onclick=()=>{const p=boxes[cur].pad;clearRawInk(p);if(flashing||sliding||boxes[cur].allDone)return;p.strokes.length?(p.undo(),upd()):0};
-$('clear').onclick=()=>{clearRawInk(boxes[cur].pad);if(flashing||sliding||boxes[cur].allDone)return;boxes[cur].pad.clear();boxes[cur].allDone=false;upd()};
+/* R21-fix1: also ignored while a stroke waits for its look-alike rules (V16Rules.isHeld): removing it would make the
+   release grade a missing stroke (TypeError) or re-grade an earlier one */
+const rulesHeld=(p)=>Boolean(window.V16Rules&&V16Rules.isHeld&&V16Rules.isHeld(p));
+$('undo').onclick=()=>{const p=boxes[cur].pad;clearRawInk(p);if(flashing||sliding||boxes[cur].allDone||rulesHeld(p))return;p.strokes.length?(p.undo(),upd()):0};
+$('clear').onclick=()=>{clearRawInk(boxes[cur].pad);if(flashing||sliding||boxes[cur].allDone||rulesHeld(boxes[cur].pad))return;boxes[cur].pad.clear();boxes[cur].allDone=false;upd()};
 $('prev').onclick=()=>{const ki=steps[cur].ki;if(ki>0)restartAt(ki-1)};   // stops at the ends (button greys out), no silent wrap
 $('next').onclick=()=>{const ki=steps[cur].ki;if(ki<D.length-1)restartAt(ki+1)};
 let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(layout,150)});
 document.addEventListener('gesturestart',e=>e.preventDefault());
+
+/* ==================== COMPONENT WRITING (v16 #8) — write one component of a kanji alone ==================== */
+/* At Bronze the learner writes only the newly learned component (radical) of a kanji, from memory, with the same
+ * lenient checker as the main boxes: lenient on position and size, strict on shape (hooks included, see
+ * resolvePartHookCategories). Nothing here records progress; the caller (UI / model) decides what the result means.
+ * API (also on window.KanjiWriting):
+ *   startComponentWrite(kanji, componentId, onResult, options) -> handle | null
+ *   checkStrokes(kanji, strokes, options) -> { ok, verdicts, target } ({ ok:false, notReady:true } while its rules load)
+ *   checkStrokesWhenReady(kanji, strokes, options) -> Promise of the checkStrokes result once the rules are loaded
+ *   componentTarget(kanji, componentId) -> part object to check against | null */
+
+/**
+ * Hook category for a component written alone. A part object (partObj) has k.k like "犬#0" and no entry of its own
+ * in HOOK_CATEGORIES, so its hooks were never checked and a missing or straight hook passed. Rather than edit the
+ * stroke checker (kept byte-identical to v15e), HookRules.categoryOf resolves such keys to the same stroke of the
+ * source kanji. Plain characters go straight through, unchanged.
+ */
+(function resolvePartHookCategories() {
+  const rules = window.HookRules;
+  if (!rules || rules.categoryOfPartAware) {
+    return;
+  }
+  const plainCategoryOf = rules.categoryOf;
+  rules.categoryOf = function categoryOf(char, i, table) {
+    const match = /^(.+)#(\d+)$/.exec(char);
+    const K = match && DATA.kanji[match[1]];
+    const part = K && K.parts[Number(match[2])];
+    if (part) {
+      return plainCategoryOf(K.k, part.from + i, table);
+    }
+    return plainCategoryOf(char, i, table);
+  };
+  rules.categoryOfPartAware = true;
+})();
+
+/** Defaults for component writing. */
+const COMPONENT_WRITE = {
+  LEVEL: 'L3',                 // memory (freehand) tolerances, as in the recall boxes
+  GUIDE: 'blank',              // 'blank' = from memory, 'faint' = trace over the component
+  MAX_MISSES_PER_STROKE: 3,    // this many rejects of one stroke end the attempt as not completed
+  FADE_MS: 360,                // a rejected stroke fades out over this long (same as reject())
+};
+
+/**
+ * The component of `kanji` to write, as a part object (partObj: its strokes scaled and centred in the box).
+ * componentId is the part index (0, 1, …), the component character as listed in the kanji's parts (e.g. '犬' → '大'),
+ * or a stroke range { from, to } that is exactly one part. Returns null when the kanji or component is unknown.
+ */
+function componentTarget(kanji, componentId) {
+  const K = DATA.kanji[kanji];
+  if (!K) {
+    return null;
+  }
+  const partIndex = componentPartIndex(K, componentId);
+  return partIndex < 0 ? null : partObj(K, partIndex);
+}
+
+/** Index in K.parts of componentId (see componentTarget), or -1. */
+function componentPartIndex(K, componentId) {
+  if (typeof componentId === 'number') {
+    return componentId >= 0 && componentId < K.parts.length ? componentId : -1;
+  }
+  if (componentId && typeof componentId === 'object') {
+    return K.parts.findIndex((p) => p.from === componentId.from && p.to === componentId.to);
+  }
+  return K.parts.findIndex((p) => p.g === componentId);
+}
+
+/**
+ * Check a whole set of strokes against a kanji, or against one of its components (options.component, or
+ * options.partRange = { from, to }). Strokes are pad strokes: { pointerType, pts: [{ x, y, p, t }] } in box units
+ * (0..1 of the box height). Each stroke is checked as if drawn in order, with the strokes before it as context.
+ * Returns { ok, verdicts: [checkStroke result per stroke], target } (target null and ok false for an unknown kanji).
+ */
+function checkStrokes(kanji, strokes, options = {}) {
+  const componentId = options.component !== undefined ? options.component : options.partRange;
+  const target = componentId === undefined ? DATA.kanji[kanji] || null : componentTarget(kanji, componentId);
+  if (!target) {
+    return { ok: false, verdicts: [], target: null };
+  }
+  // v16 R21-fix1: a sync caller before the rules are in gets "not ready" (and the load starts) instead of a throw;
+  // use checkStrokesWhenReady() to wait for them.
+  if (window.V16Rules && !V16Rules.isReady(target.k)) {
+    V16Rules.loadForKanji(target.k).catch(() => {});
+    return { ok: false, verdicts: [], target, notReady: true };
+  }
+  const level = options.level || COMPONENT_WRITE.LEVEL;
+  const verdicts = strokes.slice(0, target.strokes).map((stroke, i) => {
+    const earlier = strokes.slice(0, i).map((s, j) => ({ i: j, pts: s.pts }));
+    const verdict = checkStroke(target, i, stroke, level, earlier);
+    return verdict.redoFirst ? { ...verdict, ok: false } : verdict;
+  });
+  const ok = strokes.length === target.strokes && verdicts.every((v) => v.ok);
+  return { ok, verdicts, target };
+}
+
+/**
+ * Open a writing box for one component of `kanji` and check each stroke as it is drawn. A rejected stroke fades out
+ * and can be redrawn. When every stroke is in (or one stroke was rejected MAX_MISSES_PER_STROKE times, or the
+ * handle is cancelled) the box closes and onResult gets:
+ *   { kanji, componentId, component, partIndex, completed, clean, cancelled, misses, missesByStroke }
+ * clean = completed with no rejected stroke.
+ * options: container (element to draw in; default a centred overlay on the page), level ('L1' | 'L3'),
+ *   guide ('blank' | 'faint'), maxMissesPerStroke, keepOpen (leave the box on screen after the result).
+ * Returns { element, pad, target, cancel() }, or null (onResult not called) for an unknown kanji or component.
+ * The box element has class "component-write" and data-verdict / data-result for styling and tests.
+ */
+/** checkStrokes once the look-alike rules for the kanji/component are loaded (v16 R21-fix1). Promise of its result. */
+function checkStrokesWhenReady(kanji, strokes, options = {}) {
+  const componentId = options.component !== undefined ? options.component : options.partRange;
+  const target = componentId === undefined ? DATA.kanji[kanji] || null : componentTarget(kanji, componentId);
+  const ready = window.V16Rules && target ? V16Rules.loadForKanji(target.k) : Promise.resolve(true);
+  return ready.then(() => checkStrokes(kanji, strokes, options));
+}
+
+function startComponentWrite(kanji, componentId, onResult, options = {}) {
+  const target = componentTarget(kanji, componentId);
+  if (!target) {
+    return null;
+  }
+  if (window.V16Rules) {
+    V16Rules.loadForKanji(target.k).catch(() => {});   // v16 R21-fix1: preload, so the first stroke is rarely held
+  }
+  const level = options.level || COMPONENT_WRITE.LEVEL;
+  const maxMisses = options.maxMissesPerStroke || COMPONENT_WRITE.MAX_MISSES_PER_STROKE;
+  const missesByStroke = {};
+  const { element, overlay, canvas } = componentWriteBox(target, options);
+  const pad = new Pad(canvas);
+  let finished = false;
+
+  const finish = (completed, cancelled = false) => {
+    if (finished) {
+      return;
+    }
+    finished = true;
+    pad.locked = true;
+    const misses = Object.values(missesByStroke).reduce((sum, n) => sum + n, 0);
+    const result = {
+      kanji, componentId, component: target.parts[0].g, partIndex: target.pi,
+      completed, clean: completed && misses === 0, cancelled, misses, missesByStroke: { ...missesByStroke },
+    };
+    element.dataset.result = cancelled ? 'cancelled' : result.clean ? 'clean' : completed ? 'completed' : 'failed';
+    if (!options.keepOpen) {
+      (overlay || element).remove();
+    }
+    if (onResult) {
+      onResult(result);
+    }
+  };
+
+  const rejectStroke = (strokeIndex) => {
+    element.dataset.verdict = 'rejected';
+    missesByStroke[strokeIndex] = (missesByStroke[strokeIndex] || 0) + 1;
+    if (missesByStroke[strokeIndex] >= maxMisses) {
+      finish(false);
+    }
+  };
+
+  pad.onStroke = () => {
+    if (finished) {
+      return;
+    }
+    const strokeIndex = pad.strokes.length - 1;
+    if (strokeIndex >= target.strokes) {
+      dropStrayStroke({ k: target }, pad);
+      return;
+    }
+    // v16 R21: hold the stroke until the component's look-alike rules are loaded, then grade it (extra strokes meanwhile are dropped)
+    if (pad.rulesHeld) {
+      pad.strokes.pop();
+      pad.redraw();
+      pad.locked = true;
+      return;
+    }
+    if (window.V16Rules && V16Rules.holdStroke(target.k, pad, (release) => {
+      if (!finished) {
+        if (release.lockedByR21) pad.locked = false;   // R21-fix1: unlock only a lock the gate added
+        pad.onStroke();
+      }
+    })) {
+      return;
+    }
+    const earlier = pad.strokes.slice(0, strokeIndex).map((s, i) => ({ i, pts: s.pts }));
+    const verdict = checkStroke(target, strokeIndex, pad.strokes[strokeIndex], level, earlier);
+    if (verdict.redoFirst) {
+      pad.strokes.pop();                                // stroke 2 goes quietly; stroke 1 was the wrong one
+      fadeOutStroke(pad, pad.strokes.pop());
+      rejectStroke(0);
+      return;
+    }
+    if (!verdict.ok) {
+      fadeOutStroke(pad, pad.strokes.pop());
+      rejectStroke(strokeIndex);
+      return;
+    }
+    element.dataset.verdict = 'accepted';
+    if (strokeIndex === target.strokes - 1) {
+      finish(true);
+    }
+  };
+  pad.locked = false;
+  requestAnimationFrame(() => pad.resize());
+  return { element, pad, target, cancel: () => finish(false, true) };
+}
+
+/** The DOM for a component writing box: guide SVG + canvas, in options.container or a new centred overlay. */
+function componentWriteBox(target, options) {
+  const element = document.createElement('div');
+  element.className = 'component-write';
+  element.dataset.kanji = target.src.k;
+  element.dataset.component = target.parts[0].g;
+  element.style.cssText = 'position:relative;width:var(--cw-size,min(80vw,60vh));height:var(--cw-size,min(80vw,60vh))';
+  const guideSvg = guide(target, options.guide || COMPONENT_WRITE.GUIDE, false);
+  guideSvg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none';
+  element.appendChild(guideSvg);
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;touch-action:none';
+  element.appendChild(canvas);
+  let overlay = null;
+  if (options.container) {
+    options.container.appendChild(element);
+  } else {
+    overlay = document.createElement('div');
+    overlay.className = 'component-write-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;'
+      + 'background:rgba(253,250,245,.96)';
+    overlay.appendChild(element);
+    document.body.appendChild(overlay);
+  }
+  return { element, overlay, canvas };
+}
+
+/** Fade a stroke that was taken off the pad out in red, like reject() does in the main boxes. */
+function fadeOutStroke(pad, stroke) {
+  if (!stroke) {
+    return;
+  }
+  pad.fade = { s: stroke, t0: performance.now() };
+  const tick = () => {
+    pad.redraw();
+    if (pad.fade && performance.now() - pad.fade.t0 < COMPONENT_WRITE.FADE_MS) {
+      requestAnimationFrame(tick);
+    } else {
+      pad.fade = null;
+      pad.redraw();
+    }
+  };
+  tick();
+}
+
+window.KanjiWriting = { startComponentWrite, checkStrokes, checkStrokesWhenReady, componentTarget };
 
 /* ==================== SET PICKER — levels → lessons → words ==================== */
 /** Flattened list of lessons from DATA.levels (N5 now; add N4..N1 levels in data.js). */
@@ -2969,7 +3268,11 @@ function setTier(s){const T=s.words.map(w=>tier(w.w)),M=CONFIG.MASTERY;return T.
 /** Picker state: expanded lessons and the level tabs. */
 const openSets=new Set(),LEVELS=['あ','ア','部首','N5','N4','N3','N2','N1'];
 /** Level tab currently shown in the picker (remembered in localStorage "lv"). */
-const pickLv=()=>{const l=localStorage.getItem('lv');return LEVELS.includes(l)&&(SETS.some(s=>s.level===l)||levelFile(l))?l:(curSet&&LEVELS.includes(curSet.level)?curSet.level:'N5')}; // unknown stored value → default
+// v16 R18b (B2 QA #3): a tab tapped this session is shown even when empty ("coming soon"); the DEFAULT (stored "lv",
+// startup) is the first level that actually has lessons: stored lv → current lesson's level → N5…N1 → kana/部首.
+let lvTapped=null;
+const hasLessons=l=>LEVELS.includes(l)&&SETS.some(s=>s.level===l);
+const pickLv=()=>{if(lvTapped&&LEVELS.includes(lvTapped))return lvTapped;const order=[localStorage.getItem('lv'),curSet&&curSet.level,'N5','N4','N3','N2','N1',...LEVELS];return order.find(hasLessons)||'N5'};
 /* ==================== LAZY LEVEL DATA — N4–N1 files listed in levels.js (format: kanji-data/SCHEMA.md) ==================== */
 
 /** Data files that may be loaded on demand, from levels.js. */
@@ -3056,6 +3359,9 @@ async function ensureLevel(level) {
     return false;
   }
   mergeLevel(level);
+  if (window.V16Rules && (window.PROPORTION_RULES_INDEX || {})[level]) {
+    V16Rules.loadLevel(level).catch(() => {});   // v16 R21: start that level's look-alike rules too (not awaited: grading waits in V16Rules.holdStroke)
+  }
   const linkFile = (window.KANJI_LINK_FILES || []).find((name) => name === `links-${level}.js`);
   const sentenceFile = (window.KANJI_SENTENCE_FILES || []).find((name) => name === `sentences-${level}.js`);
   const topologyFile = (window.STROKE_TOPOLOGY_FILES || []).find((name) => name === `stroke-topology-${level}.js`);
@@ -3207,7 +3513,8 @@ function groupedPracticeSets() {
  * @param {string} level
  */
 async function setLv(level) {
-  localStorage.setItem('lv', level);
+  lvTapped = level;   // R18b: an explicit tap wins over the default
+  prefSet('lv', level);
   await ensureLevel(level);
   renderPicker();
 }
@@ -3795,8 +4102,9 @@ function resetLesson(){gen++;closeEnd();handoffStrokes.length=0;sliding=flashing
  document.querySelectorAll('.combo,.petal,.ring,.spark').forEach(e=>e.remove());$('seal').classList.remove('show');
  boxes.forEach(x=>{x.pad.locked=true;x.pad.strokes=[];x.pad.cur=null;x.pad.fade=null});boxes=[];Object.keys(sess).forEach(x=>delete sess[x])}
 /** Start lesson object L (a SETS entry or a custom search lesson) fresh at word wi. opts → makeSteps (force, kanjiOnly). */
-function loadLesson(L,opts={},wi=0){resetLesson();curSet=L;lessonOpts=opts;if(!L.custom){openSets.clear();openSets.add(L.id);localStorage.setItem('set',L.id)}
- D=L.words.map(w=>({k:w.w,w}));makeSteps({...opts,freshKi:opts.review?-1:wi});cur=Math.max(0,steps.findIndex(x=>x.ki===wi));$('klist').classList.remove('show');searching=false;build();requestAnimationFrame(()=>layout())}
+function loadLesson(L,opts={},wi=0){resetLesson();curSet=L;lessonOpts=opts;if(!L.custom){openSets.clear();openSets.add(L.id);prefSet('set',L.id)}
+ D=L.words.map(w=>({k:w.w,w}));makeSteps({...opts,freshKi:opts.review?-1:wi});cur=Math.max(0,steps.findIndex(x=>x.ki===wi));$('klist').classList.remove('show');searching=false;build();requestAnimationFrame(()=>layout());
+ if(window.V16Rules)V16Rules.loadForKanji(boxes.map(x=>x.k.k)).catch(()=>{})}   // v16 R21: start loading this lesson's rule files (every entry point comes here); strokes wait in V16Rules.holdStroke
 let lessonOpts={};
 /** Re-enter word wi of the current lesson from scratch (prev/next/picker). */
 function restartAt(wi){loadLesson(curSet,lessonOpts,wi)}
@@ -3805,6 +4113,10 @@ function loadSet(id,wi=0){const L=SETS.find(s=>s.id===id)||SETS[0];loadLesson(L,
 
 /* ==================== SERVICE WORKER + INIT ==================== */
 if(window.V15)V15.migrateOnce(localStorage,new Date().toISOString()); // v15: ranks from the old tint (rec:w:<k>.done), once
+if(window.V15&&V15.migrateScheduler)V15.migrateScheduler(localStorage); // v16 #1: rec: ladder → FSRS cards, once, due dates kept
+if(window.V15&&V15.setupSessionTiming&&window.SessionTimer)V15.setupSessionTiming(localStorage,window,document); // v16 R13: active study time
+if(window.V16Lazy)V16Lazy.deferUntilIdle(); // v16 R20: non-critical v16 models after first paint (v16-loader.js)
+if(window.V15&&V15.setupDataSafety&&window.DataSafety)V15.setupDataSafety(localStorage,window).catch(()=>{}); // v16 R18: persist/quota/backup mirror/recovery offer
 {const id=localStorage.getItem('set')||SETS[0].id,lv=(id.match(/^(N[1-4])-/)||[])[1];if(lv&&levelFile(lv))ensureLevel(lv).then(()=>loadSet(id));else loadSet(id)} // saved lesson in a lazy level: load its file first
 $('tspk').innerHTML=I_SPK;$('tspk').addEventListener('click',e=>{e.stopPropagation();speak(curReading())}); // direct gesture → speak
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js'); // offline cache (see sw.js)

@@ -3173,6 +3173,218 @@ window.CONFUSABLES={
   },
   {
    "chars": [
+    "持",
+    "特"
+   ],
+   "levels": [
+    "N4",
+    "N4"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 2,
+     "values": [
+      -34,
+      89
+     ],
+     "score": 4.92
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      9
+     ],
+     "values": [
+      9,
+      10
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "持特",
+   "note": "持 has the 'hand' radical 扌 (third stroke rises to the right); 特 has the 'cow' radical 牛, whose third stroke runs straight down."
+  },
+  {
+   "chars": [
+    "待",
+    "特"
+   ],
+   "levels": [
+    "N4",
+    "N4"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 1,
+     "values": [
+      128,
+      -7
+     ],
+     "score": 5.4
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      9
+     ],
+     "values": [
+      9,
+      10
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "待特",
+   "note": "待 starts with the slanted step radical 彳; 特 starts with the 'cow' radical 牛 (flat bar, 10 strokes in all)."
+  },
+  {
+   "chars": [
+    "険",
+    "験"
+   ],
+   "levels": [
+    "N3",
+    "N4"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "dir",
+     "stroke": 3,
+     "values": [
+      123,
+      -8
+     ],
+     "score": 5.24
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+     ],
+     "values": [
+      11,
+      18
+     ],
+     "score": 7.0
+    }
+   ],
+   "source": "kanji",
+   "group": "険験",
+   "note": "険 has the hill radical 阝 on the left (11 strokes); 験 has the horse radical 馬 (18 strokes)."
+  },
+  {
+   "chars": [
+    "犬",
+    "太"
+   ],
+   "levels": [
+    "N4",
+    "N3"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "ey",
+     "stroke": 3,
+     "values": [
+      0.282,
+      0.86
+     ],
+     "score": 4.82
+    }
+   ],
+   "source": "kanji",
+   "group": "犬太",
+   "note": "犬's dot sits at the top right; 太's dot sits low, under the crossing strokes."
+  },
+  {
+   "chars": [
+    "東",
+    "束"
+   ],
+   "levels": [
+    "N5",
+    "N3"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "ex",
+     "stroke": 6,
+     "values": [
+      0.172,
+      0.857
+     ],
+     "score": 5.71
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      7
+     ],
+     "values": [
+      8,
+      7
+     ],
+     "score": 1.0
+    }
+   ],
+   "source": "kanji",
+   "group": "東束",
+   "note": "東 has 日 in the middle (8 strokes); 束 has 口 (7 strokes), so its middle box is one bar shorter."
+  },
+  {
+   "chars": [
+    "官",
+    "宮"
+   ],
+   "levels": [
+    "N3",
+    "N1"
+   ],
+   "kind": "lookalike",
+   "distinguish": [
+    {
+     "feature": "len",
+     "stroke": 6,
+     "values": [
+      0.796,
+      0.195
+     ],
+     "score": 4.01
+    },
+    {
+     "feature": "strokeCount",
+     "strokes": [
+      8,
+      9
+     ],
+     "values": [
+      8,
+      10
+     ],
+     "score": 2.0
+    }
+   ],
+   "source": "kanji",
+   "group": "官宮",
+   "note": "官 has one connected shape 㠯 under the roof 宀 (8 strokes); 宮 has two separate boxes 口口 under it (10 strokes)."
+  },
+  {
+   "chars": [
     "且",
     "旦"
    ],

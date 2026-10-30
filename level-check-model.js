@@ -43,6 +43,47 @@
         ? Object.assign(x, { word: ReadingAnswer.drillWord(readingWords[x.kanji] || []) }) : x));
   }
 
+  /**
+   * v16 R30 (V16_PLAN #6, "interleaved sets ... in review and the level check"; F4 Rohrer & Taylor 2007):
+   * reorder a selected check so it is interleaved instead of blocked. selectKanji sorts by rank then code point,
+   * so a check is all reading items, then all writing items, in code-point order. Interleaving puts each item's
+   * look-alike right after it (contrast, like PracticeModel.mixedReview), then a kanji sharing a component with the
+   * previous one (休 then 体), and otherwise alternates reading and writing. Ties keep selectKanji's order.
+   * Order only: the same items (same objects, no new fields) and one item per kanji, so applyResults gives exactly
+   * the same rank changes. Deterministic (no randomness), so a resumed check and tests are stable.
+   * @param {object[]} items selectKanji output
+   * @param {{pairs?: {chars: string[]}[], componentsOf?: (k: string) => string[]}} opts pairs = CONFUSABLES.pairs
+   * @returns {object[]} the same items, reordered
+   */
+  /** a < b comparing arrays of numbers element by element (first difference decides). */
+  function lexLess(a, b) {
+    for (let n = 0; n < a.length; n += 1) if (a[n] !== b[n]) return a[n] < b[n];
+    return false;
+  }
+  function interleave(items, { pairs = [], componentsOf = () => [] } = {}) {
+    const partners = new Map();   // kanji -> Set of look-alikes
+    for (const p of pairs) {
+      const cs = (p && p.chars) || [];
+      for (const a of cs) for (const b of cs) if (a !== b) { if (!partners.has(a)) partners.set(a, new Set()); partners.get(a).add(b); }
+    }
+    const parts = new Map(items.map((x) => [x.kanji, new Set(componentsOf(x.kanji) || [])]));
+    const isPair = (a, b) => partners.has(a.kanji) && partners.get(a.kanji).has(b.kanji);
+    const sharesPart = (a, b) => [...parts.get(a.kanji)].some((c) => parts.get(b.kanji).has(c));
+    const pool = items.map((x, i) => ({ x, i }));
+    const out = [];
+    while (pool.length) {
+      const prev = out[out.length - 1];
+      let pick = 0, best = null;
+      pool.forEach(({ x, i }, j) => {
+        // lower is better: look-alike of prev, shares a component with prev, other kind than prev, original order
+        const key = prev ? [isPair(prev, x) ? 0 : 1, sharesPart(prev, x) ? 0 : 1, x.kind === prev.kind ? 1 : 0, i] : [0, 0, 0, i];
+        if (!best || lexLess(key, best)) { best = key; pick = j; }
+      });
+      out.push(pool.splice(pick, 1)[0].x);
+    }
+    return out;
+  }
+
   /** Outcome of a typed reading answer for a reading item: 'correct' or 'readingMiss' (ReadingAnswer matcher). */
   function readingOutcome(item, answer) {
     return item.word && ReadingAnswer.readingMatches(answer, item.word) ? 'correct' : 'readingMiss';
@@ -89,5 +130,5 @@
     return { state, changes };
   }
 
-  return { DEFAULT_SIZE, OUTCOME_EVENT, eventFor, selectKanji, readingOutcome, applyResults };
+  return { DEFAULT_SIZE, OUTCOME_EVENT, eventFor, selectKanji, interleave, readingOutcome, applyResults };
 });
