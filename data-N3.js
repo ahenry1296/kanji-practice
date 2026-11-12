@@ -28336,35 +28336,22 @@
      ]
     },
     {
-     "g": "人",
+     "g": "会",
      "pos": "right",
      "from": 6,
-     "to": 7,
-     "name": "ひと",
-     "nameSrc": "KANJIDIC2 kun",
-     "kw": null,
-     "kwSrc": "original keyword table",
-     "meanings": [
-      "person"
-     ],
-     "on": [
-      "ジン"
-     ]
-    },
-    {
-     "g": "云",
-     "pos": "right",
-     "from": 8,
      "to": 11,
-     "name": "い",
+     "name": "あ",
      "nameSrc": "KANJIDIC2 kun",
-     "kw": "say",
+     "kw": "meeting",
      "kwSrc": "KANJIDIC2",
      "meanings": [
-      "say"
+      "meeting",
+      "meet",
+      "party",
+      "association"
      ],
      "on": [
-      "ウン"
+      "カイ"
      ]
     }
    ],
@@ -39631,7 +39618,7 @@
   "凡": "ordinary",
   "自": "oneself",
   "CDP-8BC4": "spring source",
-  "云": "say",
+  "会": "meeting",
   "走": "run",
   "疒": "sickness",
   "彑": "pig snout",

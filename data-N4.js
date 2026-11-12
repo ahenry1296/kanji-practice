@@ -10548,52 +10548,22 @@
      ]
     },
     {
-     "g": "人",
+     "g": "合",
      "pos": "bottom",
      "from": 6,
-     "to": 7,
-     "name": "ひと",
-     "nameSrc": "KANJIDIC2 kun",
-     "kw": null,
-     "kwSrc": "original keyword table",
-     "meanings": [
-      "person"
-     ],
-     "on": [
-      "ジン"
-     ]
-    },
-    {
-     "g": "一",
-     "pos": "bottom",
-     "from": 8,
-     "to": 8,
-     "name": "ひと",
-     "nameSrc": "KANJIDIC2 kun",
-     "kw": null,
-     "kwSrc": "original keyword table",
-     "meanings": [
-      "one",
-      "one radical (no.1)"
-     ],
-     "on": [
-      "イチ"
-     ]
-    },
-    {
-     "g": "口",
-     "pos": "bottom",
-     "from": 9,
      "to": 11,
-     "name": "くち",
+     "name": "あ",
      "nameSrc": "KANJIDIC2 kun",
-     "kw": null,
-     "kwSrc": "original keyword table",
+     "kw": "fit",
+     "kwSrc": "KANJIDIC2",
      "meanings": [
-      "mouth"
+      "fit",
+      "suit",
+      "join",
+      "0.1"
      ],
      "on": [
-      "コウ"
+      "ゴウ"
      ]
     }
    ],
@@ -16774,6 +16744,7 @@
   "未": "not yet",
   "与": "bestow",
   "竹": "bamboo",
+  "合": "fit",
   "夜": "night",
   "巾": "cloth",
   "歌": "song",

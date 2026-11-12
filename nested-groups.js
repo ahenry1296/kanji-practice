@@ -16,10 +16,10 @@ window.KANJI_GROUPS={
  ],
  "丙": [
   {
-   "g": "内",
+   "g": "冂",
    "from": 1,
-   "to": 4,
-   "depth": 1
+   "to": 2,
+   "depth": 2
   }
  ],
  "丸": [
@@ -278,10 +278,10 @@ window.KANJI_GROUPS={
  ],
  "伏": [
   {
-   "g": "犬",
+   "g": "大",
    "from": 2,
-   "to": 5,
-   "depth": 1
+   "to": 4,
+   "depth": 2
   }
  ],
  "伐": [
@@ -325,12 +325,6 @@ window.KANJI_GROUPS={
   }
  ],
  "伶": [
-  {
-   "g": "人",
-   "from": 2,
-   "to": 3,
-   "depth": 2
-  },
   {
    "g": "マ",
    "from": 5,
@@ -866,12 +860,6 @@ window.KANJI_GROUPS={
  ],
  "倫": [
   {
-   "g": "人",
-   "from": 2,
-   "to": 3,
-   "depth": 2
-  },
-  {
    "g": "冊",
    "from": 5,
    "to": 9,
@@ -905,12 +893,6 @@ window.KANJI_GROUPS={
   }
  ],
  "倹": [
-  {
-   "g": "人",
-   "from": 2,
-   "to": 3,
-   "depth": 2
-  },
   {
    "g": "口",
    "from": 5,
@@ -1146,12 +1128,6 @@ window.KANJI_GROUPS={
    "from": 2,
    "to": 12,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 5,
-   "to": 6,
-   "depth": 3
   }
  ],
  "債": [
@@ -1271,12 +1247,6 @@ window.KANJI_GROUPS={
    "g": "三",
    "from": 9,
    "to": 11,
-   "depth": 2
-  },
-  {
-   "g": "人",
-   "from": 12,
-   "to": 13,
    "depth": 2
   }
  ],
@@ -1634,10 +1604,10 @@ window.KANJI_GROUPS={
  ],
  "再": [
   {
-   "g": "冉",
+   "g": "冂",
    "from": 1,
-   "to": 5,
-   "depth": 1
+   "to": 2,
+   "depth": 2
   }
  ],
  "冒": [
@@ -1672,23 +1642,9 @@ window.KANJI_GROUPS={
  ],
  "冷": [
   {
-   "g": "人",
-   "from": 2,
-   "to": 3,
-   "depth": 2
-  },
-  {
    "g": "マ",
    "from": 5,
    "to": 6,
-   "depth": 2
-  }
- ],
- "准": [
-  {
-   "g": "亻",
-   "from": 2,
-   "to": 3,
    "depth": 2
   }
  ],
@@ -1805,12 +1761,6 @@ window.KANJI_GROUPS={
    "g": "卜",
    "from": 12,
    "to": 13,
-   "depth": 3
-  },
-  {
-   "g": "人",
-   "from": 14,
-   "to": 15,
    "depth": 3
   }
  ],
@@ -2020,12 +1970,6 @@ window.KANJI_GROUPS={
  ],
  "剣": [
   {
-   "g": "人",
-   "from": 0,
-   "to": 1,
-   "depth": 2
-  },
-  {
    "g": "口",
    "from": 3,
    "to": 5,
@@ -2101,12 +2045,6 @@ window.KANJI_GROUPS={
   }
  ],
  "創": [
-  {
-   "g": "人",
-   "from": 0,
-   "to": 1,
-   "depth": 2
-  },
   {
    "g": "口",
    "from": 7,
@@ -2376,12 +2314,6 @@ window.KANJI_GROUPS={
    "from": 3,
    "to": 10,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 3,
-   "to": 4,
-   "depth": 2
   },
   {
    "g": "力",
@@ -2686,12 +2618,6 @@ window.KANJI_GROUPS={
  ],
  "叙": [
   {
-   "g": "人",
-   "from": 0,
-   "to": 1,
-   "depth": 2
-  },
-  {
    "g": "小",
    "from": 4,
    "to": 6,
@@ -2762,22 +2688,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 3,
    "depth": 1
-  }
- ],
- "吟": [
-  {
-   "g": "人",
-   "from": 3,
-   "to": 4,
-   "depth": 2
-  }
- ],
- "含": [
-  {
-   "g": "人",
-   "from": 0,
-   "to": 1,
-   "depth": 2
   }
  ],
  "吸": [
@@ -2908,14 +2818,6 @@ window.KANJI_GROUPS={
    "depth": 2
   }
  ],
- "唯": [
-  {
-   "g": "亻",
-   "from": 3,
-   "to": 4,
-   "depth": 2
-  }
- ],
  "唱": [
   {
    "g": "昌",
@@ -3041,12 +2943,6 @@ window.KANJI_GROUPS={
    "g": "勹",
    "from": 7,
    "to": 8,
-   "depth": 3
-  },
-  {
-   "g": "人",
-   "from": 9,
-   "to": 10,
    "depth": 3
   },
   {
@@ -3267,14 +3163,6 @@ window.KANJI_GROUPS={
    "g": "口",
    "from": 4,
    "to": 6,
-   "depth": 2
-  }
- ],
- "国": [
-  {
-   "g": "王",
-   "from": 2,
-   "to": 5,
    "depth": 2
   }
  ],
@@ -3560,12 +3448,6 @@ window.KANJI_GROUPS={
    "from": 8,
    "to": 9,
    "depth": 4
-  },
-  {
-   "g": "人",
-   "from": 10,
-   "to": 11,
-   "depth": 4
   }
  ],
  "堪": [
@@ -3722,12 +3604,6 @@ window.KANJI_GROUPS={
    "depth": 1
   },
   {
-   "g": "人",
-   "from": 6,
-   "to": 7,
-   "depth": 3
-  },
-  {
    "g": "口",
    "from": 9,
    "to": 11,
@@ -3740,12 +3616,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 9,
    "depth": 1
-  },
-  {
-   "g": "人",
-   "from": 3,
-   "to": 4,
-   "depth": 3
   },
   {
    "g": "小",
@@ -4176,12 +4046,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 10,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 3,
-   "to": 4,
-   "depth": 3
   }
  ],
  "奮": [
@@ -4190,12 +4054,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 10,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 3,
-   "to": 4,
-   "depth": 3
   }
  ],
  "妄": [
@@ -4369,12 +4227,6 @@ window.KANJI_GROUPS={
    "g": "卜",
    "from": 4,
    "to": 5,
-   "depth": 3
-  },
-  {
-   "g": "人",
-   "from": 6,
-   "to": 7,
    "depth": 3
   }
  ],
@@ -4708,12 +4560,6 @@ window.KANJI_GROUPS={
    "from": 4,
    "to": 5,
    "depth": 3
-  },
-  {
-   "g": "人",
-   "from": 6,
-   "to": 7,
-   "depth": 3
   }
  ],
  "宜": [
@@ -4736,12 +4582,6 @@ window.KANJI_GROUPS={
    "from": 1,
    "to": 2,
    "depth": 2
-  },
-  {
-   "g": "玉",
-   "from": 3,
-   "to": 7,
-   "depth": 1
   }
  ],
  "実": [
@@ -5512,12 +5352,6 @@ window.KANJI_GROUPS={
    "depth": 1
   },
   {
-   "g": "亻",
-   "from": 4,
-   "to": 5,
-   "depth": 3
-  },
-  {
    "g": "𠂉",
    "from": 6,
    "to": 7,
@@ -5792,12 +5626,6 @@ window.KANJI_GROUPS={
    "from": 3,
    "to": 16,
    "depth": 1
-  },
-  {
-   "g": "人",
-   "from": 3,
-   "to": 4,
-   "depth": 3
   },
   {
    "g": "マ",
@@ -6190,14 +6018,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 2,
    "depth": 1
-  }
- ],
- "幾": [
-  {
-   "g": "人",
-   "from": 7,
-   "to": 8,
-   "depth": 2
   }
  ],
  "庁": [
@@ -6650,7 +6470,7 @@ window.KANJI_GROUPS={
    "depth": 1
   },
   {
-   "g": "士",
+   "g": "土",
    "from": 2,
    "to": 4,
    "depth": 3
@@ -6736,33 +6556,13 @@ window.KANJI_GROUPS={
  ],
  "役": [
   {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  },
-  {
    "g": "殳",
    "from": 3,
    "to": 6,
    "depth": 1
   }
  ],
- "彼": [
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  }
- ],
  "往": [
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  },
   {
    "g": "主",
    "from": 3,
@@ -6771,12 +6571,6 @@ window.KANJI_GROUPS={
   }
  ],
  "征": [
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  },
   {
    "g": "止",
    "from": 4,
@@ -6792,12 +6586,6 @@ window.KANJI_GROUPS={
  ],
  "径": [
   {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  },
-  {
    "g": "圣",
    "from": 3,
    "to": 7,
@@ -6805,12 +6593,6 @@ window.KANJI_GROUPS={
   }
  ],
  "待": [
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  },
   {
    "g": "寺",
    "from": 3,
@@ -6820,39 +6602,13 @@ window.KANJI_GROUPS={
  ],
  "律": [
   {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  },
-  {
    "g": "⺕",
    "from": 3,
    "to": 5,
    "depth": 2
   }
  ],
- "後": [
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  }
- ],
  "徐": [
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  },
-  {
-   "g": "人",
-   "from": 3,
-   "to": 4,
-   "depth": 2
-  },
   {
    "g": "小",
    "from": 7,
@@ -6861,12 +6617,6 @@ window.KANJI_GROUPS={
   }
  ],
  "徒": [
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  },
   {
    "g": "走",
    "from": 3,
@@ -6880,12 +6630,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 2,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
   },
   {
    "g": "疋",
@@ -6904,21 +6648,9 @@ window.KANJI_GROUPS={
    "from": 6,
    "to": 7,
    "depth": 3
-  },
-  {
-   "g": "人",
-   "from": 8,
-   "to": 9,
-   "depth": 3
   }
  ],
  "得": [
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  },
   {
    "g": "㝵",
    "from": 3,
@@ -6933,12 +6665,6 @@ window.KANJI_GROUPS={
   }
  ],
  "御": [
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  },
   {
    "g": "午",
    "from": 3,
@@ -6960,12 +6686,6 @@ window.KANJI_GROUPS={
  ],
  "復": [
   {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  },
-  {
    "g": "复",
    "from": 3,
    "to": 11,
@@ -6973,12 +6693,6 @@ window.KANJI_GROUPS={
   }
  ],
  "循": [
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  },
   {
    "g": "盾",
    "from": 3,
@@ -6992,12 +6706,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 2,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
   },
   {
    "g": "山",
@@ -7044,12 +6752,6 @@ window.KANJI_GROUPS={
    "depth": 1
   },
   {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  },
-  {
    "g": "十",
    "from": 3,
    "to": 4,
@@ -7074,12 +6776,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 2,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
   },
   {
    "g": "山",
@@ -7113,12 +6809,6 @@ window.KANJI_GROUPS={
   }
  ],
  "徹": [
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
-  },
   {
    "g": "亠",
    "from": 3,
@@ -7204,14 +6894,6 @@ window.KANJI_GROUPS={
    "depth": 3
   }
  ],
- "念": [
-  {
-   "g": "人",
-   "from": 0,
-   "to": 1,
-   "depth": 2
-  }
- ],
  "怒": [
   {
    "g": "奴",
@@ -7229,12 +6911,6 @@ window.KANJI_GROUPS={
   }
  ],
  "怜": [
-  {
-   "g": "人",
-   "from": 3,
-   "to": 4,
-   "depth": 2
-  },
   {
    "g": "マ",
    "from": 6,
@@ -7519,14 +7195,6 @@ window.KANJI_GROUPS={
    "g": "日",
    "from": 7,
    "to": 10,
-   "depth": 2
-  }
- ],
- "惟": [
-  {
-   "g": "亻",
-   "from": 3,
-   "to": 4,
    "depth": 2
   }
  ],
@@ -8082,12 +7750,6 @@ window.KANJI_GROUPS={
    "depth": 2
   },
   {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 3
-  },
-  {
    "g": "山",
    "from": 3,
    "to": 5,
@@ -8434,20 +8096,14 @@ window.KANJI_GROUPS={
    "from": 3,
    "to": 8,
    "depth": 1
-  },
-  {
-   "g": "土",
-   "from": 3,
-   "to": 5,
-   "depth": 3
   }
  ],
  "拾": [
   {
-   "g": "合",
-   "from": 3,
+   "g": "口",
+   "from": 6,
    "to": 8,
-   "depth": 1
+   "depth": 2
   }
  ],
  "持": [
@@ -8540,13 +8196,13 @@ window.KANJI_GROUPS={
  ],
  "捨": [
   {
-   "g": "舎",
-   "from": 3,
+   "g": "吉",
+   "from": 5,
    "to": 10,
-   "depth": 1
+   "depth": 2
   },
   {
-   "g": "士",
+   "g": "土",
    "from": 5,
    "to": 7,
    "depth": 3
@@ -8780,14 +8436,6 @@ window.KANJI_GROUPS={
    "depth": 3
   }
  ],
- "推": [
-  {
-   "g": "亻",
-   "from": 3,
-   "to": 4,
-   "depth": 2
-  }
- ],
  "措": [
   {
    "g": "廾",
@@ -8813,12 +8461,6 @@ window.KANJI_GROUPS={
    "g": "勹",
    "from": 7,
    "to": 8,
-   "depth": 3
-  },
-  {
-   "g": "人",
-   "from": 9,
-   "to": 10,
    "depth": 3
   },
   {
@@ -8853,12 +8495,6 @@ window.KANJI_GROUPS={
    "g": "卜",
    "from": 8,
    "to": 9,
-   "depth": 4
-  },
-  {
-   "g": "人",
-   "from": 10,
-   "to": 11,
    "depth": 4
   }
  ],
@@ -9018,12 +8654,6 @@ window.KANJI_GROUPS={
    "depth": 1
   },
   {
-   "g": "人",
-   "from": 6,
-   "to": 7,
-   "depth": 3
-  },
-  {
    "g": "口",
    "from": 9,
    "to": 11,
@@ -9036,12 +8666,6 @@ window.KANJI_GROUPS={
    "from": 3,
    "to": 12,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 3,
-   "to": 4,
-   "depth": 3
   }
  ],
  "搾": [
@@ -9232,12 +8856,6 @@ window.KANJI_GROUPS={
    "from": 10,
    "to": 12,
    "depth": 2
-  },
-  {
-   "g": "人",
-   "from": 13,
-   "to": 14,
-   "depth": 2
   }
  ],
  "擁": [
@@ -9258,12 +8876,6 @@ window.KANJI_GROUPS={
    "from": 8,
    "to": 15,
    "depth": 2
-  },
-  {
-   "g": "亻",
-   "from": 8,
-   "to": 9,
-   "depth": 3
   }
  ],
  "操": [
@@ -9359,12 +8971,6 @@ window.KANJI_GROUPS={
    "g": "卜",
    "from": 13,
    "to": 14,
-   "depth": 3
-  },
-  {
-   "g": "人",
-   "from": 15,
-   "to": 16,
    "depth": 3
   }
  ],
@@ -9534,12 +9140,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 6,
    "depth": 1
-  },
-  {
-   "g": "土",
-   "from": 0,
-   "to": 2,
-   "depth": 3
   },
   {
    "g": "𠂉",
@@ -9878,12 +9478,6 @@ window.KANJI_GROUPS={
  ],
  "斜": [
   {
-   "g": "人",
-   "from": 0,
-   "to": 1,
-   "depth": 2
-  },
-  {
    "g": "小",
    "from": 4,
    "to": 6,
@@ -9985,12 +9579,6 @@ window.KANJI_GROUPS={
    "g": "卜",
    "from": 7,
    "to": 8,
-   "depth": 2
-  },
-  {
-   "g": "人",
-   "from": 9,
-   "to": 10,
    "depth": 2
   }
  ],
@@ -10126,12 +9714,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 4,
    "depth": 1
-  },
-  {
-   "g": "人",
-   "from": 3,
-   "to": 4,
-   "depth": 3
   }
  ],
  "昭": [
@@ -10153,12 +9735,6 @@ window.KANJI_GROUPS={
    "g": "卜",
    "from": 5,
    "to": 6,
-   "depth": 3
-  },
-  {
-   "g": "人",
-   "from": 7,
-   "to": 8,
    "depth": 3
   }
  ],
@@ -10354,12 +9930,6 @@ window.KANJI_GROUPS={
    "from": 4,
    "to": 11,
    "depth": 1
-  },
-  {
-   "g": "土",
-   "from": 4,
-   "to": 6,
-   "depth": 3
   }
  ],
  "暖": [
@@ -10512,12 +10082,6 @@ window.KANJI_GROUPS={
    "depth": 3
   },
   {
-   "g": "土",
-   "from": 9,
-   "to": 11,
-   "depth": 4
-  },
-  {
    "g": "日",
    "from": 13,
    "to": 16,
@@ -10530,12 +10094,6 @@ window.KANJI_GROUPS={
    "from": 4,
    "to": 17,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 10,
-   "to": 11,
-   "depth": 3
   }
  ],
  "書": [
@@ -10812,12 +10370,6 @@ window.KANJI_GROUPS={
    "from": 5,
    "to": 6,
    "depth": 3
-  },
-  {
-   "g": "人",
-   "from": 7,
-   "to": 8,
-   "depth": 3
   }
  ],
  "柊": [
@@ -10904,10 +10456,10 @@ window.KANJI_GROUPS={
  ],
  "栓": [
   {
-   "g": "全",
-   "from": 4,
+   "g": "王",
+   "from": 6,
    "to": 9,
-   "depth": 1
+   "depth": 2
   }
  ],
  "栞": [
@@ -11282,21 +10834,7 @@ window.KANJI_GROUPS={
    "depth": 2
   }
  ],
- "椎": [
-  {
-   "g": "亻",
-   "from": 4,
-   "to": 5,
-   "depth": 2
-  }
- ],
  "検": [
-  {
-   "g": "人",
-   "from": 4,
-   "to": 5,
-   "depth": 2
-  },
   {
    "g": "口",
    "from": 7,
@@ -11522,12 +11060,6 @@ window.KANJI_GROUPS={
    "from": 9,
    "to": 10,
    "depth": 4
-  },
-  {
-   "g": "土",
-   "from": 11,
-   "to": 13,
-   "depth": 4
   }
  ],
  "様": [
@@ -11644,12 +11176,6 @@ window.KANJI_GROUPS={
    "from": 7,
    "to": 14,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 7,
-   "to": 8,
-   "depth": 2
   }
  ],
  "横": [
@@ -11662,7 +11188,7 @@ window.KANJI_GROUPS={
  ],
  "樹": [
   {
-   "g": "士",
+   "g": "土",
    "from": 4,
    "to": 6,
    "depth": 3
@@ -11770,12 +11296,6 @@ window.KANJI_GROUPS={
    "from": 4,
    "to": 15,
    "depth": 1
-  },
-  {
-   "g": "人",
-   "from": 11,
-   "to": 12,
-   "depth": 3
   }
  ],
  "檀": [
@@ -11910,12 +11430,6 @@ window.KANJI_GROUPS={
    "from": 3,
    "to": 10,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 3,
-   "to": 4,
-   "depth": 2
   },
   {
    "g": "欠",
@@ -12550,14 +12064,6 @@ window.KANJI_GROUPS={
    "depth": 1
   }
  ],
- "派": [
-  {
-   "g": "亻",
-   "from": 5,
-   "to": 6,
-   "depth": 2
-  }
- ],
  "流": [
   {
    "g": "亠",
@@ -12900,12 +12406,6 @@ window.KANJI_GROUPS={
    "depth": 3
   },
   {
-   "g": "人",
-   "from": 9,
-   "to": 10,
-   "depth": 3
-  },
-  {
    "g": "匕",
    "from": 9,
    "to": 10,
@@ -13004,12 +12504,6 @@ window.KANJI_GROUPS={
    "from": 3,
    "to": 10,
    "depth": 1
-  },
-  {
-   "g": "土",
-   "from": 3,
-   "to": 5,
-   "depth": 3
   }
  ],
  "減": [
@@ -13256,12 +12750,6 @@ window.KANJI_GROUPS={
    "depth": 2
   },
   {
-   "g": "亻",
-   "from": 3,
-   "to": 4,
-   "depth": 3
-  },
-  {
    "g": "十",
    "from": 11,
    "to": 12,
@@ -13285,12 +12773,6 @@ window.KANJI_GROUPS={
    "g": "冂",
    "from": 8,
    "to": 9,
-   "depth": 4
-  },
-  {
-   "g": "土",
-   "from": 10,
-   "to": 12,
    "depth": 4
   }
  ],
@@ -13758,12 +13240,6 @@ window.KANJI_GROUPS={
    "depth": 1
   },
   {
-   "g": "人",
-   "from": 11,
-   "to": 12,
-   "depth": 3
-  },
-  {
    "g": "マ",
    "from": 14,
    "to": 15,
@@ -13886,12 +13362,6 @@ window.KANJI_GROUPS={
    "from": 3,
    "to": 16,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 9,
-   "to": 10,
-   "depth": 3
   }
  ],
  "瀬": [
@@ -13970,14 +13440,6 @@ window.KANJI_GROUPS={
    "from": 1,
    "to": 3,
    "depth": 3
-  }
- ],
- "焦": [
-  {
-   "g": "亻",
-   "from": 0,
-   "to": 1,
-   "depth": 2
   }
  ],
  "然": [
@@ -14062,12 +13524,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 7,
    "depth": 1
-  },
-  {
-   "g": "土",
-   "from": 0,
-   "to": 2,
-   "depth": 3
   }
  ],
  "熊": [
@@ -14290,12 +13746,6 @@ window.KANJI_GROUPS={
    "from": 4,
    "to": 17,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 10,
-   "to": 11,
-   "depth": 3
   }
  ],
  "爆": [
@@ -14518,12 +13968,6 @@ window.KANJI_GROUPS={
    "from": 3,
    "to": 10,
    "depth": 1
-  },
-  {
-   "g": "土",
-   "from": 3,
-   "to": 5,
-   "depth": 3
   }
  ],
  "猫": [
@@ -14648,12 +14092,6 @@ window.KANJI_GROUPS={
    "depth": 3
   },
   {
-   "g": "亻",
-   "from": 6,
-   "to": 7,
-   "depth": 4
-  },
-  {
    "g": "又",
    "from": 14,
    "to": 15,
@@ -14701,12 +14139,6 @@ window.KANJI_GROUPS={
   }
  ],
  "玲": [
-  {
-   "g": "人",
-   "from": 4,
-   "to": 5,
-   "depth": 2
-  },
   {
    "g": "マ",
    "from": 7,
@@ -14778,14 +14210,6 @@ window.KANJI_GROUPS={
    "from": 4,
    "to": 11,
    "depth": 1
-  }
- ],
- "琴": [
-  {
-   "g": "人",
-   "from": 8,
-   "to": 9,
-   "depth": 2
   }
  ],
  "瑚": [
@@ -14978,14 +14402,6 @@ window.KANJI_GROUPS={
    "depth": 2
   }
  ],
- "界": [
-  {
-   "g": "人",
-   "from": 5,
-   "to": 6,
-   "depth": 2
-  }
- ],
  "畔": [
   {
    "g": "十",
@@ -15070,12 +14486,6 @@ window.KANJI_GROUPS={
    "depth": 2
   },
   {
-   "g": "人",
-   "from": 3,
-   "to": 4,
-   "depth": 2
-  },
-  {
    "g": "束",
    "from": 5,
    "to": 11,
@@ -15099,12 +14509,6 @@ window.KANJI_GROUPS={
    "g": "卜",
    "from": 10,
    "to": 11,
-   "depth": 2
-  },
-  {
-   "g": "人",
-   "from": 12,
-   "to": 13,
    "depth": 2
   }
  ],
@@ -15141,12 +14545,6 @@ window.KANJI_GROUPS={
    "g": "冂",
    "from": 6,
    "to": 7,
-   "depth": 3
-  },
-  {
-   "g": "人",
-   "from": 8,
-   "to": 9,
    "depth": 3
   }
  ],
@@ -15537,14 +14935,6 @@ window.KANJI_GROUPS={
    "g": "冫",
    "from": 6,
    "to": 7,
-   "depth": 2
-  }
- ],
- "睡": [
-  {
-   "g": "土",
-   "from": 10,
-   "to": 12,
    "depth": 2
   }
  ],
@@ -15994,12 +15384,6 @@ window.KANJI_GROUPS={
    "from": 5,
    "to": 6,
    "depth": 3
-  },
-  {
-   "g": "亻",
-   "from": 7,
-   "to": 8,
-   "depth": 3
   }
  ],
  "磁": [
@@ -16078,12 +15462,6 @@ window.KANJI_GROUPS={
    "from": 5,
    "to": 16,
    "depth": 1
-  },
-  {
-   "g": "人",
-   "from": 12,
-   "to": 13,
-   "depth": 3
   }
  ],
  "礁": [
@@ -16098,12 +15476,6 @@ window.KANJI_GROUPS={
    "from": 5,
    "to": 16,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 5,
-   "to": 6,
-   "depth": 3
   }
  ],
  "礎": [
@@ -16135,12 +15507,6 @@ window.KANJI_GROUPS={
    "g": "卜",
    "from": 14,
    "to": 15,
-   "depth": 3
-  },
-  {
-   "g": "人",
-   "from": 16,
-   "to": 17,
    "depth": 3
   }
  ],
@@ -16484,12 +15850,6 @@ window.KANJI_GROUPS={
    "from": 5,
    "to": 12,
    "depth": 1
-  },
-  {
-   "g": "人",
-   "from": 5,
-   "to": 6,
-   "depth": 3
   }
  ],
  "稚": [
@@ -16497,12 +15857,6 @@ window.KANJI_GROUPS={
    "g": "木",
    "from": 1,
    "to": 4,
-   "depth": 2
-  },
-  {
-   "g": "亻",
-   "from": 5,
-   "to": 6,
    "depth": 2
   }
  ],
@@ -16784,12 +16138,6 @@ window.KANJI_GROUPS={
    "from": 8,
    "to": 15,
    "depth": 3
-  },
-  {
-   "g": "亻",
-   "from": 8,
-   "to": 9,
-   "depth": 4
   },
   {
    "g": "又",
@@ -17228,10 +16576,10 @@ window.KANJI_GROUPS={
  ],
  "答": [
   {
-   "g": "合",
-   "from": 6,
+   "g": "口",
+   "from": 9,
    "to": 11,
-   "depth": 1
+   "depth": 2
   }
  ],
  "策": [
@@ -17530,10 +16878,10 @@ window.KANJI_GROUPS={
  ],
  "納": [
   {
-   "g": "内",
+   "g": "冂",
    "from": 6,
-   "to": 9,
-   "depth": 1
+   "to": 7,
+   "depth": 2
   }
  ],
  "純": [
@@ -17708,12 +17056,6 @@ window.KANJI_GROUPS={
  ],
  "給": [
   {
-   "g": "人",
-   "from": 6,
-   "to": 7,
-   "depth": 2
-  },
-  {
    "g": "口",
    "from": 9,
    "to": 11,
@@ -17748,10 +17090,10 @@ window.KANJI_GROUPS={
  ],
  "絵": [
   {
-   "g": "会",
-   "from": 6,
+   "g": "云",
+   "from": 8,
    "to": 11,
-   "depth": 1
+   "depth": 2
   },
   {
    "g": "二",
@@ -17836,14 +17178,6 @@ window.KANJI_GROUPS={
    "depth": 3
   }
  ],
- "維": [
-  {
-   "g": "亻",
-   "from": 6,
-   "to": 7,
-   "depth": 2
-  }
- ],
  "綱": [
   {
    "g": "冂",
@@ -17879,12 +17213,6 @@ window.KANJI_GROUPS={
   }
  ],
  "綸": [
-  {
-   "g": "人",
-   "from": 6,
-   "to": 7,
-   "depth": 2
-  },
   {
    "g": "冊",
    "from": 9,
@@ -17998,12 +17326,6 @@ window.KANJI_GROUPS={
    "from": 6,
    "to": 13,
    "depth": 1
-  },
-  {
-   "g": "土",
-   "from": 6,
-   "to": 8,
-   "depth": 3
   }
  ],
  "線": [
@@ -18152,12 +17474,6 @@ window.KANJI_GROUPS={
    "depth": 2
   },
   {
-   "g": "亻",
-   "from": 7,
-   "to": 8,
-   "depth": 3
-  },
-  {
    "g": "疋",
    "from": 11,
    "to": 15,
@@ -18173,12 +17489,6 @@ window.KANJI_GROUPS={
    "g": "卜",
    "from": 12,
    "to": 13,
-   "depth": 4
-  },
-  {
-   "g": "人",
-   "from": 14,
-   "to": 15,
    "depth": 4
   }
  ],
@@ -18430,12 +17740,6 @@ window.KANJI_GROUPS={
    "from": 5,
    "to": 12,
    "depth": 1
-  },
-  {
-   "g": "土",
-   "from": 5,
-   "to": 7,
-   "depth": 3
   }
  ],
  "罷": [
@@ -18476,12 +17780,6 @@ window.KANJI_GROUPS={
    "from": 5,
    "to": 18,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 11,
-   "to": 12,
-   "depth": 3
   }
  ],
  "羊": [
@@ -18636,36 +17934,6 @@ window.KANJI_GROUPS={
    "from": 6,
    "to": 19,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 12,
-   "to": 13,
-   "depth": 3
-  }
- ],
- "老": [
-  {
-   "g": "土",
-   "from": 0,
-   "to": 2,
-   "depth": 2
-  }
- ],
- "考": [
-  {
-   "g": "土",
-   "from": 0,
-   "to": 2,
-   "depth": 2
-  }
- ],
- "者": [
-  {
-   "g": "土",
-   "from": 0,
-   "to": 2,
-   "depth": 2
   }
  ],
  "耕": [
@@ -18914,14 +18182,6 @@ window.KANJI_GROUPS={
    "depth": 2
   }
  ],
- "脈": [
-  {
-   "g": "亻",
-   "from": 6,
-   "to": 7,
-   "depth": 2
-  }
- ],
  "脚": [
   {
    "g": "却",
@@ -19132,7 +18392,7 @@ window.KANJI_GROUPS={
    "depth": 1
   },
   {
-   "g": "士",
+   "g": "土",
    "from": 4,
    "to": 6,
    "depth": 4
@@ -19264,7 +18524,7 @@ window.KANJI_GROUPS={
  ],
  "舗": [
   {
-   "g": "士",
+   "g": "土",
    "from": 2,
    "to": 4,
    "depth": 2
@@ -19786,12 +19046,6 @@ window.KANJI_GROUPS={
    "from": 3,
    "to": 10,
    "depth": 1
-  },
-  {
-   "g": "土",
-   "from": 3,
-   "to": 5,
-   "depth": 3
   }
  ],
  "葬": [
@@ -19876,12 +19130,6 @@ window.KANJI_GROUPS={
  ],
  "蒼": [
   {
-   "g": "人",
-   "from": 3,
-   "to": 4,
-   "depth": 2
-  },
-  {
    "g": "口",
    "from": 10,
    "to": 12,
@@ -19950,12 +19198,6 @@ window.KANJI_GROUPS={
    "from": 3,
    "to": 14,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 3,
-   "to": 4,
-   "depth": 3
   }
  ],
  "蕗": [
@@ -20510,12 +19752,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 2,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 2
   }
  ],
  "術": [
@@ -20524,12 +19760,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 2,
    "depth": 2
-  },
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 3
   },
   {
    "g": "朮",
@@ -20552,12 +19782,6 @@ window.KANJI_GROUPS={
    "depth": 2
   },
   {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 3
-  },
-  {
    "g": "土",
    "from": 3,
    "to": 5,
@@ -20578,12 +19802,6 @@ window.KANJI_GROUPS={
    "depth": 2
   },
   {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 3
-  },
-  {
    "g": "口",
    "from": 6,
    "to": 8,
@@ -20598,12 +19816,6 @@ window.KANJI_GROUPS={
    "depth": 2
   },
   {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 3
-  },
-  {
    "g": "里",
    "from": 5,
    "to": 11,
@@ -20616,12 +19828,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 2,
    "depth": 2
-  },
-  {
-   "g": "亻",
-   "from": 1,
-   "to": 2,
-   "depth": 3
   },
   {
    "g": "𠂊",
@@ -20664,14 +19870,6 @@ window.KANJI_GROUPS={
    "from": 1,
    "to": 3,
    "depth": 1
-  }
- ],
- "衿": [
-  {
-   "g": "人",
-   "from": 5,
-   "to": 6,
-   "depth": 2
   }
  ],
  "袈": [
@@ -20856,12 +20054,6 @@ window.KANJI_GROUPS={
    "depth": 3
   },
   {
-   "g": "人",
-   "from": 11,
-   "to": 12,
-   "depth": 3
-  },
-  {
    "g": "匕",
    "from": 11,
    "to": 12,
@@ -20952,12 +20144,6 @@ window.KANJI_GROUPS={
    "from": 6,
    "to": 17,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 7,
-   "to": 8,
-   "depth": 3
   },
   {
    "g": "𠂉",
@@ -21110,12 +20296,6 @@ window.KANJI_GROUPS={
    "from": 3,
    "to": 10,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 3,
-   "to": 4,
-   "depth": 2
   },
   {
    "g": "見",
@@ -21808,7 +20988,7 @@ window.KANJI_GROUPS={
    "depth": 1
   },
   {
-   "g": "士",
+   "g": "土",
    "from": 9,
    "to": 11,
    "depth": 3
@@ -21908,12 +21088,6 @@ window.KANJI_GROUPS={
    "depth": 2
   },
   {
-   "g": "人",
-   "from": 7,
-   "to": 8,
-   "depth": 2
-  },
-  {
    "g": "冊",
    "from": 10,
    "to": 14,
@@ -21996,12 +21170,6 @@ window.KANJI_GROUPS={
    "from": 7,
    "to": 14,
    "depth": 1
-  },
-  {
-   "g": "土",
-   "from": 7,
-   "to": 9,
-   "depth": 3
   }
  ],
  "諾": [
@@ -22061,12 +21229,6 @@ window.KANJI_GROUPS={
    "g": "勹",
    "from": 11,
    "to": 12,
-   "depth": 3
-  },
-  {
-   "g": "人",
-   "from": 13,
-   "to": 14,
    "depth": 3
   },
   {
@@ -22145,12 +21307,6 @@ window.KANJI_GROUPS={
    "g": "冂",
    "from": 12,
    "to": 13,
-   "depth": 4
-  },
-  {
-   "g": "土",
-   "from": 14,
-   "to": 16,
    "depth": 4
   }
  ],
@@ -22380,12 +21536,6 @@ window.KANJI_GROUPS={
    "from": 10,
    "to": 17,
    "depth": 3
-  },
-  {
-   "g": "亻",
-   "from": 10,
-   "to": 11,
-   "depth": 4
   },
   {
    "g": "又",
@@ -23076,12 +22226,6 @@ window.KANJI_GROUPS={
    "from": 12,
    "to": 13,
    "depth": 4
-  },
-  {
-   "g": "土",
-   "from": 14,
-   "to": 16,
-   "depth": 4
   }
  ],
  "贈": [
@@ -23344,12 +22488,6 @@ window.KANJI_GROUPS={
    "from": 7,
    "to": 20,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 13,
-   "to": 14,
-   "depth": 3
   }
  ],
  "軒": [
@@ -23441,12 +22579,6 @@ window.KANJI_GROUPS={
   }
  ],
  "輪": [
-  {
-   "g": "人",
-   "from": 7,
-   "to": 8,
-   "depth": 2
-  },
   {
    "g": "冊",
    "from": 10,
@@ -23704,12 +22836,6 @@ window.KANJI_GROUPS={
  ],
  "途": [
   {
-   "g": "人",
-   "from": 0,
-   "to": 1,
-   "depth": 2
-  },
-  {
    "g": "小",
    "from": 4,
    "to": 6,
@@ -23764,7 +22890,7 @@ window.KANJI_GROUPS={
    "depth": 1
   },
   {
-   "g": "士",
+   "g": "土",
    "from": 2,
    "to": 4,
    "depth": 3
@@ -23774,14 +22900,6 @@ window.KANJI_GROUPS={
    "from": 5,
    "to": 7,
    "depth": 3
-  }
- ],
- "進": [
-  {
-   "g": "亻",
-   "from": 0,
-   "to": 1,
-   "depth": 2
   }
  ],
  "逸": [
@@ -24344,26 +23462,12 @@ window.KANJI_GROUPS={
    "depth": 2
   }
  ],
- "郵": [
-  {
-   "g": "土",
-   "from": 5,
-   "to": 7,
-   "depth": 2
-  }
- ],
  "都": [
   {
    "g": "者",
    "from": 0,
    "to": 7,
    "depth": 1
-  },
-  {
-   "g": "土",
-   "from": 0,
-   "to": 2,
-   "depth": 3
   }
  ],
  "酌": [
@@ -24396,12 +23500,6 @@ window.KANJI_GROUPS={
    "from": 7,
    "to": 13,
    "depth": 1
-  },
-  {
-   "g": "土",
-   "from": 7,
-   "to": 9,
-   "depth": 3
   }
  ],
  "酷": [
@@ -24549,12 +23647,6 @@ window.KANJI_GROUPS={
   }
  ],
  "鈴": [
-  {
-   "g": "人",
-   "from": 8,
-   "to": 9,
-   "depth": 2
-  },
   {
    "g": "マ",
    "from": 11,
@@ -24706,14 +23798,6 @@ window.KANJI_GROUPS={
    "depth": 2
   }
  ],
- "錘": [
-  {
-   "g": "土",
-   "from": 13,
-   "to": 15,
-   "depth": 2
-  }
- ],
  "錠": [
   {
    "g": "定",
@@ -24737,12 +23821,6 @@ window.KANJI_GROUPS={
    "g": "卜",
    "from": 12,
    "to": 13,
-   "depth": 4
-  },
-  {
-   "g": "人",
-   "from": 14,
-   "to": 15,
    "depth": 4
   }
  ],
@@ -25080,12 +24158,6 @@ window.KANJI_GROUPS={
  ],
  "除": [
   {
-   "g": "人",
-   "from": 3,
-   "to": 4,
-   "depth": 2
-  },
-  {
    "g": "小",
    "from": 7,
    "to": 9,
@@ -25115,12 +24187,6 @@ window.KANJI_GROUPS={
   }
  ],
  "陰": [
-  {
-   "g": "人",
-   "from": 3,
-   "to": 4,
-   "depth": 2
-  },
   {
    "g": "二",
    "from": 7,
@@ -25159,12 +24225,6 @@ window.KANJI_GROUPS={
   }
  ],
  "険": [
-  {
-   "g": "人",
-   "from": 3,
-   "to": 4,
-   "depth": 2
-  },
   {
    "g": "口",
    "from": 6,
@@ -25360,57 +24420,11 @@ window.KANJI_GROUPS={
    "depth": 2
   }
  ],
- "隻": [
-  {
-   "g": "亻",
-   "from": 0,
-   "to": 1,
-   "depth": 2
-  }
- ],
- "隼": [
-  {
-   "g": "亻",
-   "from": 0,
-   "to": 1,
-   "depth": 2
-  }
- ],
  "雄": [
   {
    "g": "厶",
    "from": 2,
    "to": 3,
-   "depth": 2
-  },
-  {
-   "g": "亻",
-   "from": 4,
-   "to": 5,
-   "depth": 2
-  }
- ],
- "雅": [
-  {
-   "g": "亻",
-   "from": 5,
-   "to": 6,
-   "depth": 2
-  }
- ],
- "集": [
-  {
-   "g": "亻",
-   "from": 0,
-   "to": 1,
-   "depth": 2
-  }
- ],
- "雇": [
-  {
-   "g": "亻",
-   "from": 4,
-   "to": 5,
    "depth": 2
   }
  ],
@@ -25426,20 +24440,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 1,
    "depth": 3
-  },
-  {
-   "g": "亻",
-   "from": 6,
-   "to": 7,
-   "depth": 2
-  }
- ],
- "雑": [
-  {
-   "g": "亻",
-   "from": 6,
-   "to": 7,
-   "depth": 2
   }
  ],
  "雛": [
@@ -25478,12 +24478,6 @@ window.KANJI_GROUPS={
    "from": 7,
    "to": 8,
    "depth": 4
-  },
-  {
-   "g": "亻",
-   "from": 10,
-   "to": 11,
-   "depth": 2
   }
  ],
  "離": [
@@ -25510,12 +24504,6 @@ window.KANJI_GROUPS={
    "from": 6,
    "to": 7,
    "depth": 3
-  },
-  {
-   "g": "亻",
-   "from": 11,
-   "to": 12,
-   "depth": 2
   }
  ],
  "難": [
@@ -25523,12 +24511,6 @@ window.KANJI_GROUPS={
    "g": "大",
    "from": 7,
    "to": 9,
-   "depth": 2
-  },
-  {
-   "g": "亻",
-   "from": 10,
-   "to": 11,
    "depth": 2
   }
  ],
@@ -25549,12 +24531,6 @@ window.KANJI_GROUPS={
   }
  ],
  "零": [
-  {
-   "g": "人",
-   "from": 8,
-   "to": 9,
-   "depth": 2
-  },
   {
    "g": "マ",
    "from": 11,
@@ -26074,12 +25050,6 @@ window.KANJI_GROUPS={
  ],
  "領": [
   {
-   "g": "人",
-   "from": 0,
-   "to": 1,
-   "depth": 2
-  },
-  {
    "g": "卩",
    "from": 3,
    "to": 4,
@@ -26211,12 +25181,6 @@ window.KANJI_GROUPS={
    "g": "卜",
    "from": 5,
    "to": 6,
-   "depth": 4
-  },
-  {
-   "g": "人",
-   "from": 7,
-   "to": 8,
    "depth": 4
   },
   {
@@ -26398,12 +25362,6 @@ window.KANJI_GROUPS={
    "from": 0,
    "to": 11,
    "depth": 1
-  },
-  {
-   "g": "亻",
-   "from": 4,
-   "to": 5,
-   "depth": 3
   },
   {
    "g": "貝",
@@ -26757,12 +25715,6 @@ window.KANJI_GROUPS={
    "g": "灬",
    "from": 6,
    "to": 9,
-   "depth": 2
-  },
-  {
-   "g": "人",
-   "from": 10,
-   "to": 11,
    "depth": 2
   },
   {
@@ -27180,7 +26132,7 @@ window.KANJI_GROUPS={
    "depth": 1
   },
   {
-   "g": "士",
+   "g": "土",
    "from": 13,
    "to": 15,
    "depth": 3
@@ -27330,12 +26282,6 @@ window.KANJI_GROUPS={
    "depth": 3
   },
   {
-   "g": "亻",
-   "from": 2,
-   "to": 3,
-   "depth": 3
-  },
-  {
    "g": "灬",
    "from": 17,
    "to": 20,
@@ -27360,12 +26306,6 @@ window.KANJI_GROUPS={
    "from": 5,
    "to": 12,
    "depth": 2
-  },
-  {
-   "g": "亻",
-   "from": 5,
-   "to": 6,
-   "depth": 3
   },
   {
    "g": "灬",
@@ -27695,12 +26635,6 @@ window.KANJI_GROUPS={
    "g": "凵",
    "from": 10,
    "to": 11,
-   "depth": 2
-  },
-  {
-   "g": "人",
-   "from": 12,
-   "to": 13,
    "depth": 2
   },
   {

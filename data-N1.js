@@ -27251,35 +27251,22 @@
      ]
     },
     {
-     "g": "冂",
+     "g": "内",
      "pos": "right",
      "from": 6,
-     "to": 7,
-     "name": null,
-     "nameSrc": null,
-     "kw": null,
-     "kwSrc": "original keyword table",
-     "meanings": [
-      "upside-down box radical (no. 13)"
-     ],
-     "on": [
-      "キョウ"
-     ]
-    },
-    {
-     "g": "人",
-     "pos": "right",
-     "from": 8,
      "to": 9,
-     "name": "ひと",
+     "name": "うち",
      "nameSrc": "KANJIDIC2 kun",
-     "kw": null,
-     "kwSrc": "original keyword table",
+     "kw": "inside",
+     "kwSrc": "KANJIDIC2",
      "meanings": [
-      "person"
+      "inside",
+      "within",
+      "between",
+      "among"
      ],
      "on": [
-      "ジン"
+      "ナイ"
      ]
     }
    ],
@@ -37218,22 +37205,22 @@
      ]
     },
     {
-     "g": "士",
+     "g": "土",
      "pos": "top",
      "from": 2,
      "to": 4,
-     "name": "さむらい",
+     "name": "つち",
      "nameSrc": "KANJIDIC2 kun",
      "kw": null,
      "kwSrc": "original keyword table",
      "meanings": [
-      "gentleman",
-      "scholar",
-      "samurai",
-      "samurai radical (no. 33)"
+      "soil",
+      "earth",
+      "ground",
+      "Turkey"
      ],
      "on": [
-      "シ"
+      "ド"
      ]
     },
     {
@@ -62821,37 +62808,19 @@
      "on": []
     },
     {
-     "g": "大",
+     "g": "犬",
      "pos": "right",
      "from": 2,
-     "to": 4,
-     "name": "おお",
+     "to": 5,
+     "name": "いぬ",
      "nameSrc": "KANJIDIC2 kun",
      "kw": null,
      "kwSrc": "original keyword table",
      "meanings": [
-      "large",
-      "big"
+      "dog"
      ],
      "on": [
-      "ダイ"
-     ]
-    },
-    {
-     "g": "丶",
-     "pos": "right",
-     "from": 5,
-     "to": 5,
-     "name": null,
-     "nameSrc": null,
-     "kw": null,
-     "kwSrc": "original keyword table",
-     "meanings": [
-      "dot",
-      "tick or dot radical (no. 3)"
-     ],
-     "on": [
-      "チュ"
+      "ケン"
      ]
     }
    ],
@@ -97405,37 +97374,22 @@
      ]
     },
     {
-     "g": "人",
-     "pos": "top",
+     "g": "全",
+     "pos": "right",
      "from": 4,
-     "to": 5,
-     "name": "ひと",
-     "nameSrc": "KANJIDIC2 kun",
-     "kw": null,
-     "kwSrc": "original keyword table",
-     "meanings": [
-      "person"
-     ],
-     "on": [
-      "ジン"
-     ]
-    },
-    {
-     "g": "王",
-     "pos": "bottom",
-     "from": 6,
      "to": 9,
-     "name": null,
-     "nameSrc": null,
-     "kw": "king",
+     "name": "まった",
+     "nameSrc": "KANJIDIC2 kun",
+     "kw": "whole",
      "kwSrc": "KANJIDIC2",
      "meanings": [
-      "king",
-      "rule",
-      "magnate"
+      "whole",
+      "entire",
+      "all",
+      "complete"
      ],
      "on": [
-      "オウ"
+      "ゼン"
      ]
     }
    ],
@@ -105534,35 +105488,22 @@
      ]
     },
     {
-     "g": "冂",
+     "g": "内",
      "pos": null,
      "from": 1,
-     "to": 2,
-     "name": null,
-     "nameSrc": null,
-     "kw": null,
-     "kwSrc": "original keyword table",
-     "meanings": [
-      "upside-down box radical (no. 13)"
-     ],
-     "on": [
-      "キョウ"
-     ]
-    },
-    {
-     "g": "人",
-     "pos": null,
-     "from": 3,
      "to": 4,
-     "name": "ひと",
+     "name": "うち",
      "nameSrc": "KANJIDIC2 kun",
-     "kw": null,
-     "kwSrc": "original keyword table",
+     "kw": "inside",
+     "kwSrc": "KANJIDIC2",
      "meanings": [
-      "person"
+      "inside",
+      "within",
+      "between",
+      "among"
      ],
      "on": [
-      "ジン"
+      "ナイ"
      ]
     }
    ],
@@ -136026,6 +135967,7 @@
   "火": "fire",
   "㐮": "helper",
   "尓": "you",
+  "内": "inside",
   "壴": "drum stand",
   "兆": "portent",
   "龰": "foot",
@@ -136073,7 +136015,6 @@
   "丁": "nail",
   "龍": "dragon",
   "豸": "beast",
-  "内": "inside",
   "苟": "careful",
   "子": "child",
   "牛": "cow",
@@ -136296,6 +136237,7 @@
   "彗": "comet",
   "眉": "eyebrow",
   "新": "new",
+  "全": "whole",
   "卒": "graduate",
   "凹": "concave",
   "曲": "bend",

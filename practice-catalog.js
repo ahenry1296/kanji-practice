@@ -260,8 +260,7 @@ window.PRACTICE_CATALOG={
    "radical": 60,
    "components": [
     "彳",
-    "幺",
-    "亻"
+    "幺"
    ]
   },
   "半": {
@@ -457,8 +456,7 @@ window.PRACTICE_CATALOG={
    "level": "N5",
    "radical": 144,
    "components": [
-    "彳",
-    "亻"
+    "彳"
    ]
   },
   "来": {
@@ -570,9 +568,7 @@ window.PRACTICE_CATALOG={
    "radical": 31,
    "components": [
     "囗",
-    "玉",
-    "王",
-    "丶"
+    "玉"
    ]
   },
   "車": {
@@ -654,8 +650,7 @@ window.PRACTICE_CATALOG={
    "radical": 125,
    "components": [
     "耂",
-    "日",
-    "土"
+    "日"
    ]
   },
   "地": {
@@ -673,8 +668,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "业",
     "羊",
-    "木",
-    "丶"
+    "木"
    ]
   },
   "方": {
@@ -850,7 +844,6 @@ window.PRACTICE_CATALOG={
     "頁",
     "龰",
     "卜",
-    "人",
     "貝",
     "目",
     "八"
@@ -1025,7 +1018,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "田",
     "介",
-    "人",
     "丿",
     "丨"
    ]
@@ -1037,7 +1029,6 @@ window.PRACTICE_CATALOG={
     "耂",
     "子",
     "攵",
-    "土",
     "𠂉",
     "乂",
     "丿"
@@ -1084,7 +1075,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "耂",
     "丂",
-    "土",
     "丿"
    ]
   },
@@ -1143,8 +1133,7 @@ window.PRACTICE_CATALOG={
    "radical": 172,
    "components": [
     "隹",
-    "木",
-    "亻"
+    "木"
    ]
   },
   "別": {
@@ -1330,8 +1319,7 @@ window.PRACTICE_CATALOG={
    "radical": 68,
    "components": [
     "米",
-    "斗",
-    "丶"
+    "斗"
    ]
   },
   "工": {
@@ -1481,8 +1469,7 @@ window.PRACTICE_CATALOG={
     "疒",
     "一",
     "内",
-    "冂",
-    "人"
+    "冂"
    ]
   },
   "質": {
@@ -1502,7 +1489,6 @@ window.PRACTICE_CATALOG={
     "彳",
     "土",
     "寸",
-    "亻",
     "寺"
    ]
   },
@@ -1573,9 +1559,9 @@ window.PRACTICE_CATALOG={
     "馬",
     "㑒",
     "灬",
-    "人",
     "一",
-    "口"
+    "口",
+    "人"
    ]
   },
   "英": {
@@ -1645,10 +1631,9 @@ window.PRACTICE_CATALOG={
    "radical": 118,
    "components": [
     "竹",
-    "人",
+    "合",
     "一",
-    "口",
-    "合"
+    "口"
    ]
   },
   "夜": {
@@ -1746,7 +1731,7 @@ window.PRACTICE_CATALOG={
     "冂",
     "吉",
     "⻌",
-    "士",
+    "土",
     "口"
    ]
   },
@@ -1818,8 +1803,7 @@ window.PRACTICE_CATALOG={
     "大",
     "日",
     "𡗗",
-    "一",
-    "人"
+    "一"
    ]
   },
   "赤": {
@@ -1966,8 +1950,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "日",
     "羽",
-    "隹",
-    "亻"
+    "隹"
    ]
   },
   "飲": {
@@ -2240,8 +2223,7 @@ window.PRACTICE_CATALOG={
     "疋",
     "冖",
     "龰",
-    "卜",
-    "人"
+    "卜"
    ]
   },
   "回": {
@@ -2368,7 +2350,7 @@ window.PRACTICE_CATALOG={
     "冂",
     "吉",
     "口",
-    "士"
+    "土"
    ]
   },
   "化": {
@@ -2503,8 +2485,7 @@ window.PRACTICE_CATALOG={
     "耂",
     "日",
     "⻏",
-    "者",
-    "土"
+    "者"
    ]
   },
   "和": {
@@ -2527,8 +2508,6 @@ window.PRACTICE_CATALOG={
     "戈",
     "弋",
     "厂",
-    "人",
-    "一",
     "丿",
     "丶"
    ]
@@ -2576,8 +2555,7 @@ window.PRACTICE_CATALOG={
    "radical": 162,
    "components": [
     "隹",
-    "⻌",
-    "亻"
+    "⻌"
    ]
   },
   "数": {
@@ -2624,8 +2602,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "木",
     "𠂉",
-    "隹",
-    "亻"
+    "隹"
    ]
   },
   "支": {
@@ -2716,7 +2693,6 @@ window.PRACTICE_CATALOG={
     "彳",
     "旦",
     "寸",
-    "亻",
     "日",
     "一"
    ]
@@ -2957,7 +2933,6 @@ window.PRACTICE_CATALOG={
     "言",
     "侖",
     "口",
-    "人",
     "一",
     "冊",
     "冂",
@@ -3092,8 +3067,7 @@ window.PRACTICE_CATALOG={
     "宀",
     "隹",
     "口",
-    "冖",
-    "亻"
+    "冖"
    ]
   },
   "果": {
@@ -3121,8 +3095,7 @@ window.PRACTICE_CATALOG={
    "radical": 61,
    "components": [
     "心",
-    "丿",
-    "丶"
+    "丿"
    ]
   },
   "演": {
@@ -3232,8 +3205,7 @@ window.PRACTICE_CATALOG={
     "疋",
     "天",
     "大",
-    "卜",
-    "人"
+    "卜"
    ]
   },
   "過": {
@@ -3287,8 +3259,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "⺦",
     "犬",
-    "大",
-    "丶"
+    "大"
    ]
   },
   "球": {
@@ -3338,7 +3309,6 @@ window.PRACTICE_CATALOG={
     "彳",
     "几",
     "又",
-    "亻",
     "殳",
     "丿"
    ]
@@ -3351,8 +3321,8 @@ window.PRACTICE_CATALOG={
     "三",
     "再",
     "一",
-    "冂",
-    "土"
+    "冉",
+    "冂"
    ]
   },
   "割": {
@@ -3415,8 +3385,7 @@ window.PRACTICE_CATALOG={
     "口",
     "夫",
     "隹",
-    "大",
-    "亻"
+    "大"
    ]
   },
   "優": {
@@ -3518,7 +3487,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "行",
     "彳",
-    "亻",
     "木",
     "丶"
    ]
@@ -3656,7 +3624,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "今",
     "心",
-    "人",
     "一"
    ]
   },
@@ -3697,8 +3664,7 @@ window.PRACTICE_CATALOG={
     "月",
     "犬",
     "灬",
-    "大",
-    "丶"
+    "大"
    ]
   },
   "限": {
@@ -3956,7 +3922,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "𠂉",
     "隹",
-    "亻",
     "目",
     "儿"
    ]
@@ -4181,8 +4146,7 @@ window.PRACTICE_CATALOG={
     "禾",
     "斗",
     "丿",
-    "木",
-    "丶"
+    "木"
    ]
   },
   "積": {
@@ -4328,7 +4292,6 @@ window.PRACTICE_CATALOG={
     "日",
     "十",
     "甲",
-    "丶",
     "丨"
    ]
   },
@@ -4358,7 +4321,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "⻖",
     "余",
-    "人",
     "小"
    ]
   },
@@ -4418,7 +4380,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "糸",
     "合",
-    "人",
     "一",
     "口"
    ]
@@ -4516,8 +4477,7 @@ window.PRACTICE_CATALOG={
    "radical": 60,
    "components": [
     "彳",
-    "皮",
-    "亻"
+    "皮"
    ]
   },
   "未": {
@@ -4553,7 +4513,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "冫",
     "令",
-    "人",
     "一",
     "マ"
    ]
@@ -4712,9 +4671,9 @@ window.PRACTICE_CATALOG={
    "components": [
     "⻖",
     "㑒",
-    "人",
     "一",
-    "口"
+    "口",
+    "人"
    ]
   },
   "頼": {
@@ -4754,7 +4713,6 @@ window.PRACTICE_CATALOG={
    "radical": 162,
    "components": [
     "余",
-    "人",
     "小"
    ]
   },
@@ -4934,8 +4892,7 @@ window.PRACTICE_CATALOG={
    "level": "N3",
    "radical": 125,
    "components": [
-    "匕",
-    "土"
+    "匕"
    ]
   },
   "曲": {
@@ -4974,7 +4931,6 @@ window.PRACTICE_CATALOG={
     "彳",
     "土",
     "龰",
-    "亻",
     "走"
    ]
   },
@@ -5016,8 +4972,7 @@ window.PRACTICE_CATALOG={
     "九",
     "木",
     "隹",
-    "乙",
-    "亻"
+    "乙"
    ]
   },
   "招": {
@@ -5153,7 +5108,7 @@ window.PRACTICE_CATALOG={
    "radical": 120,
    "components": [
     "糸",
-    "人",
+    "会",
     "云",
     "二",
     "厶"
@@ -5317,8 +5272,7 @@ window.PRACTICE_CATALOG={
     "糸",
     "耂",
     "日",
-    "者",
-    "土"
+    "者"
    ]
   },
   "折": {
@@ -5455,7 +5409,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "彳",
     "卸",
-    "亻",
     "午",
     "干",
     "正",
@@ -5821,8 +5774,6 @@ window.PRACTICE_CATALOG={
     "戈",
     "弋",
     "厂",
-    "人",
-    "一",
     "丿",
     "丶"
    ]
@@ -5875,7 +5826,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "令",
     "頁",
-    "人",
     "一",
     "卩",
     "貝",
@@ -6031,8 +5981,8 @@ window.PRACTICE_CATALOG={
    "radical": 13,
    "components": [
     "一",
-    "冂",
-    "土"
+    "冉",
+    "冂"
    ]
   },
   "税": {
@@ -6260,7 +6210,6 @@ window.PRACTICE_CATALOG={
     "氵",
     "隼",
     "隹",
-    "亻",
     "十"
    ]
   },
@@ -6329,7 +6278,6 @@ window.PRACTICE_CATALOG={
     "𠂉",
     "日",
     "夂",
-    "亻",
     "复"
    ]
   },
@@ -6399,7 +6347,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "今",
     "口",
-    "人",
     "一"
    ]
   },
@@ -6621,7 +6568,7 @@ window.PRACTICE_CATALOG={
    "radical": 30,
    "components": [
     "冂",
-    "士",
+    "土",
     "口",
     "吉"
    ]
@@ -6841,8 +6788,8 @@ window.PRACTICE_CATALOG={
     "再",
     "口",
     "一",
-    "冂",
-    "土"
+    "冉",
+    "冂"
    ]
   },
   "林": {
@@ -6870,8 +6817,7 @@ window.PRACTICE_CATALOG={
     "耂",
     "日",
     "口",
-    "者",
-    "土"
+    "者"
    ]
   },
   "劇": {
@@ -7016,7 +6962,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "車",
     "侖",
-    "人",
     "一",
     "冊",
     "冂",
@@ -7111,8 +7056,7 @@ window.PRACTICE_CATALOG={
     "罒",
     "耂",
     "日",
-    "者",
-    "土"
+    "者"
    ]
   },
   "伸": {
@@ -7291,7 +7235,6 @@ window.PRACTICE_CATALOG={
     "卜",
     "米",
     "凵",
-    "人",
     "一",
     "卩"
    ]
@@ -7618,8 +7561,7 @@ window.PRACTICE_CATALOG={
     "艹",
     "耂",
     "日",
-    "者",
-    "土"
+    "者"
    ]
   },
   "誌": {
@@ -7811,8 +7753,7 @@ window.PRACTICE_CATALOG={
     "⻏",
     "千",
     "丿",
-    "十",
-    "土"
+    "十"
    ]
   },
   "仲": {
@@ -7899,8 +7840,7 @@ window.PRACTICE_CATALOG={
     "然",
     "月",
     "犬",
-    "大",
-    "丶"
+    "大"
    ]
   },
   "跡": {
@@ -7956,8 +7896,7 @@ window.PRACTICE_CATALOG={
    "radical": 172,
    "components": [
     "戸",
-    "隹",
-    "亻"
+    "隹"
    ]
   },
   "替": {
@@ -8040,7 +7979,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "彳",
     "聿",
-    "亻",
     "⺕",
     "丨"
    ]
@@ -8345,10 +8283,8 @@ window.PRACTICE_CATALOG={
    "radical": 40,
    "components": [
     "宀",
-    "王",
-    "丶",
-    "冖",
-    "玉"
+    "玉",
+    "冖"
    ]
   },
   "封": {
@@ -8543,7 +8479,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "雨",
     "令",
-    "人",
     "一",
     "マ"
    ]
@@ -8650,9 +8585,9 @@ window.PRACTICE_CATALOG={
    "radical": 64,
    "components": [
     "扌",
-    "人",
+    "舎",
     "吉",
-    "士",
+    "土",
     "口"
    ]
   },
@@ -8950,7 +8885,6 @@ window.PRACTICE_CATALOG={
     "氵",
     "余",
     "土",
-    "人",
     "小"
    ]
   },
@@ -9039,10 +8973,9 @@ window.PRACTICE_CATALOG={
    "radical": 64,
    "components": [
     "扌",
-    "人",
+    "合",
     "一",
-    "口",
-    "合"
+    "口"
    ]
   },
   "粉": {
@@ -9104,8 +9037,7 @@ window.PRACTICE_CATALOG={
     "并",
     "瓦",
     "干",
-    "十",
-    "丶"
+    "十"
    ]
   },
   "咲": {
@@ -9136,8 +9068,7 @@ window.PRACTICE_CATALOG={
    "radical": 172,
    "components": [
     "隹",
-    "又",
-    "亻"
+    "又"
    ]
   },
   "脂": {
@@ -9347,8 +9278,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "氵",
     "羽",
-    "隹",
-    "亻"
+    "隹"
    ]
   },
   "塔": {
@@ -9358,7 +9288,6 @@ window.PRACTICE_CATALOG={
     "土",
     "艹",
     "合",
-    "人",
     "一",
     "口"
    ]
@@ -9589,8 +9518,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "氵",
     "𠂢",
-    "丿",
-    "亻"
+    "丿"
    ]
   },
   "案": {
@@ -9640,8 +9568,7 @@ window.PRACTICE_CATALOG={
     "日",
     "疋",
     "龰",
-    "卜",
-    "人"
+    "卜"
    ]
   },
   "挙": {
@@ -9677,9 +9604,9 @@ window.PRACTICE_CATALOG={
    "components": [
     "木",
     "㑒",
-    "人",
     "一",
-    "口"
+    "口",
+    "人"
    ]
   },
   "藤": {
@@ -9772,7 +9699,6 @@ window.PRACTICE_CATALOG={
     "隻",
     "口",
     "隹",
-    "亻",
     "又"
    ]
   },
@@ -9878,7 +9804,6 @@ window.PRACTICE_CATALOG={
     "行",
     "韋",
     "彳",
-    "亻",
     "口"
    ]
   },
@@ -10129,8 +10054,7 @@ window.PRACTICE_CATALOG={
    "radical": 64,
    "components": [
     "扌",
-    "隹",
-    "亻"
+    "隹"
    ]
   },
   "請": {
@@ -10252,8 +10176,7 @@ window.PRACTICE_CATALOG={
     "乂",
     "丿",
     "凵",
-    "冂",
-    "亻"
+    "冂"
    ]
   },
   "激": {
@@ -10336,11 +10259,9 @@ window.PRACTICE_CATALOG={
    "radical": 60,
    "components": [
     "彳",
-    "亻",
     "疋",
     "龰",
-    "卜",
-    "人"
+    "卜"
    ]
   },
   "修": {
@@ -10453,8 +10374,7 @@ window.PRACTICE_CATALOG={
     "十",
     "冂",
     "干",
-    "大",
-    "丶"
+    "大"
    ]
   },
   "厳": {
@@ -10476,8 +10396,7 @@ window.PRACTICE_CATALOG={
    "radical": 120,
    "components": [
     "糸",
-    "隹",
-    "亻"
+    "隹"
    ]
   },
   "浜": {
@@ -10572,8 +10491,7 @@ window.PRACTICE_CATALOG={
     "厷",
     "隹",
     "丿",
-    "厶",
-    "亻"
+    "厶"
    ]
   },
   "益": {
@@ -10783,7 +10701,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "倉",
     "刂",
-    "人",
     "口"
    ]
   },
@@ -11200,7 +11117,6 @@ window.PRACTICE_CATALOG={
    "radical": 60,
    "components": [
     "彳",
-    "亻",
     "山",
     "王",
     "攵",
@@ -11340,7 +11256,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "金",
     "令",
-    "人",
     "一",
     "マ"
    ]
@@ -11418,7 +11333,6 @@ window.PRACTICE_CATALOG={
     "行",
     "圭",
     "彳",
-    "亻",
     "土"
    ]
   },
@@ -11439,9 +11353,7 @@ window.PRACTICE_CATALOG={
     "日",
     "匂",
     "勹",
-    "丿",
-    "人",
-    "匕"
+    "丿"
    ]
   },
   "躍": {
@@ -11451,8 +11363,7 @@ window.PRACTICE_CATALOG={
     "足",
     "羽",
     "隹",
-    "口",
-    "亻"
+    "口"
    ]
   },
   "棄": {
@@ -11615,8 +11526,8 @@ window.PRACTICE_CATALOG={
     "目",
     "八",
     "一",
-    "冂",
-    "土"
+    "冉",
+    "冂"
    ]
   },
   "揮": {
@@ -11702,7 +11613,6 @@ window.PRACTICE_CATALOG={
     "艹",
     "隻",
     "隹",
-    "亻",
     "又"
    ]
   },
@@ -11735,7 +11645,6 @@ window.PRACTICE_CATALOG={
     "彳",
     "育",
     "攵",
-    "亻",
     "亠",
     "厶",
     "月",
@@ -11763,7 +11672,6 @@ window.PRACTICE_CATALOG={
     "行",
     "重",
     "彳",
-    "亻",
     "千",
     "丿",
     "十",
@@ -11775,8 +11683,7 @@ window.PRACTICE_CATALOG={
    "radical": 86,
    "components": [
     "隹",
-    "灬",
-    "亻"
+    "灬"
    ]
   },
   "奪": {
@@ -11785,8 +11692,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "大",
     "隹",
-    "寸",
-    "亻"
+    "寸"
    ]
   },
   "災": {
@@ -11844,9 +11750,8 @@ window.PRACTICE_CATALOG={
    "radical": 120,
    "components": [
     "糸",
-    "冂",
-    "人",
-    "内"
+    "内",
+    "冂"
    ]
   },
   "樹": {
@@ -11857,7 +11762,7 @@ window.PRACTICE_CATALOG={
     "壴",
     "寸",
     "吉",
-    "士",
+    "土",
     "豆",
     "口"
    ]
@@ -12042,7 +11947,6 @@ window.PRACTICE_CATALOG={
     "扌",
     "隹",
     "乃",
-    "亻",
     "丿"
    ]
   },
@@ -12219,8 +12123,7 @@ window.PRACTICE_CATALOG={
     "日",
     "疋",
     "龰",
-    "卜",
-    "人"
+    "卜"
    ]
   },
   "排": {
@@ -12317,7 +12220,6 @@ window.PRACTICE_CATALOG={
     "戸",
     "隹",
     "頁",
-    "亻",
     "貝",
     "目",
     "八"
@@ -12388,7 +12290,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "𠂉",
     "隹",
-    "亻",
     "欠"
    ]
   },
@@ -12410,7 +12311,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "𠂉",
     "隹",
-    "亻",
     "力"
    ]
   },
@@ -12547,7 +12447,6 @@ window.PRACTICE_CATALOG={
    "radical": 60,
    "components": [
     "彳",
-    "亻",
     "十",
     "罒",
     "心"
@@ -12652,7 +12551,6 @@ window.PRACTICE_CATALOG={
    "radical": 60,
    "components": [
     "彳",
-    "亻",
     "山",
     "兀",
     "一",
@@ -12837,8 +12735,7 @@ window.PRACTICE_CATALOG={
     "木",
     "一",
     "内",
-    "冂",
-    "人"
+    "冂"
    ]
   },
   "驚": {
@@ -13046,7 +12943,7 @@ window.PRACTICE_CATALOG={
    "radical": 9,
    "components": [
     "人",
-    "士",
+    "土",
     "口",
     "吉"
    ]
@@ -13170,8 +13067,7 @@ window.PRACTICE_CATALOG={
     "牙",
     "隹",
     "亅",
-    "丿",
-    "亻"
+    "丿"
    ]
   },
   "飾": {
@@ -13321,8 +13217,7 @@ window.PRACTICE_CATALOG={
     "雍",
     "亠",
     "乡",
-    "隹",
-    "亻"
+    "隹"
    ]
   },
   "圏": {
@@ -13385,8 +13280,7 @@ window.PRACTICE_CATALOG={
     "疋",
     "口",
     "木",
-    "卜",
-    "人"
+    "卜"
    ]
   },
   "腐": {
@@ -13452,8 +13346,7 @@ window.PRACTICE_CATALOG={
     "菐",
     "业",
     "三",
-    "一",
-    "人"
+    "一"
    ]
   },
   "桜": {
@@ -13586,11 +13479,9 @@ window.PRACTICE_CATALOG={
     "糸",
     "従",
     "彳",
-    "亻",
     "疋",
     "龰",
-    "卜",
-    "人"
+    "卜"
    ]
   },
   "輝": {
@@ -13795,8 +13686,7 @@ window.PRACTICE_CATALOG={
     "菐",
     "业",
     "三",
-    "一",
-    "人"
+    "一"
    ]
   },
   "堀": {
@@ -13844,8 +13734,7 @@ window.PRACTICE_CATALOG={
    "radical": 30,
    "components": [
     "口",
-    "隹",
-    "亻"
+    "隹"
    ]
   },
   "膨": {
@@ -13856,7 +13745,7 @@ window.PRACTICE_CATALOG={
     "壴",
     "彡",
     "吉",
-    "士",
+    "土",
     "豆",
     "口"
    ]
@@ -13936,7 +13825,6 @@ window.PRACTICE_CATALOG={
     "徴",
     "心",
     "彳",
-    "亻",
     "山",
     "王",
     "攵",
@@ -13951,9 +13839,9 @@ window.PRACTICE_CATALOG={
    "components": [
     "㑒",
     "刂",
-    "人",
     "一",
-    "口"
+    "口",
+    "人"
    ]
   },
   "彰": {
@@ -14035,7 +13923,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "亻",
     "侖",
-    "人",
     "一",
     "冊",
     "冂",
@@ -14158,7 +14045,6 @@ window.PRACTICE_CATALOG={
     "里",
     "日",
     "大",
-    "丶",
     "灬"
    ]
   },
@@ -14374,7 +14260,6 @@ window.PRACTICE_CATALOG={
     "隹",
     "鳥",
     "冖",
-    "亻",
     "灬"
    ]
   },
@@ -14444,7 +14329,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "彳",
     "复",
-    "亻",
     "𠂉",
     "日",
     "夂"
@@ -14571,7 +14455,6 @@ window.PRACTICE_CATALOG={
     "⻖",
     "今",
     "云",
-    "人",
     "一",
     "二",
     "厶"
@@ -14735,7 +14618,7 @@ window.PRACTICE_CATALOG={
     "人",
     "吉",
     "甫",
-    "士",
+    "土",
     "口",
     "用",
     "丶"
@@ -14802,8 +14685,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "彳",
     "丶",
-    "王",
-    "亻"
+    "王"
    ]
   },
   "豆": {
@@ -14904,8 +14786,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "彳",
     "又",
-    "土",
-    "亻"
+    "土"
    ]
   },
   "淡": {
@@ -14959,8 +14840,7 @@ window.PRACTICE_CATALOG={
    "radical": 15,
    "components": [
     "冫",
-    "隹",
-    "亻"
+    "隹"
    ]
   },
   "暑": {
@@ -14969,8 +14849,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "日",
     "耂",
-    "者",
-    "土"
+    "者"
    ]
   },
   "磯": {
@@ -14984,8 +14863,6 @@ window.PRACTICE_CATALOG={
     "戈",
     "弋",
     "厂",
-    "人",
-    "一",
     "丿",
     "丶"
    ]
@@ -15186,8 +15063,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "彳",
     "余",
-    "亻",
-    "人",
     "小"
    ]
   },
@@ -15210,7 +15085,6 @@ window.PRACTICE_CATALOG={
     "扌",
     "艹",
     "合",
-    "人",
     "一",
     "口"
    ]
@@ -15231,8 +15105,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "月",
     "𠂢",
-    "丿",
-    "亻"
+    "丿"
    ]
   },
   "滝": {
@@ -15424,9 +15297,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "余",
     "斗",
-    "人",
-    "小",
-    "丶"
+    "小"
    ]
   },
   "鏡": {
@@ -15564,8 +15435,7 @@ window.PRACTICE_CATALOG={
     "日",
     "罒",
     "者",
-    "耂",
-    "土"
+    "耂"
    ]
   },
   "紋": {
@@ -15597,8 +15467,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "大",
     "隹",
-    "田",
-    "亻"
+    "田"
    ]
   },
   "欄": {
@@ -15657,8 +15526,7 @@ window.PRACTICE_CATALOG={
     "⺨",
     "言",
     "口",
-    "大",
-    "丶"
+    "大"
    ]
   },
   "尚": {
@@ -15678,7 +15546,7 @@ window.PRACTICE_CATALOG={
     "冂",
     "吉",
     "彡",
-    "士",
+    "土",
     "口"
    ]
   },
@@ -15860,8 +15728,7 @@ window.PRACTICE_CATALOG={
     "禾",
     "隹",
     "丿",
-    "木",
-    "亻"
+    "木"
    ]
   },
   "滋": {
@@ -15890,8 +15757,7 @@ window.PRACTICE_CATALOG={
     "耂",
     "日",
     "灬",
-    "者",
-    "土"
+    "者"
    ]
   },
   "姫": {
@@ -15951,7 +15817,6 @@ window.PRACTICE_CATALOG={
     "木",
     "口",
     "卜",
-    "人",
     "束"
    ]
   },
@@ -15990,7 +15855,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "彳",
     "正",
-    "亻",
     "止",
     "卜"
    ]
@@ -16087,7 +15951,6 @@ window.PRACTICE_CATALOG={
     "⺍",
     "田",
     "木",
-    "丶",
     "日"
    ]
   },
@@ -16112,7 +15975,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "王",
     "今",
-    "人",
     "一"
    ]
   },
@@ -16211,9 +16073,8 @@ window.PRACTICE_CATALOG={
    "radical": 9,
    "components": [
     "亻",
-    "大",
-    "丶",
-    "犬"
+    "犬",
+    "大"
    ]
   },
   "碁": {
@@ -16305,7 +16166,6 @@ window.PRACTICE_CATALOG={
     "尸",
     "彳",
     "复",
-    "亻",
     "𠂉",
     "日",
     "夂"
@@ -16459,7 +16319,6 @@ window.PRACTICE_CATALOG={
     "丿",
     "木",
     "隹",
-    "亻",
     "又"
    ]
   },
@@ -16609,8 +16468,7 @@ window.PRACTICE_CATALOG={
     "日",
     "疋",
     "龰",
-    "卜",
-    "人"
+    "卜"
    ]
   },
   "飢": {
@@ -16845,8 +16703,7 @@ window.PRACTICE_CATALOG={
     "⺨",
     "耂",
     "日",
-    "者",
-    "土"
+    "者"
    ]
   },
   "紘": {
@@ -16986,8 +16843,7 @@ window.PRACTICE_CATALOG={
     "彳",
     "厂",
     "十",
-    "目",
-    "亻"
+    "目"
    ]
   },
   "忍": {
@@ -17078,8 +16934,7 @@ window.PRACTICE_CATALOG={
     "大",
     "マ",
     "疋",
-    "卜",
-    "人"
+    "卜"
    ]
   },
   "苗": {
@@ -17098,8 +16953,7 @@ window.PRACTICE_CATALOG={
     "田",
     "口",
     "犬",
-    "大",
-    "丶"
+    "大"
    ]
   },
   "哀": {
@@ -17256,8 +17110,8 @@ window.PRACTICE_CATALOG={
     "三",
     "再",
     "一",
-    "冂",
-    "土"
+    "冉",
+    "冂"
    ]
   },
   "恭": {
@@ -17285,8 +17139,7 @@ window.PRACTICE_CATALOG={
     "垂",
     "千",
     "丿",
-    "十",
-    "土"
+    "十"
    ]
   },
   "錯": {
@@ -17616,7 +17469,6 @@ window.PRACTICE_CATALOG={
     "心",
     "丿",
     "木",
-    "人",
     "一"
    ]
   },
@@ -17823,8 +17675,7 @@ window.PRACTICE_CATALOG={
     "𠂉",
     "疋",
     "亠",
-    "卜",
-    "人"
+    "卜"
    ]
   },
   "弓": {
@@ -18043,8 +17894,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "罒",
     "糸",
-    "隹",
-    "亻"
+    "隹"
    ]
   },
   "峡": {
@@ -18172,7 +18022,6 @@ window.PRACTICE_CATALOG={
     "行",
     "𩵋",
     "彳",
-    "亻",
     "𠂊",
     "田",
     "大"
@@ -18247,9 +18096,7 @@ window.PRACTICE_CATALOG={
     "日",
     "匂",
     "勹",
-    "丿",
-    "人",
-    "匕"
+    "丿"
    ]
   },
   "敢": {
@@ -18280,8 +18127,7 @@ window.PRACTICE_CATALOG={
     "耂",
     "子",
     "西",
-    "一",
-    "土"
+    "一"
    ]
   },
   "憤": {
@@ -18721,8 +18567,7 @@ window.PRACTICE_CATALOG={
    "radical": 75,
    "components": [
     "木",
-    "隹",
-    "亻"
+    "隹"
    ]
   },
   "絹": {
@@ -18864,7 +18709,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "王",
     "令",
-    "人",
     "一",
     "マ"
    ]
@@ -18886,8 +18730,7 @@ window.PRACTICE_CATALOG={
     "疋",
     "冖",
     "龰",
-    "卜",
-    "人"
+    "卜"
    ]
   },
   "拳": {
@@ -18988,9 +18831,7 @@ window.PRACTICE_CATALOG={
     "日",
     "匂",
     "勹",
-    "丿",
-    "人",
-    "匕"
+    "丿"
    ]
   },
   "叔": {
@@ -19012,8 +18853,7 @@ window.PRACTICE_CATALOG={
     "止",
     "匕",
     "隹",
-    "卜",
-    "亻"
+    "卜"
    ]
   },
   "亨": {
@@ -19047,7 +18887,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "余",
     "又",
-    "人",
     "小"
    ]
   },
@@ -19068,7 +18907,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "口",
     "今",
-    "人",
     "一"
    ]
   },
@@ -19090,7 +18928,6 @@ window.PRACTICE_CATALOG={
     "山",
     "令",
     "頁",
-    "人",
     "一",
     "マ",
     "貝",
@@ -19199,8 +19036,7 @@ window.PRACTICE_CATALOG={
     "石",
     "隹",
     "灬",
-    "口",
-    "亻"
+    "口"
    ]
   },
   "乃": {
@@ -19286,8 +19122,7 @@ window.PRACTICE_CATALOG={
     "大",
     "マ",
     "疋",
-    "卜",
-    "人"
+    "卜"
    ]
   },
   "塀": {
@@ -19571,8 +19406,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "艹",
     "隹",
-    "灬",
-    "亻"
+    "灬"
    ]
   },
   "寡": {
@@ -19756,7 +19590,6 @@ window.PRACTICE_CATALOG={
     "扌",
     "耂",
     "丂",
-    "土",
     "丿"
    ]
   },
@@ -20040,8 +19873,7 @@ window.PRACTICE_CATALOG={
     "女",
     "疋",
     "月",
-    "卜",
-    "人"
+    "卜"
    ]
   },
   "慕": {
@@ -20120,8 +19952,7 @@ window.PRACTICE_CATALOG={
     "丿",
     "田",
     "儿",
-    "厶",
-    "丶"
+    "厶"
    ]
   },
   "虹": {
@@ -20161,8 +19992,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "方",
     "亠",
-    "冫",
-    "丶"
+    "冫"
    ]
   },
   "赳": {
@@ -20500,9 +20330,7 @@ window.PRACTICE_CATALOG={
     "日",
     "匂",
     "勹",
-    "丿",
-    "人",
-    "匕"
+    "丿"
    ]
   },
   "賜": {
@@ -20554,7 +20382,7 @@ window.PRACTICE_CATALOG={
    "radical": 75,
    "components": [
     "木",
-    "人",
+    "全",
     "王"
    ]
   },
@@ -20653,8 +20481,7 @@ window.PRACTICE_CATALOG={
    "radical": 172,
    "components": [
     "隹",
-    "十",
-    "亻"
+    "十"
    ]
   },
   "渚": {
@@ -20664,8 +20491,7 @@ window.PRACTICE_CATALOG={
     "氵",
     "耂",
     "日",
-    "者",
-    "土"
+    "者"
    ]
   },
   "衷": {
@@ -20745,8 +20571,7 @@ window.PRACTICE_CATALOG={
     "勹",
     "丿",
     "屮",
-    "凵",
-    "亻"
+    "凵"
    ]
   },
   "惟": {
@@ -20754,8 +20579,7 @@ window.PRACTICE_CATALOG={
    "radical": 61,
    "components": [
     "忄",
-    "隹",
-    "亻"
+    "隹"
    ]
   },
   "佑": {
@@ -20778,8 +20602,7 @@ window.PRACTICE_CATALOG={
     "兀",
     "一",
     "儿",
-    "丿",
-    "亻"
+    "丿"
    ]
   },
   "黛": {
@@ -20911,7 +20734,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "艹",
     "倉",
-    "人",
     "口"
    ]
   },
@@ -21424,7 +21246,7 @@ window.PRACTICE_CATALOG={
     "𠂊",
     "田",
     "灬",
-    "士",
+    "土",
     "口"
    ]
   },
@@ -21434,7 +21256,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "忄",
     "令",
-    "人",
     "一",
     "マ"
    ]
@@ -21519,9 +21340,9 @@ window.PRACTICE_CATALOG={
    "components": [
     "亻",
     "㑒",
-    "人",
     "一",
-    "口"
+    "口",
+    "人"
    ]
   },
   "柚": {
@@ -21560,9 +21381,8 @@ window.PRACTICE_CATALOG={
    "radical": 1,
    "components": [
     "一",
-    "冂",
-    "人",
-    "内"
+    "内",
+    "冂"
    ]
   },
   "丞": {
@@ -21607,7 +21427,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "亻",
     "令",
-    "人",
     "一",
     "マ"
    ]
@@ -22028,7 +21847,6 @@ window.PRACTICE_CATALOG={
     "氵",
     "雨",
     "令",
-    "人",
     "一",
     "マ"
    ]
@@ -22082,8 +21900,7 @@ window.PRACTICE_CATALOG={
    "components": [
     "火",
     "羽",
-    "隹",
-    "亻"
+    "隹"
    ]
   },
   "爵": {
@@ -22281,7 +22098,6 @@ window.PRACTICE_CATALOG={
    "radical": 120,
    "components": [
     "侖",
-    "人",
     "一",
     "冊",
     "冂",
@@ -22427,7 +22243,6 @@ window.PRACTICE_CATALOG={
    "components": [
     "衤",
     "今",
-    "人",
     "一"
    ]
   },
@@ -22508,9 +22323,7 @@ window.PRACTICE_CATALOG={
     "匂",
     "口",
     "勹",
-    "丿",
-    "人",
-    "匕"
+    "丿"
    ]
   },
   "賦": {
@@ -22577,8 +22390,7 @@ window.PRACTICE_CATALOG={
     "垂",
     "千",
     "丿",
-    "十",
-    "土"
+    "十"
    ]
   },
   "鞠": {

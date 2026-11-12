@@ -4221,38 +4221,20 @@
      ]
     },
     {
-     "g": "冂",
+     "g": "冉",
      "pos": null,
      "from": 1,
-     "to": 2,
-     "name": null,
-     "nameSrc": null,
-     "kw": null,
-     "kwSrc": "original keyword table",
-     "meanings": [
-      "upside-down box radical (no. 13)"
-     ],
-     "on": [
-      "キョウ"
-     ]
-    },
-    {
-     "g": "土",
-     "pos": null,
-     "from": 3,
      "to": 5,
-     "name": "つち",
+     "name": "あや",
      "nameSrc": "KANJIDIC2 kun",
-     "kw": null,
-     "kwSrc": "original keyword table",
+     "kw": "red",
+     "kwSrc": "KANJIDIC2",
      "meanings": [
-      "soil",
-      "earth",
-      "ground",
-      "Turkey"
+      "red",
+      "tan"
      ],
      "on": [
-      "ド"
+      "ゼン"
      ]
     }
    ],
@@ -9314,22 +9296,22 @@
      ]
     },
     {
-     "g": "士",
+     "g": "土",
      "pos": null,
      "from": 2,
      "to": 4,
-     "name": "さむらい",
+     "name": "つち",
      "nameSrc": "KANJIDIC2 kun",
      "kw": null,
      "kwSrc": "original keyword table",
      "meanings": [
-      "gentleman",
-      "scholar",
-      "samurai",
-      "samurai radical (no. 33)"
+      "soil",
+      "earth",
+      "ground",
+      "Turkey"
      ],
      "on": [
-      "シ"
+      "ド"
      ]
     },
     {
@@ -23992,38 +23974,20 @@
      ]
     },
     {
-     "g": "王",
+     "g": "玉",
      "pos": "bottom",
      "from": 3,
-     "to": 6,
-     "name": null,
-     "nameSrc": null,
-     "kw": "king",
-     "kwSrc": "KANJIDIC2",
-     "meanings": [
-      "king",
-      "rule",
-      "magnate"
-     ],
-     "on": [
-      "オウ"
-     ]
-    },
-    {
-     "g": "丶",
-     "pos": "bottom",
-     "from": 7,
      "to": 7,
-     "name": null,
-     "nameSrc": null,
+     "name": "たま",
+     "nameSrc": "KANJIDIC2 kun",
      "kw": null,
      "kwSrc": "original keyword table",
      "meanings": [
-      "dot",
-      "tick or dot radical (no. 3)"
+      "jewel",
+      "ball"
      ],
      "on": [
-      "チュ"
+      "ギョク"
      ]
     }
    ],
@@ -26503,37 +26467,22 @@
      ]
     },
     {
-     "g": "人",
-     "pos": "top",
+     "g": "舎",
+     "pos": "right",
      "from": 3,
-     "to": 4,
-     "name": "ひと",
-     "nameSrc": "KANJIDIC2 kun",
-     "kw": null,
-     "kwSrc": "original keyword table",
-     "meanings": [
-      "person"
-     ],
-     "on": [
-      "ジン"
-     ]
-    },
-    {
-     "g": "吉",
-     "pos": "bottom",
-     "from": 5,
      "to": 10,
-     "name": "よし",
+     "name": "やど",
      "nameSrc": "KANJIDIC2 kun",
-     "kw": "good luck",
+     "kw": "cottage",
      "kwSrc": "KANJIDIC2",
      "meanings": [
-      "good luck",
-      "joy",
-      "congratulations"
+      "cottage",
+      "inn",
+      "hut",
+      "house"
      ],
      "on": [
-      "キチ"
+      "シャ"
      ]
     }
    ],
@@ -29938,52 +29887,22 @@
      ]
     },
     {
-     "g": "人",
+     "g": "合",
      "pos": "right",
      "from": 3,
-     "to": 4,
-     "name": "ひと",
-     "nameSrc": "KANJIDIC2 kun",
-     "kw": null,
-     "kwSrc": "original keyword table",
-     "meanings": [
-      "person"
-     ],
-     "on": [
-      "ジン"
-     ]
-    },
-    {
-     "g": "一",
-     "pos": "right",
-     "from": 5,
-     "to": 5,
-     "name": "ひと",
-     "nameSrc": "KANJIDIC2 kun",
-     "kw": null,
-     "kwSrc": "original keyword table",
-     "meanings": [
-      "one",
-      "one radical (no.1)"
-     ],
-     "on": [
-      "イチ"
-     ]
-    },
-    {
-     "g": "口",
-     "pos": "right",
-     "from": 6,
      "to": 8,
-     "name": "くち",
+     "name": "あ",
      "nameSrc": "KANJIDIC2 kun",
-     "kw": null,
-     "kwSrc": "original keyword table",
+     "kw": "fit",
+     "kwSrc": "KANJIDIC2",
      "meanings": [
-      "mouth"
+      "fit",
+      "suit",
+      "join",
+      "0.1"
      ],
      "on": [
-      "コウ"
+      "ゴウ"
      ]
     }
    ],
@@ -40511,8 +40430,7 @@
   "力": "power",
   "氵": "water",
   "戍": "guard",
-  "冂": "hood",
-  "土": "earth",
+  "冉": "red",
   "八": "eight",
   "⺍": "sparkle",
   "呂": "spine",
@@ -40521,6 +40439,7 @@
   "方": "direction",
   "衤": "clothes",
   "甫": "seedbed",
+  "土": "earth",
   "音": "sound",
   "儿": "legs",
   "首": "neck",
@@ -40585,7 +40504,7 @@
   "呑": "swallow",
   "冋": "frame",
   "干": "dry",
-  "士": "samurai",
+  "冂": "hood",
   "才": "genius",
   "戸": "door",
   "央": "center",
@@ -40606,6 +40525,7 @@
   "卯": "rabbit sign",
   "三": "three",
   "再": "twice",
+  "士": "samurai",
   "衣": "clothes",
   "耂": "old age",
   "虍": "tiger",
@@ -40694,6 +40614,7 @@
   "更": "renew",
   "祭": "ritual",
   "弋": "stake",
+  "玉": "jewel",
   "夗": "curl up",
   "兆": "portent",
   "毛": "fur",
@@ -40710,7 +40631,7 @@
   "甘": "sweet",
   "帚": "broom",
   "出": "exit",
-  "吉": "good luck",
+  "舎": "cottage",
   "工": "craft",
   "覀": "cover",
   "用": "use",
@@ -40725,6 +40646,7 @@
   "早": "early",
   "乞": "beg",
   "奉": "observance",
+  "合": "fit",
   "并": "side by side",
   "瓦": "tile",
   "关": "frontier pass",
@@ -40735,7 +40657,6 @@
   "自": "oneself",
   "司": "director",
   "且": "stack",
-  "合": "fit",
   "京": "capital",
   "品": "goods",
   "玄": "mysterious",
